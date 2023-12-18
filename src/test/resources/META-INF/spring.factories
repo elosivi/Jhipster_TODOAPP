@@ -1,0 +1,3 @@
+org.springframework.test.context.ContextCustomizerFactory = com.ebarbe.config.\
+    TestContainersSpringContextCustomizerFactory,com.ebarbe.config.\
+    SqlTestContainersSpringContextCustomizerFactory
