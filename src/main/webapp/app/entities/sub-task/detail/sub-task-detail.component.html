@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (subTask) {
+      <div>
+        <h2 data-cy="subTaskDetailsHeading"><span jhiTranslate="todoApp.subTask.detail.title">Sub Task</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ subTask.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.description">Description</span></dt>
+          <dd>
+            <span>{{ subTask.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.deadline">Deadline</span></dt>
+          <dd>
+            <span>{{ subTask.deadline | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.creation">Creation</span></dt>
+          <dd>
+            <span>{{ subTask.creation | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.cost">Cost</span></dt>
+          <dd>
+            <span>{{ subTask.cost }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.status">Status</span></dt>
+          <dd>
+            @if (subTask.status) {
+              <div>
+                <a [routerLink]="['/status', subTask.status.id, 'view']">{{ subTask.status.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.mainTask">Main Task</span></dt>
+          <dd>
+            @if (subTask.mainTask) {
+              <div>
+                <a [routerLink]="['/main-task', subTask.mainTask.id, 'view']">{{ subTask.mainTask.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.subTask.personDoer">Person Doer</span></dt>
+          <dd>
+            @if (subTask.personDoer) {
+              <div>
+                <a [routerLink]="['/person', subTask.personDoer.id, 'view']">{{ subTask.personDoer.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/sub-task', subTask.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

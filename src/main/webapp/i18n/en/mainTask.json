@@ -1,0 +1,32 @@
+{
+  "todoApp": {
+    "mainTask": {
+      "home": {
+        "title": "Main Tasks",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Main Task",
+        "createOrEditLabel": "Create or edit a Main Task",
+        "search": "Search for Main Task",
+        "notFound": "No Main Tasks found"
+      },
+      "created": "A new Main Task is created with identifier {{ param }}",
+      "updated": "A Main Task is updated with identifier {{ param }}",
+      "deleted": "A Main Task is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Main Task {{ id }}?"
+      },
+      "detail": {
+        "title": "Main Task"
+      },
+      "id": "ID",
+      "description": "Description",
+      "deadline": "Deadline",
+      "creation": "Creation",
+      "cost": "Cost",
+      "status": "Status",
+      "category": "Category",
+      "personOwner": "Person Owner",
+      "subTask": "Sub Task"
+    }
+  }
+}

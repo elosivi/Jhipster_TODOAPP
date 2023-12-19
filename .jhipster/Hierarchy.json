@@ -1,0 +1,27 @@
+{
+  "annotations": {
+    "changelogDate": "20231218144412"
+  },
+  "applications": "*",
+  "entityTableName": "hierarchy",
+  "fields": [
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength", "pattern"],
+      "fieldValidateRulesMaxlength": "50",
+      "fieldValidateRulesMinlength": "3",
+      "fieldValidateRulesPattern": "^[A-Z][a-z]+\\d$"
+    }
+  ],
+  "name": "Hierarchy",
+  "relationships": [
+    {
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "hierarchy",
+      "relationshipName": "person",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ]
+}

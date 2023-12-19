@@ -1,0 +1,176 @@
+<div>
+  <h2 id="page-heading" data-cy="SubTaskHeading">
+    <span jhiTranslate="todoApp.subTask.home.title">SubTasks</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="todoApp.subTask.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-sub-task"
+        [routerLink]="['/sub-task/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span class="hidden-sm-down" jhiTranslate="todoApp.subTask.home.createLabel">Créer un nouveau Sub Task</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <form name="searchForm" class="row row-cols-sm-auto align-items-center">
+    <div class="col-sm-12">
+      <div class="input-group w-100 mt-3">
+        <label class="visually-hidden" for="currentSearch" jhiTranslate="todoApp.subTask.home.search">Recherche pour Sub Task</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="currentSearch"
+          id="currentSearch"
+          name="currentSearch"
+          placeholder="{{ 'todoApp.subTask.home.search' | translate }}"
+        />
+
+        <button class="btn btn-info" (click)="search(currentSearch)">
+          <fa-icon icon="search"></fa-icon>
+        </button>
+
+        @if (currentSearch) {
+          <button class="btn btn-danger" (click)="search('')">
+            <fa-icon icon="trash-alt"></fa-icon>
+          </button>
+        }
+      </div>
+    </div>
+  </form>
+
+  @if (subTasks?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="todoApp.subTask.home.notFound">Aucun Sub Task trouvé</span>
+    </div>
+  }
+
+  @if (subTasks && subTasks.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.description">Description</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="deadline">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.deadline">Deadline</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="creation">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.creation">Creation</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="cost">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.cost">Cost</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.status">Status</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="mainTask.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.mainTask">Main Task</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="personDoer.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.personDoer">Person Doer</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (subTask of subTasks; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/sub-task', subTask.id, 'view']">{{ subTask.id }}</a>
+              </td>
+              <td>{{ subTask.description }}</td>
+              <td>{{ subTask.deadline | formatMediumDate }}</td>
+              <td>{{ subTask.creation | formatMediumDate }}</td>
+              <td>{{ subTask.cost }}</td>
+              <td>
+                @if (subTask.status) {
+                  <div>
+                    <a [routerLink]="['/status', subTask.status.id, 'view']">{{ subTask.status.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (subTask.mainTask) {
+                  <div>
+                    <a [routerLink]="['/main-task', subTask.mainTask.id, 'view']">{{ subTask.mainTask.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (subTask.personDoer) {
+                  <div>
+                    <a [routerLink]="['/person', subTask.personDoer.id, 'view']">{{ subTask.personDoer.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/sub-task', subTask.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/sub-task', subTask.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(subTask)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

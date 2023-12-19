@@ -1,0 +1,52 @@
+{
+  "annotations": {
+    "changelogDate": "20231218144012"
+  },
+  "applications": "*",
+  "entityTableName": "sub_task",
+  "fields": [
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "deadline",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "creation",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "cost",
+      "fieldType": "Double"
+    }
+  ],
+  "name": "SubTask",
+  "relationships": [
+    {
+      "otherEntityName": "status",
+      "otherEntityRelationshipName": "subTask",
+      "relationshipName": "status",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "mainTask",
+      "otherEntityRelationshipName": "subTask",
+      "relationshipName": "mainTask",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "person",
+      "relationshipName": "personDoer",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ]
+}

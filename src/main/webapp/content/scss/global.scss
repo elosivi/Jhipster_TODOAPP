@@ -1,18 +1,44 @@
-@import 'bootstrap-variables';
 @import 'bootstrap/scss/functions';
 @import 'bootswatch/dist/sketchy/variables';
 @import 'bootstrap/scss/variables';
+
+/* SCSS RGB */
+$light-blue: rgba(155, 196, 203, 1);
+$blue: rgba(71, 141, 154, 1);
+$grey: rgba(60, 71, 75, 1);
+$red: rgba(188, 65, 43, 1);
+$sunset: rgba(253, 214, 146, 1);
+$white: rgba(246, 246, 246, 1);
+$beige: rgba(240, 234, 210, 1);
+
+/* SCSS Gradient */
+$gradient-top: linear-gradient(0deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-right: linear-gradient(90deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-bottom: linear-gradient(180deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-left: linear-gradient(270deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-top-right: linear-gradient(45deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-bottom-right: linear-gradient(135deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-top-left: linear-gradient(225deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-bottom-left: linear-gradient(315deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-radial: radial-gradient(#9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
 
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/
 
 body,
-h1,
-h2,
+h1 {
+  font-weight: 700;
+  color: $white;
+}
+h2 {
+  font-weight: 400;
+  color: $beige;
+}
 h3,
 h4 {
   font-weight: 300;
+  color: $white;
 }
 
 a:hover {
@@ -41,9 +67,10 @@ Generic styles
 /* other generic styles */
 
 .jh-card {
-  padding: 1.5%;
+  padding: 5%;
   margin-top: 20px;
   border: none;
+  background-color: inherit;
 }
 
 .error {
@@ -208,3 +235,119 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
   }
 }
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+/* ==========================================================================
+     ********  project own scss   *******
+========================================================================== */
+
+/* ==========================================================================
+LAYOUT
+========================================================================== */
+
+body {
+  background-color: $grey;
+}
+
+.ribbon {
+  display: none;
+}
+
+.container-info {
+  //margin:20px;
+  padding: 20px;
+  font-size: 90%;
+  opacity: 0.8;
+  letter-spacing: 2px;
+}
+
+.element-center {
+  text-align: center;
+  margin: auto;
+}
+
+.separator {
+  margin-top: 50px;
+  border-top: 1px solid $white;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+TEXT
+========================================================================== */
+
+p,
+label {
+  color: $white;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+small {
+  color: $beige;
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+span {
+  color: $white;
+  font-size: 16px;
+}
+span.mediumtext {
+  color: $white;
+  font-size: 14px;
+  font-weight: normal;
+}
+span.smallText {
+  color: $beige;
+  font-size: 12px;
+  font-weight: normal;
+}
+a,
+a.link {
+  color: $light-blue;
+}
+
+/* ==========================================================================
+FORMS
+========================================================================== */
+
+input {
+  font-size: 22px;
+}
+
+[type='checkbox']::before {
+  border-color: $white;
+}
+[type='checkbox']:checked::after {
+  color: $white;
+}
+
+/* ==========================================================================
+     BUTTONS
+========================================================================== */
+
+button {
+  font-size: 30px;
+}
+
+button.validationButton {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: $blue;
+  text-align: center;
+  background-color: $white;
+  border-radius: 10px;
+  border: 1px solid $light-blue;
+  padding: 5px 15px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button.validationButton:hover {
+  background-color: $blue;
+  color: $white;
+}

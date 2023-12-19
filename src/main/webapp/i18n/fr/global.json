@@ -1,13 +1,21 @@
 {
   "global": {
-    "title": "TodoApp",
+    "title": "Organise ton évenement",
     "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "menu": {
       "home": "Accueil",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entités",
-        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
+        "event": "Event",
+        "mainTask": "Main Task",
+        "eventType": "Event Type",
+        "subTask": "Sub Task",
+        "status": "Status",
+        "person": "Person",
+        "category": "Category",
+        "hierarchy": "Hierarchy"
       },
       "account": {
         "main": "Compte",
@@ -77,6 +85,9 @@
           "maxlength": "Votre email ne doit pas comporter plus de 50 caractères.",
           "invalid": "Votre email n'est pas valide."
         }
+      },
+      "cancelation": {
+        "cancel": "Annuler"
       }
     },
     "field": {

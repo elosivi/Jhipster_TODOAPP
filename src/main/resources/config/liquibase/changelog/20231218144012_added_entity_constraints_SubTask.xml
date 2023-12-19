@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity SubTask.
+    -->
+    <changeSet id="20231218144012-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="status_id"
+                                 baseTableName="sub_task"
+                                 constraintName="fk_sub_task__status_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="status"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="main_task_id"
+                                 baseTableName="sub_task"
+                                 constraintName="fk_sub_task__main_task_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="main_task"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="person_doer_id"
+                                 baseTableName="sub_task"
+                                 constraintName="fk_sub_task__person_doer_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"
+                                 />
+    </changeSet>
+</databaseChangeLog>

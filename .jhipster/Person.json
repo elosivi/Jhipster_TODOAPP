@@ -1,0 +1,40 @@
+{
+  "annotations": {
+    "changelogDate": "20231218144212"
+  },
+  "applications": "*",
+  "entityTableName": "person",
+  "fields": [
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    }
+  ],
+  "name": "Person",
+  "relationships": [
+    {
+      "otherEntityName": "user",
+      "relationshipName": "user",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityName": "hierarchy",
+      "otherEntityRelationshipName": "person",
+      "relationshipName": "hierarchy",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "event",
+      "otherEntityRelationshipName": "person",
+      "relationshipName": "event",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ]
+}
