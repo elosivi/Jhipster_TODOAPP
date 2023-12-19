@@ -1,0 +1,210 @@
+<div>
+  <h2 id="page-heading" data-cy="EventHeading">
+    <span jhiTranslate="todoApp.event.home.title">Events</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span jhiTranslate="todoApp.event.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-event"
+        [routerLink]="['/event/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span class="hidden-sm-down" jhiTranslate="todoApp.event.home.createLabel">Créer un nouveau Event</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  <form name="searchForm" class="row row-cols-sm-auto align-items-center">
+    <div class="col-sm-12">
+      <div class="input-group w-100 mt-3">
+        <label class="visually-hidden" for="currentSearch" jhiTranslate="todoApp.event.home.search">Recherche pour Event</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="currentSearch"
+          id="currentSearch"
+          name="currentSearch"
+          placeholder="{{ 'todoApp.event.home.search' | translate }}"
+        />
+
+        <button class="btn btn-info" (click)="search(currentSearch)">
+          <fa-icon icon="search"></fa-icon>
+        </button>
+
+        @if (currentSearch) {
+          <button class="btn btn-danger" (click)="search('')">
+            <fa-icon icon="trash-alt"></fa-icon>
+          </button>
+        }
+      </div>
+    </div>
+  </form>
+
+  @if (events?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span jhiTranslate="todoApp.event.home.notFound">Aucun Event trouvé</span>
+    </div>
+  }
+
+  @if (events && events.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="label">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.label">Label</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.description">Description</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="theme">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.theme">Theme</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateStart">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.dateStart">Date Start</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateEnd">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.dateEnd">Date End</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="place">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.place">Place</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="placeDetails">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.placeDetails">Place Details</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="adress">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.adress">Adress</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="note">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.note">Note</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="eventType.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.eventType">Event Type</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="person.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.event.person">Person</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (event of events; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/event', event.id, 'view']">{{ event.id }}</a>
+              </td>
+              <td>{{ event.label }}</td>
+              <td>{{ event.description }}</td>
+              <td>{{ event.theme }}</td>
+              <td>{{ event.dateStart | formatMediumDate }}</td>
+              <td>{{ event.dateEnd | formatMediumDate }}</td>
+              <td>{{ event.place }}</td>
+              <td>{{ event.placeDetails }}</td>
+              <td>{{ event.adress }}</td>
+              <td>{{ event.note }}</td>
+              <td>
+                @if (event.eventType) {
+                  <div>
+                    <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @for (person of event.people; track $index; let last = $last) {
+                  <span>
+                    <a class="form-control-static" [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a
+                    >{{ last ? '' : ', ' }}
+                  </span>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/event', event.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/event', event.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(event)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

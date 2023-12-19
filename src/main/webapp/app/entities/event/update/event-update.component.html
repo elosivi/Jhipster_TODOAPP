@@ -1,0 +1,238 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-event-heading" data-cy="EventCreateUpdateHeading" jhiTranslate="todoApp.event.home.createOrEditLabel">
+        Créer ou éditer un Event
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.label" for="field_label">Label</label>
+          <input type="text" class="form-control" name="label" id="field_label" data-cy="label" formControlName="label" />
+          @if (editForm.get('label')!.invalid && (editForm.get('label')!.dirty || editForm.get('label')!.touched)) {
+            <div>
+              @if (editForm.get('label')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              @if (editForm.get('label')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: 3 }"
+                  >Ce champ doit faire au minimum 3 caractères.</small
+                >
+              }
+              @if (editForm.get('label')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: 50 }"
+                  >Ce champ doit faire moins de 50 caractères.</small
+                >
+              }
+              @if (editForm.get('label')?.errors?.pattern) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.pattern" [translateValues]="{ pattern: 'Label' }"
+                  >Ce champ doit suivre l&apos;expression régulière Label.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.description" for="field_description">Description</label>
+          <input
+            type="text"
+            class="form-control"
+            name="description"
+            id="field_description"
+            data-cy="description"
+            formControlName="description"
+          />
+          @if (editForm.get('description')!.invalid && (editForm.get('description')!.dirty || editForm.get('description')!.touched)) {
+            <div>
+              @if (editForm.get('description')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: 3 }"
+                  >Ce champ doit faire au minimum 3 caractères.</small
+                >
+              }
+              @if (editForm.get('description')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: 300 }"
+                  >Ce champ doit faire moins de 300 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.theme" for="field_theme">Theme</label>
+          <input type="text" class="form-control" name="theme" id="field_theme" data-cy="theme" formControlName="theme" />
+          @if (editForm.get('theme')!.invalid && (editForm.get('theme')!.dirty || editForm.get('theme')!.touched)) {
+            <div>
+              @if (editForm.get('theme')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: 3 }"
+                  >Ce champ doit faire au minimum 3 caractères.</small
+                >
+              }
+              @if (editForm.get('theme')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: 300 }"
+                  >Ce champ doit faire moins de 300 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.dateStart" for="field_dateStart">Date Start</label>
+          <div class="input-group">
+            <input
+              id="field_dateStart"
+              data-cy="dateStart"
+              type="text"
+              class="form-control"
+              name="dateStart"
+              ngbDatepicker
+              #dateStartDp="ngbDatepicker"
+              formControlName="dateStart"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateStartDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+          @if (editForm.get('dateStart')!.invalid && (editForm.get('dateStart')!.dirty || editForm.get('dateStart')!.touched)) {
+            <div>
+              @if (editForm.get('dateStart')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.dateEnd" for="field_dateEnd">Date End</label>
+          <div class="input-group">
+            <input
+              id="field_dateEnd"
+              data-cy="dateEnd"
+              type="text"
+              class="form-control"
+              name="dateEnd"
+              ngbDatepicker
+              #dateEndDp="ngbDatepicker"
+              formControlName="dateEnd"
+            />
+            <button type="button" class="btn btn-secondary" (click)="dateEndDp.toggle()"><fa-icon icon="calendar-alt"></fa-icon></button>
+          </div>
+          @if (editForm.get('dateEnd')!.invalid && (editForm.get('dateEnd')!.dirty || editForm.get('dateEnd')!.touched)) {
+            <div>
+              @if (editForm.get('dateEnd')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.place" for="field_place">Place</label>
+          <input type="text" class="form-control" name="place" id="field_place" data-cy="place" formControlName="place" />
+          @if (editForm.get('place')!.invalid && (editForm.get('place')!.dirty || editForm.get('place')!.touched)) {
+            <div>
+              @if (editForm.get('place')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.placeDetails" for="field_placeDetails">Place Details</label>
+          <input
+            type="text"
+            class="form-control"
+            name="placeDetails"
+            id="field_placeDetails"
+            data-cy="placeDetails"
+            formControlName="placeDetails"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.adress" for="field_adress">Adress</label>
+          <input type="text" class="form-control" name="adress" id="field_adress" data-cy="adress" formControlName="adress" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.note" for="field_note">Note</label>
+          <input type="text" class="form-control" name="note" id="field_note" data-cy="note" formControlName="note" />
+          @if (editForm.get('note')!.invalid && (editForm.get('note')!.dirty || editForm.get('note')!.touched)) {
+            <div>
+              @if (editForm.get('note')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: 3 }"
+                  >Ce champ doit faire au minimum 3 caractères.</small
+                >
+              }
+              @if (editForm.get('note')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: 300 }"
+                  >Ce champ doit faire moins de 300 caractères.</small
+                >
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.event.eventType" for="field_eventType">Event Type</label>
+          <select
+            class="form-control"
+            id="field_eventType"
+            data-cy="eventType"
+            name="eventType"
+            formControlName="eventType"
+            [compareWith]="compareEventType"
+          >
+            <option [ngValue]="null"></option>
+            @for (eventTypeOption of eventTypesCollection; track $index) {
+              <option [ngValue]="eventTypeOption">{{ eventTypeOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label jhiTranslate="todoApp.event.person" for="field_people">Person</label>
+          <select
+            class="form-control"
+            id="field_people"
+            data-cy="person"
+            multiple
+            name="people"
+            formControlName="people"
+            [compareWith]="comparePerson"
+          >
+            @for (personOption of peopleSharedCollection; track $index) {
+              <option [ngValue]="personOption">{{ personOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

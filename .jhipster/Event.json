@@ -1,0 +1,78 @@
+{
+  "annotations": {
+    "changelogDate": "20231218143912"
+  },
+  "applications": "*",
+  "entityTableName": "event",
+  "fields": [
+    {
+      "fieldName": "label",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength", "pattern"],
+      "fieldValidateRulesMaxlength": "50",
+      "fieldValidateRulesMinlength": "3",
+      "fieldValidateRulesPattern": "^[A-Z][a-z]+\\d$"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "theme",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "dateStart",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "dateEnd",
+      "fieldType": "LocalDate",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "place",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "placeDetails",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "adress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "note",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    }
+  ],
+  "name": "Event",
+  "relationships": [
+    {
+      "otherEntityName": "eventType",
+      "otherEntityRelationshipName": "event",
+      "relationshipName": "eventType",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "event",
+      "relationshipName": "person",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    }
+  ]
+}

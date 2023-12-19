@@ -1,0 +1,38 @@
+{
+  "annotations": {
+    "changelogDate": "20231218144012"
+  },
+  "applications": "*",
+  "entityTableName": "event_type",
+  "fields": [
+    {
+      "fieldName": "label",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength", "pattern"],
+      "fieldValidateRulesMaxlength": "50",
+      "fieldValidateRulesMinlength": "3",
+      "fieldValidateRulesPattern": "^[A-Z][a-z]+\\d$"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "300",
+      "fieldValidateRulesMinlength": "3"
+    },
+    {
+      "fieldName": "duration",
+      "fieldType": "Duration"
+    }
+  ],
+  "name": "EventType",
+  "relationships": [
+    {
+      "otherEntityName": "event",
+      "otherEntityRelationshipName": "eventType",
+      "relationshipName": "event",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ]
+}
