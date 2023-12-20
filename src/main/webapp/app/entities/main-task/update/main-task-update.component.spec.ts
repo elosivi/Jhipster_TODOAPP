@@ -6,12 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
-import { IStatus } from 'app/entities/status/status.model';
-import { StatusService } from 'app/entities/status/service/status.service';
 import { ICategory } from 'app/entities/category/category.model';
 import { CategoryService } from 'app/entities/category/service/category.service';
 import { IPerson } from 'app/entities/person/person.model';
 import { PersonService } from 'app/entities/person/service/person.service';
+import { IStatus } from 'app/entities/status/status.model';
+import { StatusService } from 'app/entities/status/service/status.service';
 import { IMainTask } from '../main-task.model';
 import { MainTaskService } from '../service/main-task.service';
 import { MainTaskFormService } from './main-task-form.service';
@@ -24,9 +24,9 @@ describe('MainTask Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let mainTaskFormService: MainTaskFormService;
   let mainTaskService: MainTaskService;
-  let statusService: StatusService;
   let categoryService: CategoryService;
   let personService: PersonService;
+  let statusService: StatusService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,32 +48,14 @@ describe('MainTask Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     mainTaskFormService = TestBed.inject(MainTaskFormService);
     mainTaskService = TestBed.inject(MainTaskService);
-    statusService = TestBed.inject(StatusService);
     categoryService = TestBed.inject(CategoryService);
     personService = TestBed.inject(PersonService);
+    statusService = TestBed.inject(StatusService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should call status query and add missing value', () => {
-      const mainTask: IMainTask = { id: 456 };
-      const status: IStatus = { id: 17332 };
-      mainTask.status = status;
-
-      const statusCollection: IStatus[] = [{ id: 32105 }];
-      jest.spyOn(statusService, 'query').mockReturnValue(of(new HttpResponse({ body: statusCollection })));
-      const expectedCollection: IStatus[] = [status, ...statusCollection];
-      jest.spyOn(statusService, 'addStatusToCollectionIfMissing').mockReturnValue(expectedCollection);
-
-      activatedRoute.data = of({ mainTask });
-      comp.ngOnInit();
-
-      expect(statusService.query).toHaveBeenCalled();
-      expect(statusService.addStatusToCollectionIfMissing).toHaveBeenCalledWith(statusCollection, status);
-      expect(comp.statusesCollection).toEqual(expectedCollection);
-    });
-
     it('Should call Category query and add missing value', () => {
       const mainTask: IMainTask = { id: 456 };
       const category: ICategory = { id: 7881 };
@@ -118,21 +100,43 @@ describe('MainTask Management Update Component', () => {
       expect(comp.peopleSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
+    it('Should call Status query and add missing value', () => {
       const mainTask: IMainTask = { id: 456 };
-      const status: IStatus = { id: 4732 };
+      const status: IStatus = { id: 17332 };
       mainTask.status = status;
-      const category: ICategory = { id: 8579 };
-      mainTask.category = category;
-      const personOwner: IPerson = { id: 27685 };
-      mainTask.personOwner = personOwner;
+
+      const statusCollection: IStatus[] = [{ id: 32105 }];
+      jest.spyOn(statusService, 'query').mockReturnValue(of(new HttpResponse({ body: statusCollection })));
+      const additionalStatuses = [status];
+      const expectedCollection: IStatus[] = [...additionalStatuses, ...statusCollection];
+      jest.spyOn(statusService, 'addStatusToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ mainTask });
       comp.ngOnInit();
 
-      expect(comp.statusesCollection).toContain(status);
+      expect(statusService.query).toHaveBeenCalled();
+      expect(statusService.addStatusToCollectionIfMissing).toHaveBeenCalledWith(
+        statusCollection,
+        ...additionalStatuses.map(expect.objectContaining),
+      );
+      expect(comp.statusesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const mainTask: IMainTask = { id: 456 };
+      const category: ICategory = { id: 8579 };
+      mainTask.category = category;
+      const personOwner: IPerson = { id: 27685 };
+      mainTask.personOwner = personOwner;
+      const status: IStatus = { id: 4732 };
+      mainTask.status = status;
+
+      activatedRoute.data = of({ mainTask });
+      comp.ngOnInit();
+
       expect(comp.categoriesSharedCollection).toContain(category);
       expect(comp.peopleSharedCollection).toContain(personOwner);
+      expect(comp.statusesSharedCollection).toContain(status);
       expect(comp.mainTask).toEqual(mainTask);
     });
   });
@@ -206,16 +210,6 @@ describe('MainTask Management Update Component', () => {
   });
 
   describe('Compare relationships', () => {
-    describe('compareStatus', () => {
-      it('Should forward to statusService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
-        jest.spyOn(statusService, 'compareStatus');
-        comp.compareStatus(entity, entity2);
-        expect(statusService.compareStatus).toHaveBeenCalledWith(entity, entity2);
-      });
-    });
-
     describe('compareCategory', () => {
       it('Should forward to categoryService', () => {
         const entity = { id: 123 };
@@ -233,6 +227,16 @@ describe('MainTask Management Update Component', () => {
         jest.spyOn(personService, 'comparePerson');
         comp.comparePerson(entity, entity2);
         expect(personService.comparePerson).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareStatus', () => {
+      it('Should forward to statusService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(statusService, 'compareStatus');
+        comp.compareStatus(entity, entity2);
+        expect(statusService.compareStatus).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

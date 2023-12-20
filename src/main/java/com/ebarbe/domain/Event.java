@@ -69,7 +69,7 @@ public class Event implements Serializable {
     private String note;
 
     @JsonIgnoreProperties(value = { "event" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private EventType eventType;
 

@@ -26,18 +26,6 @@ class SubTaskTest {
     }
 
     @Test
-    void statusTest() throws Exception {
-        SubTask subTask = getSubTaskRandomSampleGenerator();
-        Status statusBack = getStatusRandomSampleGenerator();
-
-        subTask.setStatus(statusBack);
-        assertThat(subTask.getStatus()).isEqualTo(statusBack);
-
-        subTask.status(null);
-        assertThat(subTask.getStatus()).isNull();
-    }
-
-    @Test
     void mainTaskTest() throws Exception {
         SubTask subTask = getSubTaskRandomSampleGenerator();
         MainTask mainTaskBack = getMainTaskRandomSampleGenerator();
@@ -59,5 +47,17 @@ class SubTaskTest {
 
         subTask.personDoer(null);
         assertThat(subTask.getPersonDoer()).isNull();
+    }
+
+    @Test
+    void statusTest() throws Exception {
+        SubTask subTask = getSubTaskRandomSampleGenerator();
+        Status statusBack = getStatusRandomSampleGenerator();
+
+        subTask.setStatus(statusBack);
+        assertThat(subTask.getStatus()).isEqualTo(statusBack);
+
+        subTask.status(null);
+        assertThat(subTask.getStatus()).isNull();
     }
 }

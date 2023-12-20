@@ -97,12 +97,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="status.id">
-              <div class="d-flex">
-                <span jhiTranslate="todoApp.mainTask.status">Status</span>
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="category.id">
               <div class="d-flex">
                 <span jhiTranslate="todoApp.mainTask.category">Category</span>
@@ -112,6 +106,12 @@
             <th scope="col" jhiSortBy="personOwner.id">
               <div class="d-flex">
                 <span jhiTranslate="todoApp.mainTask.personOwner">Person Owner</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.mainTask.status">Status</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -129,13 +129,6 @@
               <td>{{ mainTask.creation | formatMediumDate }}</td>
               <td>{{ mainTask.cost }}</td>
               <td>
-                @if (mainTask.status) {
-                  <div>
-                    <a [routerLink]="['/status', mainTask.status.id, 'view']">{{ mainTask.status.id }}</a>
-                  </div>
-                }
-              </td>
-              <td>
                 @if (mainTask.category) {
                   <div>
                     <a [routerLink]="['/category', mainTask.category.id, 'view']">{{ mainTask.category.id }}</a>
@@ -146,6 +139,13 @@
                 @if (mainTask.personOwner) {
                   <div>
                     <a [routerLink]="['/person', mainTask.personOwner.id, 'view']">{{ mainTask.personOwner.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (mainTask.status) {
+                  <div>
+                    <a [routerLink]="['/status', mainTask.status.id, 'view']">{{ mainTask.status.id }}</a>
                   </div>
                 }
               </td>

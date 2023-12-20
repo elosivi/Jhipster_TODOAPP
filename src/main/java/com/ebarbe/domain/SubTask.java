@@ -39,18 +39,17 @@ public class SubTask implements Serializable {
     @Column(name = "cost")
     private Double cost;
 
-    @JsonIgnoreProperties(value = { "mainTask", "subTask" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
-    private Status status;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "status", "category", "personOwner", "subTasks" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "category", "personOwner", "status", "subTasks" }, allowSetters = true)
     private MainTask mainTask;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user", "hierarchy", "events" }, allowSetters = true)
     private Person personDoer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "mainTasks", "subTasks" }, allowSetters = true)
+    private Status status;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -119,19 +118,6 @@ public class SubTask implements Serializable {
         this.cost = cost;
     }
 
-    public Status getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public SubTask status(Status status) {
-        this.setStatus(status);
-        return this;
-    }
-
     public MainTask getMainTask() {
         return this.mainTask;
     }
@@ -155,6 +141,19 @@ public class SubTask implements Serializable {
 
     public SubTask personDoer(Person person) {
         this.setPersonDoer(person);
+        return this;
+    }
+
+    public Status getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public SubTask status(Status status) {
+        this.setStatus(status);
         return this;
     }
 

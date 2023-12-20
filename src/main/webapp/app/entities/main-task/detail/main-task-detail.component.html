@@ -31,14 +31,6 @@
           <dd>
             <span>{{ mainTask.cost }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.mainTask.status">Status</span></dt>
-          <dd>
-            @if (mainTask.status) {
-              <div>
-                <a [routerLink]="['/status', mainTask.status.id, 'view']">{{ mainTask.status.id }}</a>
-              </div>
-            }
-          </dd>
           <dt><span jhiTranslate="todoApp.mainTask.category">Category</span></dt>
           <dd>
             @if (mainTask.category) {
@@ -52,6 +44,14 @@
             @if (mainTask.personOwner) {
               <div>
                 <a [routerLink]="['/person', mainTask.personOwner.id, 'view']">{{ mainTask.personOwner.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.status">Status</span></dt>
+          <dd>
+            @if (mainTask.status) {
+              <div>
+                <a [routerLink]="['/status', mainTask.status.id, 'view']">{{ mainTask.status.id }}</a>
               </div>
             }
           </dd>

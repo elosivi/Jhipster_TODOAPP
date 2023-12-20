@@ -7,7 +7,6 @@
     },
     "question": "Si vous avez des questions à propos de JHipster :",
     "link": {
-      "connexion": "Se connecter",
       "homepage": "Page d'accueil de JHipster",
       "stackoverflow": "JHipster sur Stack Overflow",
       "bugtracker": "JHipster bug tracker",

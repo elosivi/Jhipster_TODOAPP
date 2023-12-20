@@ -6,12 +6,12 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
-import { IStatus } from 'app/entities/status/status.model';
-import { StatusService } from 'app/entities/status/service/status.service';
 import { IMainTask } from 'app/entities/main-task/main-task.model';
 import { MainTaskService } from 'app/entities/main-task/service/main-task.service';
 import { IPerson } from 'app/entities/person/person.model';
 import { PersonService } from 'app/entities/person/service/person.service';
+import { IStatus } from 'app/entities/status/status.model';
+import { StatusService } from 'app/entities/status/service/status.service';
 import { ISubTask } from '../sub-task.model';
 import { SubTaskService } from '../service/sub-task.service';
 import { SubTaskFormService } from './sub-task-form.service';
@@ -24,9 +24,9 @@ describe('SubTask Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let subTaskFormService: SubTaskFormService;
   let subTaskService: SubTaskService;
-  let statusService: StatusService;
   let mainTaskService: MainTaskService;
   let personService: PersonService;
+  let statusService: StatusService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -48,32 +48,14 @@ describe('SubTask Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     subTaskFormService = TestBed.inject(SubTaskFormService);
     subTaskService = TestBed.inject(SubTaskService);
-    statusService = TestBed.inject(StatusService);
     mainTaskService = TestBed.inject(MainTaskService);
     personService = TestBed.inject(PersonService);
+    statusService = TestBed.inject(StatusService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should call status query and add missing value', () => {
-      const subTask: ISubTask = { id: 456 };
-      const status: IStatus = { id: 11886 };
-      subTask.status = status;
-
-      const statusCollection: IStatus[] = [{ id: 7974 }];
-      jest.spyOn(statusService, 'query').mockReturnValue(of(new HttpResponse({ body: statusCollection })));
-      const expectedCollection: IStatus[] = [status, ...statusCollection];
-      jest.spyOn(statusService, 'addStatusToCollectionIfMissing').mockReturnValue(expectedCollection);
-
-      activatedRoute.data = of({ subTask });
-      comp.ngOnInit();
-
-      expect(statusService.query).toHaveBeenCalled();
-      expect(statusService.addStatusToCollectionIfMissing).toHaveBeenCalledWith(statusCollection, status);
-      expect(comp.statusesCollection).toEqual(expectedCollection);
-    });
-
     it('Should call MainTask query and add missing value', () => {
       const subTask: ISubTask = { id: 456 };
       const mainTask: IMainTask = { id: 30326 };
@@ -118,21 +100,43 @@ describe('SubTask Management Update Component', () => {
       expect(comp.peopleSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
+    it('Should call Status query and add missing value', () => {
       const subTask: ISubTask = { id: 456 };
-      const status: IStatus = { id: 21923 };
+      const status: IStatus = { id: 11886 };
       subTask.status = status;
-      const mainTask: IMainTask = { id: 25142 };
-      subTask.mainTask = mainTask;
-      const personDoer: IPerson = { id: 17961 };
-      subTask.personDoer = personDoer;
+
+      const statusCollection: IStatus[] = [{ id: 7974 }];
+      jest.spyOn(statusService, 'query').mockReturnValue(of(new HttpResponse({ body: statusCollection })));
+      const additionalStatuses = [status];
+      const expectedCollection: IStatus[] = [...additionalStatuses, ...statusCollection];
+      jest.spyOn(statusService, 'addStatusToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ subTask });
       comp.ngOnInit();
 
-      expect(comp.statusesCollection).toContain(status);
+      expect(statusService.query).toHaveBeenCalled();
+      expect(statusService.addStatusToCollectionIfMissing).toHaveBeenCalledWith(
+        statusCollection,
+        ...additionalStatuses.map(expect.objectContaining),
+      );
+      expect(comp.statusesSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const subTask: ISubTask = { id: 456 };
+      const mainTask: IMainTask = { id: 25142 };
+      subTask.mainTask = mainTask;
+      const personDoer: IPerson = { id: 17961 };
+      subTask.personDoer = personDoer;
+      const status: IStatus = { id: 21923 };
+      subTask.status = status;
+
+      activatedRoute.data = of({ subTask });
+      comp.ngOnInit();
+
       expect(comp.mainTasksSharedCollection).toContain(mainTask);
       expect(comp.peopleSharedCollection).toContain(personDoer);
+      expect(comp.statusesSharedCollection).toContain(status);
       expect(comp.subTask).toEqual(subTask);
     });
   });
@@ -206,16 +210,6 @@ describe('SubTask Management Update Component', () => {
   });
 
   describe('Compare relationships', () => {
-    describe('compareStatus', () => {
-      it('Should forward to statusService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
-        jest.spyOn(statusService, 'compareStatus');
-        comp.compareStatus(entity, entity2);
-        expect(statusService.compareStatus).toHaveBeenCalledWith(entity, entity2);
-      });
-    });
-
     describe('compareMainTask', () => {
       it('Should forward to mainTaskService', () => {
         const entity = { id: 123 };
@@ -233,6 +227,16 @@ describe('SubTask Management Update Component', () => {
         jest.spyOn(personService, 'comparePerson');
         comp.comparePerson(entity, entity2);
         expect(personService.comparePerson).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareStatus', () => {
+      it('Should forward to statusService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(statusService, 'compareStatus');
+        comp.compareStatus(entity, entity2);
+        expect(statusService.compareStatus).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

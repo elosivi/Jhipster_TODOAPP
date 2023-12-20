@@ -7,12 +7,12 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { IStatus } from 'app/entities/status/status.model';
-import { StatusService } from 'app/entities/status/service/status.service';
 import { ICategory } from 'app/entities/category/category.model';
 import { CategoryService } from 'app/entities/category/service/category.service';
 import { IPerson } from 'app/entities/person/person.model';
 import { PersonService } from 'app/entities/person/service/person.service';
+import { IStatus } from 'app/entities/status/status.model';
+import { StatusService } from 'app/entities/status/service/status.service';
 import { MainTaskService } from '../service/main-task.service';
 import { IMainTask } from '../main-task.model';
 import { MainTaskFormService, MainTaskFormGroup } from './main-task-form.service';
@@ -27,26 +27,26 @@ export class MainTaskUpdateComponent implements OnInit {
   isSaving = false;
   mainTask: IMainTask | null = null;
 
-  statusesCollection: IStatus[] = [];
   categoriesSharedCollection: ICategory[] = [];
   peopleSharedCollection: IPerson[] = [];
+  statusesSharedCollection: IStatus[] = [];
 
   editForm: MainTaskFormGroup = this.mainTaskFormService.createMainTaskFormGroup();
 
   constructor(
     protected mainTaskService: MainTaskService,
     protected mainTaskFormService: MainTaskFormService,
-    protected statusService: StatusService,
     protected categoryService: CategoryService,
     protected personService: PersonService,
+    protected statusService: StatusService,
     protected activatedRoute: ActivatedRoute,
   ) {}
-
-  compareStatus = (o1: IStatus | null, o2: IStatus | null): boolean => this.statusService.compareStatus(o1, o2);
 
   compareCategory = (o1: ICategory | null, o2: ICategory | null): boolean => this.categoryService.compareCategory(o1, o2);
 
   comparePerson = (o1: IPerson | null, o2: IPerson | null): boolean => this.personService.comparePerson(o1, o2);
+
+  compareStatus = (o1: IStatus | null, o2: IStatus | null): boolean => this.statusService.compareStatus(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ mainTask }) => {
@@ -96,7 +96,6 @@ export class MainTaskUpdateComponent implements OnInit {
     this.mainTask = mainTask;
     this.mainTaskFormService.resetForm(this.editForm, mainTask);
 
-    this.statusesCollection = this.statusService.addStatusToCollectionIfMissing<IStatus>(this.statusesCollection, mainTask.status);
     this.categoriesSharedCollection = this.categoryService.addCategoryToCollectionIfMissing<ICategory>(
       this.categoriesSharedCollection,
       mainTask.category,
@@ -105,15 +104,13 @@ export class MainTaskUpdateComponent implements OnInit {
       this.peopleSharedCollection,
       mainTask.personOwner,
     );
+    this.statusesSharedCollection = this.statusService.addStatusToCollectionIfMissing<IStatus>(
+      this.statusesSharedCollection,
+      mainTask.status,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
-    this.statusService
-      .query({ filter: 'maintask-is-null' })
-      .pipe(map((res: HttpResponse<IStatus[]>) => res.body ?? []))
-      .pipe(map((statuses: IStatus[]) => this.statusService.addStatusToCollectionIfMissing<IStatus>(statuses, this.mainTask?.status)))
-      .subscribe((statuses: IStatus[]) => (this.statusesCollection = statuses));
-
     this.categoryService
       .query()
       .pipe(map((res: HttpResponse<ICategory[]>) => res.body ?? []))
@@ -129,5 +126,11 @@ export class MainTaskUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IPerson[]>) => res.body ?? []))
       .pipe(map((people: IPerson[]) => this.personService.addPersonToCollectionIfMissing<IPerson>(people, this.mainTask?.personOwner)))
       .subscribe((people: IPerson[]) => (this.peopleSharedCollection = people));
+
+    this.statusService
+      .query()
+      .pipe(map((res: HttpResponse<IStatus[]>) => res.body ?? []))
+      .pipe(map((statuses: IStatus[]) => this.statusService.addStatusToCollectionIfMissing<IStatus>(statuses, this.mainTask?.status)))
+      .subscribe((statuses: IStatus[]) => (this.statusesSharedCollection = statuses));
   }
 }

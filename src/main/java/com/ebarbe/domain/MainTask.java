@@ -40,11 +40,6 @@ public class MainTask implements Serializable {
     @Column(name = "cost")
     private Double cost;
 
-    @JsonIgnoreProperties(value = { "mainTask", "subTask" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
-    private Status status;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "mainTasks" }, allowSetters = true)
     private Category category;
@@ -53,9 +48,13 @@ public class MainTask implements Serializable {
     @JsonIgnoreProperties(value = { "user", "hierarchy", "events" }, allowSetters = true)
     private Person personOwner;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "mainTasks", "subTasks" }, allowSetters = true)
+    private Status status;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "mainTask")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "status", "mainTask", "personDoer" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "mainTask", "personDoer", "status" }, allowSetters = true)
     private Set<SubTask> subTasks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -125,19 +124,6 @@ public class MainTask implements Serializable {
         this.cost = cost;
     }
 
-    public Status getStatus() {
-        return this.status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public MainTask status(Status status) {
-        this.setStatus(status);
-        return this;
-    }
-
     public Category getCategory() {
         return this.category;
     }
@@ -161,6 +147,19 @@ public class MainTask implements Serializable {
 
     public MainTask personOwner(Person person) {
         this.setPersonOwner(person);
+        return this;
+    }
+
+    public Status getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public MainTask status(Status status) {
+        this.setStatus(status);
         return this;
     }
 

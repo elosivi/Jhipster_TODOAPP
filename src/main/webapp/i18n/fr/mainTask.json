@@ -23,9 +23,9 @@
       "deadline": "Deadline",
       "creation": "Creation",
       "cost": "Cost",
-      "status": "Status",
       "category": "Category",
       "personOwner": "Person Owner",
+      "status": "Status",
       "subTask": "Sub Task"
     }
   }

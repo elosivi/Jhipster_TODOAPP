@@ -20,14 +20,14 @@
       "otherEntityRelationshipName": "status",
       "relationshipName": "mainTask",
       "relationshipSide": "right",
-      "relationshipType": "one-to-one"
+      "relationshipType": "one-to-many"
     },
     {
       "otherEntityName": "subTask",
       "otherEntityRelationshipName": "status",
       "relationshipName": "subTask",
       "relationshipSide": "right",
-      "relationshipType": "one-to-one"
+      "relationshipType": "one-to-many"
     }
   ]
 }

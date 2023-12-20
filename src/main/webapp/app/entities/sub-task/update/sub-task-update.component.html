@@ -91,23 +91,6 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="todoApp.subTask.status" for="field_status">Status</label>
-          <select
-            class="form-control"
-            id="field_status"
-            data-cy="status"
-            name="status"
-            formControlName="status"
-            [compareWith]="compareStatus"
-          >
-            <option [ngValue]="null"></option>
-            @for (statusOption of statusesCollection; track $index) {
-              <option [ngValue]="statusOption">{{ statusOption.id }}</option>
-            }
-          </select>
-        </div>
-
-        <div class="mb-3">
           <label class="form-label" jhiTranslate="todoApp.subTask.mainTask" for="field_mainTask">Main Task</label>
           <select
             class="form-control"
@@ -137,6 +120,23 @@
             <option [ngValue]="null"></option>
             @for (personOption of peopleSharedCollection; track $index) {
               <option [ngValue]="personOption">{{ personOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.subTask.status" for="field_status">Status</label>
+          <select
+            class="form-control"
+            id="field_status"
+            data-cy="status"
+            name="status"
+            formControlName="status"
+            [compareWith]="compareStatus"
+          >
+            <option [ngValue]="null"></option>
+            @for (statusOption of statusesSharedCollection; track $index) {
+              <option [ngValue]="statusOption">{{ statusOption.id }}</option>
             }
           </select>
         </div>

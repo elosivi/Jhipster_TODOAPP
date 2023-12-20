@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.Duration;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A EventType.
@@ -39,9 +41,9 @@ public class EventType implements Serializable {
     private Duration duration;
 
     @JsonIgnoreProperties(value = { "eventType", "people" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "eventType")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "eventType")
     @org.springframework.data.annotation.Transient
-    private Event event;
+    private Set<Event> events = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -97,22 +99,34 @@ public class EventType implements Serializable {
         this.duration = duration;
     }
 
-    public Event getEvent() {
-        return this.event;
+    public Set<Event> getEvents() {
+        return this.events;
     }
 
-    public void setEvent(Event event) {
-        if (this.event != null) {
-            this.event.setEventType(null);
+    public void setEvents(Set<Event> events) {
+        if (this.events != null) {
+            this.events.forEach(i -> i.setEventType(null));
         }
-        if (event != null) {
-            event.setEventType(this);
+        if (events != null) {
+            events.forEach(i -> i.setEventType(this));
         }
-        this.event = event;
+        this.events = events;
     }
 
-    public EventType event(Event event) {
-        this.setEvent(event);
+    public EventType events(Set<Event> events) {
+        this.setEvents(events);
+        return this;
+    }
+
+    public EventType addEvent(Event event) {
+        this.events.add(event);
+        event.setEventType(this);
+        return this;
+    }
+
+    public EventType removeEvent(Event event) {
+        this.events.remove(event);
+        event.setEventType(null);
         return this;
     }
 

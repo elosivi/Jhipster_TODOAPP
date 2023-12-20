@@ -154,26 +154,10 @@ public class StatusResource {
     /**
      * {@code GET  /statuses} : get all the statuses.
      *
-     * @param filter the filter of the request.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of statuses in body.
      */
     @GetMapping("")
-    public List<Status> getAllStatuses(@RequestParam(name = "filter", required = false) String filter) {
-        if ("maintask-is-null".equals(filter)) {
-            log.debug("REST request to get all Statuss where mainTask is null");
-            return StreamSupport
-                .stream(statusRepository.findAll().spliterator(), false)
-                .filter(status -> status.getMainTask() == null)
-                .toList();
-        }
-
-        if ("subtask-is-null".equals(filter)) {
-            log.debug("REST request to get all Statuss where subTask is null");
-            return StreamSupport
-                .stream(statusRepository.findAll().spliterator(), false)
-                .filter(status -> status.getSubTask() == null)
-                .toList();
-        }
+    public List<Status> getAllStatuses() {
         log.debug("REST request to get all Statuses");
         return statusRepository.findAll();
     }

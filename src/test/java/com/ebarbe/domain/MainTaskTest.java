@@ -29,18 +29,6 @@ class MainTaskTest {
     }
 
     @Test
-    void statusTest() throws Exception {
-        MainTask mainTask = getMainTaskRandomSampleGenerator();
-        Status statusBack = getStatusRandomSampleGenerator();
-
-        mainTask.setStatus(statusBack);
-        assertThat(mainTask.getStatus()).isEqualTo(statusBack);
-
-        mainTask.status(null);
-        assertThat(mainTask.getStatus()).isNull();
-    }
-
-    @Test
     void categoryTest() throws Exception {
         MainTask mainTask = getMainTaskRandomSampleGenerator();
         Category categoryBack = getCategoryRandomSampleGenerator();
@@ -62,6 +50,18 @@ class MainTaskTest {
 
         mainTask.personOwner(null);
         assertThat(mainTask.getPersonOwner()).isNull();
+    }
+
+    @Test
+    void statusTest() throws Exception {
+        MainTask mainTask = getMainTaskRandomSampleGenerator();
+        Status statusBack = getStatusRandomSampleGenerator();
+
+        mainTask.setStatus(statusBack);
+        assertThat(mainTask.getStatus()).isEqualTo(statusBack);
+
+        mainTask.status(null);
+        assertThat(mainTask.getStatus()).isNull();
     }
 
     @Test

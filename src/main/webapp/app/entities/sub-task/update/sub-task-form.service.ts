@@ -22,9 +22,9 @@ type SubTaskFormGroupContent = {
   deadline: FormControl<ISubTask['deadline']>;
   creation: FormControl<ISubTask['creation']>;
   cost: FormControl<ISubTask['cost']>;
-  status: FormControl<ISubTask['status']>;
   mainTask: FormControl<ISubTask['mainTask']>;
   personDoer: FormControl<ISubTask['personDoer']>;
+  status: FormControl<ISubTask['status']>;
 };
 
 export type SubTaskFormGroup = FormGroup<SubTaskFormGroupContent>;
@@ -52,9 +52,9 @@ export class SubTaskFormService {
       }),
       creation: new FormControl(subTaskRawValue.creation),
       cost: new FormControl(subTaskRawValue.cost),
-      status: new FormControl(subTaskRawValue.status),
       mainTask: new FormControl(subTaskRawValue.mainTask),
       personDoer: new FormControl(subTaskRawValue.personDoer),
+      status: new FormControl(subTaskRawValue.status),
     });
   }
 

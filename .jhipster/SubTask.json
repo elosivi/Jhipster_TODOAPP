@@ -29,13 +29,6 @@
   "name": "SubTask",
   "relationships": [
     {
-      "otherEntityName": "status",
-      "otherEntityRelationshipName": "subTask",
-      "relationshipName": "status",
-      "relationshipSide": "left",
-      "relationshipType": "one-to-one"
-    },
-    {
       "otherEntityName": "mainTask",
       "otherEntityRelationshipName": "subTask",
       "relationshipName": "mainTask",
@@ -45,6 +38,13 @@
     {
       "otherEntityName": "person",
       "relationshipName": "personDoer",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "status",
+      "otherEntityRelationshipName": "subTask",
+      "relationshipName": "status",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

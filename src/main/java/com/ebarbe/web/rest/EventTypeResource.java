@@ -169,7 +169,7 @@ public class EventTypeResource {
             log.debug("REST request to get all EventTypes where event is null");
             return StreamSupport
                 .stream(eventTypeRepository.findAll().spliterator(), false)
-                .filter(eventType -> eventType.getEvent() == null)
+                .filter(eventType -> eventType.getEvents() == null)
                 .toList();
         }
         log.debug("REST request to get all EventTypes");

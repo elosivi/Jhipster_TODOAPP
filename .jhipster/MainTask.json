@@ -29,13 +29,6 @@
   "name": "MainTask",
   "relationships": [
     {
-      "otherEntityName": "status",
-      "otherEntityRelationshipName": "mainTask",
-      "relationshipName": "status",
-      "relationshipSide": "left",
-      "relationshipType": "one-to-one"
-    },
-    {
       "otherEntityName": "category",
       "otherEntityRelationshipName": "mainTask",
       "relationshipName": "category",
@@ -45,6 +38,13 @@
     {
       "otherEntityName": "person",
       "relationshipName": "personOwner",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "status",
+      "otherEntityRelationshipName": "mainTask",
+      "relationshipName": "status",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     },

@@ -26,13 +26,13 @@
             <column name="cost" type="double">
                 <constraints nullable="true" />
             </column>
-            <column name="status_id" type="bigint">
-                <constraints nullable="true" unique="true" uniqueConstraintName="ux_main_task__status_id" />
-            </column>
             <column name="category_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <column name="person_owner_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="status_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->

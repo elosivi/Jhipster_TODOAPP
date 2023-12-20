@@ -22,9 +22,9 @@ type MainTaskFormGroupContent = {
   deadline: FormControl<IMainTask['deadline']>;
   creation: FormControl<IMainTask['creation']>;
   cost: FormControl<IMainTask['cost']>;
-  status: FormControl<IMainTask['status']>;
   category: FormControl<IMainTask['category']>;
   personOwner: FormControl<IMainTask['personOwner']>;
+  status: FormControl<IMainTask['status']>;
 };
 
 export type MainTaskFormGroup = FormGroup<MainTaskFormGroupContent>;
@@ -52,9 +52,9 @@ export class MainTaskFormService {
       }),
       creation: new FormControl(mainTaskRawValue.creation),
       cost: new FormControl(mainTaskRawValue.cost),
-      status: new FormControl(mainTaskRawValue.status),
       category: new FormControl(mainTaskRawValue.category),
       personOwner: new FormControl(mainTaskRawValue.personOwner),
+      status: new FormControl(mainTaskRawValue.status),
     });
   }
 

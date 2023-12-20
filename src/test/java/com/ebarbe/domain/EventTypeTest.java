@@ -5,6 +5,7 @@ import static com.ebarbe.domain.EventTypeTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ebarbe.web.rest.TestUtil;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class EventTypeTest {
@@ -28,12 +29,12 @@ class EventTypeTest {
         EventType eventType = getEventTypeRandomSampleGenerator();
         Event eventBack = getEventRandomSampleGenerator();
 
-        eventType.setEvent(eventBack);
-        assertThat(eventType.getEvent()).isEqualTo(eventBack);
+        eventType.setEvents((Set<Event>) eventBack);
+        assertThat(eventType.getEvents()).isEqualTo(eventBack);
         assertThat(eventBack.getEventType()).isEqualTo(eventType);
 
-        eventType.event(null);
-        assertThat(eventType.getEvent()).isNull();
+        eventType.events(null);
+        assertThat(eventType.getEvents()).isNull();
         assertThat(eventBack.getEventType()).isNull();
     }
 }

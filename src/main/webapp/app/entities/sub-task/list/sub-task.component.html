@@ -63,14 +63,14 @@
           <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
-                <span jhiTranslate="global.field.id">ID</span>
+                <span jhiTranslate="global.field.id" class="blue-font">ID</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="description">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.description">Description</span>
+                <span jhiTranslate="todoApp.subTask.description" class="blue-font">Description</span>
                 @if (!currentSearch) {
                   <fa-icon class="p-1" icon="sort"></fa-icon>
                 }
@@ -78,40 +78,40 @@
             </th>
             <th scope="col" jhiSortBy="deadline">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.deadline">Deadline</span>
+                <span jhiTranslate="todoApp.subTask.deadline" class="blue-font">Deadline</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="creation">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.creation">Creation</span>
+                <span jhiTranslate="todoApp.subTask.creation" class="blue-font">Creation</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="cost">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.cost">Cost</span>
+                <span jhiTranslate="todoApp.subTask.cost" class="blue-font">Cost</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="status.id">
-              <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.status">Status</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="mainTask.id">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.mainTask">Main Task</span>
+                <span jhiTranslate="todoApp.subTask.mainTask" class="blue-font">Main Task</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
             <th scope="col" jhiSortBy="personDoer.id">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.subTask.personDoer">Person Doer</span>
+                <span jhiTranslate="todoApp.subTask.personDoer" class="blue-font">Person Doer</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status.id">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.subTask.status" class="blue-font">Status</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -129,13 +129,6 @@
               <td>{{ subTask.creation | formatMediumDate }}</td>
               <td>{{ subTask.cost }}</td>
               <td>
-                @if (subTask.status) {
-                  <div>
-                    <a [routerLink]="['/status', subTask.status.id, 'view']">{{ subTask.status.id }}</a>
-                  </div>
-                }
-              </td>
-              <td>
                 @if (subTask.mainTask) {
                   <div>
                     <a [routerLink]="['/main-task', subTask.mainTask.id, 'view']">{{ subTask.mainTask.id }}</a>
@@ -146,6 +139,13 @@
                 @if (subTask.personDoer) {
                   <div>
                     <a [routerLink]="['/person', subTask.personDoer.id, 'view']">{{ subTask.personDoer.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (subTask.status) {
+                  <div>
+                    <a [routerLink]="['/status', subTask.status.id, 'view']">{{ subTask.status.id }}</a>
                   </div>
                 }
               </td>

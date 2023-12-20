@@ -38,7 +38,7 @@ public class Category implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "status", "category", "personOwner", "subTasks" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "category", "personOwner", "status", "subTasks" }, allowSetters = true)
     private Set<MainTask> mainTasks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

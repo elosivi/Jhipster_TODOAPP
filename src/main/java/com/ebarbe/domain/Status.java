@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Status.
@@ -28,15 +30,15 @@ public class Status implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
 
-    @JsonIgnoreProperties(value = { "status", "category", "personOwner", "subTasks" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "status")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "status")
     @org.springframework.data.annotation.Transient
-    private MainTask mainTask;
+    @JsonIgnoreProperties(value = { "category", "personOwner", "status", "subTasks" }, allowSetters = true)
+    private Set<MainTask> mainTasks = new HashSet<>();
 
-    @JsonIgnoreProperties(value = { "status", "mainTask", "personDoer" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "status")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "status")
     @org.springframework.data.annotation.Transient
-    private SubTask subTask;
+    @JsonIgnoreProperties(value = { "mainTask", "personDoer", "status" }, allowSetters = true)
+    private Set<SubTask> subTasks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -66,41 +68,65 @@ public class Status implements Serializable {
         this.description = description;
     }
 
-    public MainTask getMainTask() {
-        return this.mainTask;
+    public Set<MainTask> getMainTasks() {
+        return this.mainTasks;
     }
 
-    public void setMainTask(MainTask mainTask) {
-        if (this.mainTask != null) {
-            this.mainTask.setStatus(null);
+    public void setMainTasks(Set<MainTask> mainTasks) {
+        if (this.mainTasks != null) {
+            this.mainTasks.forEach(i -> i.setStatus(null));
         }
-        if (mainTask != null) {
-            mainTask.setStatus(this);
+        if (mainTasks != null) {
+            mainTasks.forEach(i -> i.setStatus(this));
         }
-        this.mainTask = mainTask;
+        this.mainTasks = mainTasks;
     }
 
-    public Status mainTask(MainTask mainTask) {
-        this.setMainTask(mainTask);
+    public Status mainTasks(Set<MainTask> mainTasks) {
+        this.setMainTasks(mainTasks);
         return this;
     }
 
-    public SubTask getSubTask() {
-        return this.subTask;
+    public Status addMainTask(MainTask mainTask) {
+        this.mainTasks.add(mainTask);
+        mainTask.setStatus(this);
+        return this;
     }
 
-    public void setSubTask(SubTask subTask) {
-        if (this.subTask != null) {
-            this.subTask.setStatus(null);
-        }
-        if (subTask != null) {
-            subTask.setStatus(this);
-        }
-        this.subTask = subTask;
+    public Status removeMainTask(MainTask mainTask) {
+        this.mainTasks.remove(mainTask);
+        mainTask.setStatus(null);
+        return this;
     }
 
-    public Status subTask(SubTask subTask) {
-        this.setSubTask(subTask);
+    public Set<SubTask> getSubTasks() {
+        return this.subTasks;
+    }
+
+    public void setSubTasks(Set<SubTask> subTasks) {
+        if (this.subTasks != null) {
+            this.subTasks.forEach(i -> i.setStatus(null));
+        }
+        if (subTasks != null) {
+            subTasks.forEach(i -> i.setStatus(this));
+        }
+        this.subTasks = subTasks;
+    }
+
+    public Status subTasks(Set<SubTask> subTasks) {
+        this.setSubTasks(subTasks);
+        return this;
+    }
+
+    public Status addSubTask(SubTask subTask) {
+        this.subTasks.add(subTask);
+        subTask.setStatus(this);
+        return this;
+    }
+
+    public Status removeSubTask(SubTask subTask) {
+        this.subTasks.remove(subTask);
+        subTask.setStatus(null);
         return this;
     }
 

@@ -8,13 +8,6 @@
     -->
     <changeSet id="20231218143912-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="status_id"
-                                 baseTableName="main_task"
-                                 constraintName="fk_main_task__status_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="status"
-                                 />
-
         <addForeignKeyConstraint baseColumnNames="category_id"
                                  baseTableName="main_task"
                                  constraintName="fk_main_task__category_id"
@@ -27,6 +20,13 @@
                                  constraintName="fk_main_task__person_owner_id"
                                  referencedColumnNames="id"
                                  referencedTableName="person"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="status_id"
+                                 baseTableName="main_task"
+                                 constraintName="fk_main_task__status_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="status"
                                  />
     </changeSet>
 </databaseChangeLog>

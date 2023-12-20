@@ -23,9 +23,9 @@
       "deadline": "Deadline",
       "creation": "Creation",
       "cost": "Cost",
-      "status": "Status",
       "mainTask": "Main Task",
-      "personDoer": "Person Doer"
+      "personDoer": "Person Doer",
+      "status": "Status"
     }
   }
 }

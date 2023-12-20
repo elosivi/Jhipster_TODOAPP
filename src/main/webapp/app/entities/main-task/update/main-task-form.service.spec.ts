@@ -24,9 +24,9 @@ describe('MainTask Form Service', () => {
             deadline: expect.any(Object),
             creation: expect.any(Object),
             cost: expect.any(Object),
-            status: expect.any(Object),
             category: expect.any(Object),
             personOwner: expect.any(Object),
+            status: expect.any(Object),
           }),
         );
       });
@@ -41,9 +41,9 @@ describe('MainTask Form Service', () => {
             deadline: expect.any(Object),
             creation: expect.any(Object),
             cost: expect.any(Object),
-            status: expect.any(Object),
             category: expect.any(Object),
             personOwner: expect.any(Object),
+            status: expect.any(Object),
           }),
         );
       });

@@ -7,12 +7,12 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { IStatus } from 'app/entities/status/status.model';
-import { StatusService } from 'app/entities/status/service/status.service';
 import { IMainTask } from 'app/entities/main-task/main-task.model';
 import { MainTaskService } from 'app/entities/main-task/service/main-task.service';
 import { IPerson } from 'app/entities/person/person.model';
 import { PersonService } from 'app/entities/person/service/person.service';
+import { IStatus } from 'app/entities/status/status.model';
+import { StatusService } from 'app/entities/status/service/status.service';
 import { SubTaskService } from '../service/sub-task.service';
 import { ISubTask } from '../sub-task.model';
 import { SubTaskFormService, SubTaskFormGroup } from './sub-task-form.service';
@@ -27,26 +27,26 @@ export class SubTaskUpdateComponent implements OnInit {
   isSaving = false;
   subTask: ISubTask | null = null;
 
-  statusesCollection: IStatus[] = [];
   mainTasksSharedCollection: IMainTask[] = [];
   peopleSharedCollection: IPerson[] = [];
+  statusesSharedCollection: IStatus[] = [];
 
   editForm: SubTaskFormGroup = this.subTaskFormService.createSubTaskFormGroup();
 
   constructor(
     protected subTaskService: SubTaskService,
     protected subTaskFormService: SubTaskFormService,
-    protected statusService: StatusService,
     protected mainTaskService: MainTaskService,
     protected personService: PersonService,
+    protected statusService: StatusService,
     protected activatedRoute: ActivatedRoute,
   ) {}
-
-  compareStatus = (o1: IStatus | null, o2: IStatus | null): boolean => this.statusService.compareStatus(o1, o2);
 
   compareMainTask = (o1: IMainTask | null, o2: IMainTask | null): boolean => this.mainTaskService.compareMainTask(o1, o2);
 
   comparePerson = (o1: IPerson | null, o2: IPerson | null): boolean => this.personService.comparePerson(o1, o2);
+
+  compareStatus = (o1: IStatus | null, o2: IStatus | null): boolean => this.statusService.compareStatus(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ subTask }) => {
@@ -96,7 +96,6 @@ export class SubTaskUpdateComponent implements OnInit {
     this.subTask = subTask;
     this.subTaskFormService.resetForm(this.editForm, subTask);
 
-    this.statusesCollection = this.statusService.addStatusToCollectionIfMissing<IStatus>(this.statusesCollection, subTask.status);
     this.mainTasksSharedCollection = this.mainTaskService.addMainTaskToCollectionIfMissing<IMainTask>(
       this.mainTasksSharedCollection,
       subTask.mainTask,
@@ -105,15 +104,13 @@ export class SubTaskUpdateComponent implements OnInit {
       this.peopleSharedCollection,
       subTask.personDoer,
     );
+    this.statusesSharedCollection = this.statusService.addStatusToCollectionIfMissing<IStatus>(
+      this.statusesSharedCollection,
+      subTask.status,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
-    this.statusService
-      .query({ filter: 'subtask-is-null' })
-      .pipe(map((res: HttpResponse<IStatus[]>) => res.body ?? []))
-      .pipe(map((statuses: IStatus[]) => this.statusService.addStatusToCollectionIfMissing<IStatus>(statuses, this.subTask?.status)))
-      .subscribe((statuses: IStatus[]) => (this.statusesCollection = statuses));
-
     this.mainTaskService
       .query()
       .pipe(map((res: HttpResponse<IMainTask[]>) => res.body ?? []))
@@ -129,5 +126,11 @@ export class SubTaskUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IPerson[]>) => res.body ?? []))
       .pipe(map((people: IPerson[]) => this.personService.addPersonToCollectionIfMissing<IPerson>(people, this.subTask?.personDoer)))
       .subscribe((people: IPerson[]) => (this.peopleSharedCollection = people));
+
+    this.statusService
+      .query()
+      .pipe(map((res: HttpResponse<IStatus[]>) => res.body ?? []))
+      .pipe(map((statuses: IStatus[]) => this.statusService.addStatusToCollectionIfMissing<IStatus>(statuses, this.subTask?.status)))
+      .subscribe((statuses: IStatus[]) => (this.statusesSharedCollection = statuses));
   }
 }

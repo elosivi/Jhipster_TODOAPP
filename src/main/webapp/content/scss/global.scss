@@ -26,19 +26,23 @@ $gradient-radial: radial-gradient(#9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #f
 Bootstrap tweaks
 ===============================================================*/
 
-body,
 h1 {
   font-weight: 700;
+  text-transform: uppercase;
   color: $white;
+  font-size: 40px;
 }
 h2 {
   font-weight: 400;
+  text-transform: capitalize;
   color: $beige;
+  font-size: 25px;
 }
 h3,
 h4 {
   font-weight: 300;
   color: $white;
+  font-size: 20px;
 }
 
 a:hover {
@@ -278,7 +282,8 @@ TEXT
 ========================================================================== */
 
 p,
-label {
+label,
+body {
   color: $white;
   font-size: 14px;
   font-weight: normal;
@@ -309,6 +314,10 @@ a.link {
   color: $light-blue;
 }
 
+dark-font,
+span.blue-font {
+  color: $blue;
+}
 /* ==========================================================================
 FORMS
 ========================================================================== */

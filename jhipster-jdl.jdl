@@ -14,7 +14,7 @@ cost Double
 }
 
 entity Status{
-description String required minlength(3) maxlength(100) 
+description String required minlength(3) maxlength(100)
 }
 
 entity Person {
@@ -53,14 +53,14 @@ relationship ManyToOne {
   MainTask to Category
   MainTask{personOwner} to Person
   SubTask{personDoer} to Person
+  MainTask to Status
+  SubTask to Status
+    Event to EventType
 }
 
 relationship OneToOne{
    Person{user} to User with builtInEntity
-   MainTask to Status
-   SubTask to Status
    Person to Hierarchy
-   Event to EventType
 }
 
 relationship ManyToMany{

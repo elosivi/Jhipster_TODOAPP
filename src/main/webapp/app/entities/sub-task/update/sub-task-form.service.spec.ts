@@ -24,9 +24,9 @@ describe('SubTask Form Service', () => {
             deadline: expect.any(Object),
             creation: expect.any(Object),
             cost: expect.any(Object),
-            status: expect.any(Object),
             mainTask: expect.any(Object),
             personDoer: expect.any(Object),
+            status: expect.any(Object),
           }),
         );
       });
@@ -41,9 +41,9 @@ describe('SubTask Form Service', () => {
             deadline: expect.any(Object),
             creation: expect.any(Object),
             cost: expect.any(Object),
-            status: expect.any(Object),
             mainTask: expect.any(Object),
             personDoer: expect.any(Object),
+            status: expect.any(Object),
           }),
         );
       });

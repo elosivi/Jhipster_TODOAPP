@@ -6,6 +6,8 @@ import static com.ebarbe.domain.SubTaskTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ebarbe.web.rest.TestUtil;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class StatusTest {
@@ -29,12 +31,20 @@ class StatusTest {
         Status status = getStatusRandomSampleGenerator();
         MainTask mainTaskBack = getMainTaskRandomSampleGenerator();
 
-        status.setMainTask(mainTaskBack);
-        assertThat(status.getMainTask()).isEqualTo(mainTaskBack);
+        status.addMainTask(mainTaskBack);
+        assertThat(status.getMainTasks()).containsOnly(mainTaskBack);
         assertThat(mainTaskBack.getStatus()).isEqualTo(status);
 
-        status.mainTask(null);
-        assertThat(status.getMainTask()).isNull();
+        status.removeMainTask(mainTaskBack);
+        assertThat(status.getMainTasks()).doesNotContain(mainTaskBack);
+        assertThat(mainTaskBack.getStatus()).isNull();
+
+        status.mainTasks(new HashSet<>(Set.of(mainTaskBack)));
+        assertThat(status.getMainTasks()).containsOnly(mainTaskBack);
+        assertThat(mainTaskBack.getStatus()).isEqualTo(status);
+
+        status.setMainTasks(new HashSet<>());
+        assertThat(status.getMainTasks()).doesNotContain(mainTaskBack);
         assertThat(mainTaskBack.getStatus()).isNull();
     }
 
@@ -43,12 +53,20 @@ class StatusTest {
         Status status = getStatusRandomSampleGenerator();
         SubTask subTaskBack = getSubTaskRandomSampleGenerator();
 
-        status.setSubTask(subTaskBack);
-        assertThat(status.getSubTask()).isEqualTo(subTaskBack);
+        status.addSubTask(subTaskBack);
+        assertThat(status.getSubTasks()).containsOnly(subTaskBack);
         assertThat(subTaskBack.getStatus()).isEqualTo(status);
 
-        status.subTask(null);
-        assertThat(status.getSubTask()).isNull();
+        status.removeSubTask(subTaskBack);
+        assertThat(status.getSubTasks()).doesNotContain(subTaskBack);
+        assertThat(subTaskBack.getStatus()).isNull();
+
+        status.subTasks(new HashSet<>(Set.of(subTaskBack)));
+        assertThat(status.getSubTasks()).containsOnly(subTaskBack);
+        assertThat(subTaskBack.getStatus()).isEqualTo(status);
+
+        status.setSubTasks(new HashSet<>());
+        assertThat(status.getSubTasks()).doesNotContain(subTaskBack);
         assertThat(subTaskBack.getStatus()).isNull();
     }
 }
