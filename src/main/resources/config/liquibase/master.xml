@@ -26,4 +26,7 @@
     <include file="config/liquibase/changelog/20231218143912_added_entity_constraints_Event.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
+
+    <!--dessous : fichier xml de mise à jour ebarbe - attention à l'ordre des fichiers à éxécuter pour maintenir la cohérence des données-->
+    <include file="config/liquibase/changelog/20231220143912_added_entity_Event.xml" relativeToChangelogFile="false"/>
 </databaseChangeLog>
