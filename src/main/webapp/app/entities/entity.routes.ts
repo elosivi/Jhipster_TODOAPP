@@ -22,6 +22,11 @@ const routes: Routes = [
     loadChildren: () => import('./person/person.routes'),
   },
   {
+    path: 'user',
+    data: { pageTitle: 'todoApp.userManagement.home.title' },
+    loadChildren: () => import('./user/user.routes'),
+  },
+  {
     path: 'category',
     data: { pageTitle: 'todoApp.category.home.title' },
     loadChildren: () => import('./category/category.routes'),
