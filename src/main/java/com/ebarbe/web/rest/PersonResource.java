@@ -1,8 +1,10 @@
 package com.ebarbe.web.rest;
 
-import com.ebarbe.domain.Person;
 import com.ebarbe.repository.PersonRepository;
-import com.ebarbe.repository.search.PersonSearchRepository;
+import com.ebarbe.service.PersonQueryService;
+import com.ebarbe.service.PersonService;
+import com.ebarbe.service.criteria.PersonCriteria;
+import com.ebarbe.service.dto.PersonDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.ElasticsearchExceptionMapper;
 import jakarta.validation.Valid;
@@ -12,14 +14,17 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -27,7 +32,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api/people")
-@Transactional
 public class PersonResource {
 
     private final Logger log = LoggerFactory.getLogger(PersonResource.class);
@@ -37,30 +41,32 @@ public class PersonResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final PersonService personService;
+
     private final PersonRepository personRepository;
 
-    private final PersonSearchRepository personSearchRepository;
+    private final PersonQueryService personQueryService;
 
-    public PersonResource(PersonRepository personRepository, PersonSearchRepository personSearchRepository) {
+    public PersonResource(PersonService personService, PersonRepository personRepository, PersonQueryService personQueryService) {
+        this.personService = personService;
         this.personRepository = personRepository;
-        this.personSearchRepository = personSearchRepository;
+        this.personQueryService = personQueryService;
     }
 
     /**
      * {@code POST  /people} : Create a new person.
      *
-     * @param person the person to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new person, or with status {@code 400 (Bad Request)} if the person has already an ID.
+     * @param personDTO the personDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new personDTO, or with status {@code 400 (Bad Request)} if the person has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Person> createPerson(@Valid @RequestBody Person person) throws URISyntaxException {
-        log.debug("REST request to save Person : {}", person);
-        if (person.getId() != null) {
+    public ResponseEntity<PersonDTO> createPerson(@Valid @RequestBody PersonDTO personDTO) throws URISyntaxException {
+        log.debug("REST request to save Person : {}", personDTO);
+        if (personDTO.getId() != null) {
             throw new BadRequestAlertException("A new person cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Person result = personRepository.save(person);
-        personSearchRepository.index(result);
+        PersonDTO result = personService.save(personDTO);
         return ResponseEntity
             .created(new URI("/api/people/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -70,23 +76,23 @@ public class PersonResource {
     /**
      * {@code PUT  /people/:id} : Updates an existing person.
      *
-     * @param id the id of the person to save.
-     * @param person the person to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated person,
-     * or with status {@code 400 (Bad Request)} if the person is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the person couldn't be updated.
+     * @param id the id of the personDTO to save.
+     * @param personDTO the personDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated personDTO,
+     * or with status {@code 400 (Bad Request)} if the personDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the personDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Person> updatePerson(
+    public ResponseEntity<PersonDTO> updatePerson(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Person person
+        @Valid @RequestBody PersonDTO personDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Person : {}, {}", id, person);
-        if (person.getId() == null) {
+        log.debug("REST request to update Person : {}, {}", id, personDTO);
+        if (personDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, person.getId())) {
+        if (!Objects.equals(id, personDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -94,35 +100,34 @@ public class PersonResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Person result = personRepository.save(person);
-        personSearchRepository.index(result);
+        PersonDTO result = personService.update(personDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, person.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, personDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /people/:id} : Partial updates given fields of an existing person, field will ignore if it is null
      *
-     * @param id the id of the person to save.
-     * @param person the person to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated person,
-     * or with status {@code 400 (Bad Request)} if the person is not valid,
-     * or with status {@code 404 (Not Found)} if the person is not found,
-     * or with status {@code 500 (Internal Server Error)} if the person couldn't be updated.
+     * @param id the id of the personDTO to save.
+     * @param personDTO the personDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated personDTO,
+     * or with status {@code 400 (Bad Request)} if the personDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the personDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the personDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Person> partialUpdatePerson(
+    public ResponseEntity<PersonDTO> partialUpdatePerson(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Person person
+        @NotNull @RequestBody PersonDTO personDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Person partially : {}, {}", id, person);
-        if (person.getId() == null) {
+        log.debug("REST request to partial update Person partially : {}, {}", id, personDTO);
+        if (personDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, person.getId())) {
+        if (!Objects.equals(id, personDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,62 +135,68 @@ public class PersonResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Person> result = personRepository
-            .findById(person.getId())
-            .map(existingPerson -> {
-                if (person.getDescription() != null) {
-                    existingPerson.setDescription(person.getDescription());
-                }
-
-                return existingPerson;
-            })
-            .map(personRepository::save)
-            .map(savedPerson -> {
-                personSearchRepository.index(savedPerson);
-                return savedPerson;
-            });
+        Optional<PersonDTO> result = personService.partialUpdate(personDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, person.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, personDTO.getId().toString())
         );
     }
 
     /**
      * {@code GET  /people} : get all the people.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of people in body.
      */
     @GetMapping("")
-    public List<Person> getAllPeople() {
-        log.debug("REST request to get all People");
-        return personRepository.findAll();
+    public ResponseEntity<List<PersonDTO>> getAllPeople(
+        PersonCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get People by criteria: {}", criteria);
+
+        Page<PersonDTO> page = personQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /people/count} : count all the people.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countPeople(PersonCriteria criteria) {
+        log.debug("REST request to count People by criteria: {}", criteria);
+        return ResponseEntity.ok().body(personQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /people/:id} : get the "id" person.
      *
-     * @param id the id of the person to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the person, or with status {@code 404 (Not Found)}.
+     * @param id the id of the personDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the personDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Person> getPerson(@PathVariable("id") Long id) {
+    public ResponseEntity<PersonDTO> getPerson(@PathVariable("id") Long id) {
         log.debug("REST request to get Person : {}", id);
-        Optional<Person> person = personRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(person);
+        Optional<PersonDTO> personDTO = personService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(personDTO);
     }
 
     /**
      * {@code DELETE  /people/:id} : delete the "id" person.
      *
-     * @param id the id of the person to delete.
+     * @param id the id of the personDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable("id") Long id) {
         log.debug("REST request to delete Person : {}", id);
-        personRepository.deleteById(id);
-        personSearchRepository.deleteFromIndexById(id);
+        personService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
@@ -197,13 +208,19 @@ public class PersonResource {
      * to the query.
      *
      * @param query the query of the person search.
+     * @param pageable the pagination information.
      * @return the result of the search.
      */
     @GetMapping("/_search")
-    public List<Person> searchPeople(@RequestParam("query") String query) {
-        log.debug("REST request to search People for query {}", query);
+    public ResponseEntity<List<PersonDTO>> searchPeople(
+        @RequestParam("query") String query,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to search for a page of People for query {}", query);
         try {
-            return StreamSupport.stream(personSearchRepository.search(query).spliterator(), false).toList();
+            Page<PersonDTO> page = personService.search(query, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
         } catch (RuntimeException e) {
             throw ElasticsearchExceptionMapper.mapException(e);
         }

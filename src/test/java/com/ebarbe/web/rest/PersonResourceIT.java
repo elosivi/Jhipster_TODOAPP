@@ -8,9 +8,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ebarbe.IntegrationTest;
+import com.ebarbe.domain.Event;
+import com.ebarbe.domain.Hierarchy;
 import com.ebarbe.domain.Person;
+import com.ebarbe.domain.User;
 import com.ebarbe.repository.PersonRepository;
 import com.ebarbe.repository.search.PersonSearchRepository;
+import com.ebarbe.service.dto.PersonDTO;
+import com.ebarbe.service.mapper.PersonMapper;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +53,9 @@ class PersonResourceIT {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private PersonMapper personMapper;
 
     @Autowired
     private PersonSearchRepository personSearchRepository;
@@ -99,8 +107,9 @@ class PersonResourceIT {
         int databaseSizeBeforeCreate = personRepository.findAll().size();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
         restPersonMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(person)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(personDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Person in the database
@@ -121,13 +130,14 @@ class PersonResourceIT {
     void createPersonWithExistingId() throws Exception {
         // Create the Person with an existing ID
         person.setId(1L);
+        PersonDTO personDTO = personMapper.toDto(person);
 
         int databaseSizeBeforeCreate = personRepository.findAll().size();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPersonMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(person)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(personDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Person in the database
@@ -169,6 +179,193 @@ class PersonResourceIT {
 
     @Test
     @Transactional
+    void getPeopleByIdFiltering() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        Long id = person.getId();
+
+        defaultPersonShouldBeFound("id.equals=" + id);
+        defaultPersonShouldNotBeFound("id.notEquals=" + id);
+
+        defaultPersonShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultPersonShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultPersonShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultPersonShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where description equals to DEFAULT_DESCRIPTION
+        defaultPersonShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the personList where description equals to UPDATED_DESCRIPTION
+        defaultPersonShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultPersonShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the personList where description equals to UPDATED_DESCRIPTION
+        defaultPersonShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where description is not null
+        defaultPersonShouldBeFound("description.specified=true");
+
+        // Get all the personList where description is null
+        defaultPersonShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where description contains DEFAULT_DESCRIPTION
+        defaultPersonShouldBeFound("description.contains=" + DEFAULT_DESCRIPTION);
+
+        // Get all the personList where description contains UPDATED_DESCRIPTION
+        defaultPersonShouldNotBeFound("description.contains=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where description does not contain DEFAULT_DESCRIPTION
+        defaultPersonShouldNotBeFound("description.doesNotContain=" + DEFAULT_DESCRIPTION);
+
+        // Get all the personList where description does not contain UPDATED_DESCRIPTION
+        defaultPersonShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByUserIsEqualToSomething() throws Exception {
+        User user;
+        if (TestUtil.findAll(em, User.class).isEmpty()) {
+            personRepository.saveAndFlush(person);
+            user = UserResourceIT.createEntity(em);
+        } else {
+            user = TestUtil.findAll(em, User.class).get(0);
+        }
+        em.persist(user);
+        em.flush();
+        person.setUser(user);
+        personRepository.saveAndFlush(person);
+        Long userId = user.getId();
+        // Get all the personList where user equals to userId
+        defaultPersonShouldBeFound("userId.equals=" + userId);
+
+        // Get all the personList where user equals to (userId + 1)
+        defaultPersonShouldNotBeFound("userId.equals=" + (userId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByHierarchyIsEqualToSomething() throws Exception {
+        Hierarchy hierarchy;
+        if (TestUtil.findAll(em, Hierarchy.class).isEmpty()) {
+            personRepository.saveAndFlush(person);
+            hierarchy = HierarchyResourceIT.createEntity(em);
+        } else {
+            hierarchy = TestUtil.findAll(em, Hierarchy.class).get(0);
+        }
+        em.persist(hierarchy);
+        em.flush();
+        person.setHierarchy(hierarchy);
+        personRepository.saveAndFlush(person);
+        Long hierarchyId = hierarchy.getId();
+        // Get all the personList where hierarchy equals to hierarchyId
+        defaultPersonShouldBeFound("hierarchyId.equals=" + hierarchyId);
+
+        // Get all the personList where hierarchy equals to (hierarchyId + 1)
+        defaultPersonShouldNotBeFound("hierarchyId.equals=" + (hierarchyId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByEventIsEqualToSomething() throws Exception {
+        Event event;
+        if (TestUtil.findAll(em, Event.class).isEmpty()) {
+            personRepository.saveAndFlush(person);
+            event = EventResourceIT.createEntity(em);
+        } else {
+            event = TestUtil.findAll(em, Event.class).get(0);
+        }
+        em.persist(event);
+        em.flush();
+        person.addEvent(event);
+        personRepository.saveAndFlush(person);
+        Long eventId = event.getId();
+        // Get all the personList where event equals to eventId
+        defaultPersonShouldBeFound("eventId.equals=" + eventId);
+
+        // Get all the personList where event equals to (eventId + 1)
+        defaultPersonShouldNotBeFound("eventId.equals=" + (eventId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultPersonShouldBeFound(String filter) throws Exception {
+        restPersonMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+
+        // Check, that the count call also returns 1
+        restPersonMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultPersonShouldNotBeFound(String filter) throws Exception {
+        restPersonMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restPersonMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    @Transactional
     void getNonExistingPerson() throws Exception {
         // Get the person
         restPersonMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
@@ -189,12 +386,13 @@ class PersonResourceIT {
         // Disconnect from session so that the updates on updatedPerson are not directly saved in db
         em.detach(updatedPerson);
         updatedPerson.description(UPDATED_DESCRIPTION);
+        PersonDTO personDTO = personMapper.toDto(updatedPerson);
 
         restPersonMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedPerson.getId())
+                put(ENTITY_API_URL_ID, personDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedPerson))
+                    .content(TestUtil.convertObjectToJsonBytes(personDTO))
             )
             .andExpect(status().isOk());
 
@@ -221,12 +419,15 @@ class PersonResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         person.setId(longCount.incrementAndGet());
 
+        // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPersonMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, person.getId())
+                put(ENTITY_API_URL_ID, personDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(person))
+                    .content(TestUtil.convertObjectToJsonBytes(personDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -244,12 +445,15 @@ class PersonResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         person.setId(longCount.incrementAndGet());
 
+        // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPersonMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(person))
+                    .content(TestUtil.convertObjectToJsonBytes(personDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -267,9 +471,12 @@ class PersonResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         person.setId(longCount.incrementAndGet());
 
+        // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPersonMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(person)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(personDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Person in the database
@@ -342,12 +549,15 @@ class PersonResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         person.setId(longCount.incrementAndGet());
 
+        // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPersonMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, person.getId())
+                patch(ENTITY_API_URL_ID, personDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(person))
+                    .content(TestUtil.convertObjectToJsonBytes(personDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -365,12 +575,15 @@ class PersonResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         person.setId(longCount.incrementAndGet());
 
+        // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPersonMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(person))
+                    .content(TestUtil.convertObjectToJsonBytes(personDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -388,9 +601,14 @@ class PersonResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(personSearchRepository.findAll());
         person.setId(longCount.incrementAndGet());
 
+        // Create the Person
+        PersonDTO personDTO = personMapper.toDto(person);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPersonMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(person)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(personDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Person in the database

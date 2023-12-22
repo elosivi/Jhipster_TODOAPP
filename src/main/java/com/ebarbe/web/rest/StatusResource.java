@@ -1,8 +1,10 @@
 package com.ebarbe.web.rest;
 
-import com.ebarbe.domain.Status;
 import com.ebarbe.repository.StatusRepository;
-import com.ebarbe.repository.search.StatusSearchRepository;
+import com.ebarbe.service.StatusQueryService;
+import com.ebarbe.service.StatusService;
+import com.ebarbe.service.criteria.StatusCriteria;
+import com.ebarbe.service.dto.StatusDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.ElasticsearchExceptionMapper;
 import jakarta.validation.Valid;
@@ -12,14 +14,17 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -27,7 +32,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api/statuses")
-@Transactional
 public class StatusResource {
 
     private final Logger log = LoggerFactory.getLogger(StatusResource.class);
@@ -37,30 +41,32 @@ public class StatusResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final StatusService statusService;
+
     private final StatusRepository statusRepository;
 
-    private final StatusSearchRepository statusSearchRepository;
+    private final StatusQueryService statusQueryService;
 
-    public StatusResource(StatusRepository statusRepository, StatusSearchRepository statusSearchRepository) {
+    public StatusResource(StatusService statusService, StatusRepository statusRepository, StatusQueryService statusQueryService) {
+        this.statusService = statusService;
         this.statusRepository = statusRepository;
-        this.statusSearchRepository = statusSearchRepository;
+        this.statusQueryService = statusQueryService;
     }
 
     /**
      * {@code POST  /statuses} : Create a new status.
      *
-     * @param status the status to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new status, or with status {@code 400 (Bad Request)} if the status has already an ID.
+     * @param statusDTO the statusDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new statusDTO, or with status {@code 400 (Bad Request)} if the status has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Status> createStatus(@Valid @RequestBody Status status) throws URISyntaxException {
-        log.debug("REST request to save Status : {}", status);
-        if (status.getId() != null) {
+    public ResponseEntity<StatusDTO> createStatus(@Valid @RequestBody StatusDTO statusDTO) throws URISyntaxException {
+        log.debug("REST request to save Status : {}", statusDTO);
+        if (statusDTO.getId() != null) {
             throw new BadRequestAlertException("A new status cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Status result = statusRepository.save(status);
-        statusSearchRepository.index(result);
+        StatusDTO result = statusService.save(statusDTO);
         return ResponseEntity
             .created(new URI("/api/statuses/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -70,23 +76,23 @@ public class StatusResource {
     /**
      * {@code PUT  /statuses/:id} : Updates an existing status.
      *
-     * @param id the id of the status to save.
-     * @param status the status to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated status,
-     * or with status {@code 400 (Bad Request)} if the status is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the status couldn't be updated.
+     * @param id the id of the statusDTO to save.
+     * @param statusDTO the statusDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated statusDTO,
+     * or with status {@code 400 (Bad Request)} if the statusDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the statusDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Status> updateStatus(
+    public ResponseEntity<StatusDTO> updateStatus(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Status status
+        @Valid @RequestBody StatusDTO statusDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Status : {}, {}", id, status);
-        if (status.getId() == null) {
+        log.debug("REST request to update Status : {}, {}", id, statusDTO);
+        if (statusDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, status.getId())) {
+        if (!Objects.equals(id, statusDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -94,35 +100,34 @@ public class StatusResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Status result = statusRepository.save(status);
-        statusSearchRepository.index(result);
+        StatusDTO result = statusService.update(statusDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, status.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, statusDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /statuses/:id} : Partial updates given fields of an existing status, field will ignore if it is null
      *
-     * @param id the id of the status to save.
-     * @param status the status to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated status,
-     * or with status {@code 400 (Bad Request)} if the status is not valid,
-     * or with status {@code 404 (Not Found)} if the status is not found,
-     * or with status {@code 500 (Internal Server Error)} if the status couldn't be updated.
+     * @param id the id of the statusDTO to save.
+     * @param statusDTO the statusDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated statusDTO,
+     * or with status {@code 400 (Bad Request)} if the statusDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the statusDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the statusDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Status> partialUpdateStatus(
+    public ResponseEntity<StatusDTO> partialUpdateStatus(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Status status
+        @NotNull @RequestBody StatusDTO statusDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Status partially : {}, {}", id, status);
-        if (status.getId() == null) {
+        log.debug("REST request to partial update Status partially : {}, {}", id, statusDTO);
+        if (statusDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, status.getId())) {
+        if (!Objects.equals(id, statusDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,62 +135,68 @@ public class StatusResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Status> result = statusRepository
-            .findById(status.getId())
-            .map(existingStatus -> {
-                if (status.getDescription() != null) {
-                    existingStatus.setDescription(status.getDescription());
-                }
-
-                return existingStatus;
-            })
-            .map(statusRepository::save)
-            .map(savedStatus -> {
-                statusSearchRepository.index(savedStatus);
-                return savedStatus;
-            });
+        Optional<StatusDTO> result = statusService.partialUpdate(statusDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, status.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, statusDTO.getId().toString())
         );
     }
 
     /**
      * {@code GET  /statuses} : get all the statuses.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of statuses in body.
      */
     @GetMapping("")
-    public List<Status> getAllStatuses() {
-        log.debug("REST request to get all Statuses");
-        return statusRepository.findAll();
+    public ResponseEntity<List<StatusDTO>> getAllStatuses(
+        StatusCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Statuses by criteria: {}", criteria);
+
+        Page<StatusDTO> page = statusQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /statuses/count} : count all the statuses.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countStatuses(StatusCriteria criteria) {
+        log.debug("REST request to count Statuses by criteria: {}", criteria);
+        return ResponseEntity.ok().body(statusQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /statuses/:id} : get the "id" status.
      *
-     * @param id the id of the status to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the status, or with status {@code 404 (Not Found)}.
+     * @param id the id of the statusDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the statusDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Status> getStatus(@PathVariable("id") Long id) {
+    public ResponseEntity<StatusDTO> getStatus(@PathVariable("id") Long id) {
         log.debug("REST request to get Status : {}", id);
-        Optional<Status> status = statusRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(status);
+        Optional<StatusDTO> statusDTO = statusService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(statusDTO);
     }
 
     /**
      * {@code DELETE  /statuses/:id} : delete the "id" status.
      *
-     * @param id the id of the status to delete.
+     * @param id the id of the statusDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStatus(@PathVariable("id") Long id) {
         log.debug("REST request to delete Status : {}", id);
-        statusRepository.deleteById(id);
-        statusSearchRepository.deleteFromIndexById(id);
+        statusService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
@@ -197,13 +208,19 @@ public class StatusResource {
      * to the query.
      *
      * @param query the query of the status search.
+     * @param pageable the pagination information.
      * @return the result of the search.
      */
     @GetMapping("/_search")
-    public List<Status> searchStatuses(@RequestParam("query") String query) {
-        log.debug("REST request to search Statuses for query {}", query);
+    public ResponseEntity<List<StatusDTO>> searchStatuses(
+        @RequestParam("query") String query,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to search for a page of Statuses for query {}", query);
         try {
-            return StreamSupport.stream(statusSearchRepository.search(query).spliterator(), false).toList();
+            Page<StatusDTO> page = statusService.search(query, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
         } catch (RuntimeException e) {
             throw ElasticsearchExceptionMapper.mapException(e);
         }

@@ -50,6 +50,8 @@
     </div>
   </form>
 
+  <jhi-filter [filters]="filters"></jhi-filter>
+
   @if (events?.length === 0) {
     <div class="alert alert-warning" id="no-result">
       <span jhiTranslate="todoApp.event.home.notFound">Aucun Event trouvé</span>
@@ -144,12 +146,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="person.id">
-              <div class="d-flex">
-                <span jhiTranslate="todoApp.event.person">Person</span>
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -175,14 +171,6 @@
                   </div>
                 }
               </td>
-              <td>
-                @for (person of event.people; track $index; let last = $last) {
-                  <span>
-                    <a class="form-control-static" [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a
-                    >{{ last ? '' : ', ' }}
-                  </span>
-                }
-              </td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/event', event.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
@@ -205,6 +193,25 @@
           }
         </tbody>
       </table>
+    </div>
+  }
+  @if (events && events.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
     </div>
   }
 </div>

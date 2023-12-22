@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
 import { isPresent } from 'app/core/util/operators';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { Search } from 'app/core/request/request.model';
+import { SearchWithPagination } from 'app/core/request/request.model';
 import { IEventType, NewEventType } from '../event-type.model';
 
 export type PartialUpdateEventType = Partial<IEventType> & Pick<IEventType, 'id'>;
@@ -50,7 +50,7 @@ export class EventTypeService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  search(req: Search): Observable<EntityArrayResponseType> {
+  search(req: SearchWithPagination): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http
       .get<IEventType[]>(this.resourceSearchUrl, { params: options, observe: 'response' })

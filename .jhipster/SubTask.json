@@ -3,6 +3,7 @@
     "changelogDate": "20231218144012"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "sub_task",
   "fields": [
     {
@@ -26,7 +27,9 @@
       "fieldType": "Double"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "SubTask",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "mainTask",
@@ -48,5 +51,7 @@
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

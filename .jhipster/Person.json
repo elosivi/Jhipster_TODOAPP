@@ -3,6 +3,7 @@
     "changelogDate": "20231218144212"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "person",
   "fields": [
     {
@@ -13,7 +14,9 @@
       "fieldValidateRulesMinlength": "3"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Person",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "user",
@@ -36,5 +39,7 @@
       "relationshipSide": "right",
       "relationshipType": "many-to-many"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

@@ -5,7 +5,7 @@ export interface IEventType {
   label?: string | null;
   description?: string | null;
   duration?: string | null;
-  event?: IEvent | null;
+  events?: Pick<IEvent, 'id'>[] | null;
 }
 
 export type NewEventType = Omit<IEventType, 'id'> & { id: null };

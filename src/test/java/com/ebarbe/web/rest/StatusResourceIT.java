@@ -8,9 +8,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.ebarbe.IntegrationTest;
+import com.ebarbe.domain.MainTask;
 import com.ebarbe.domain.Status;
+import com.ebarbe.domain.SubTask;
 import com.ebarbe.repository.StatusRepository;
 import com.ebarbe.repository.search.StatusSearchRepository;
+import com.ebarbe.service.dto.StatusDTO;
+import com.ebarbe.service.mapper.StatusMapper;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +52,9 @@ class StatusResourceIT {
 
     @Autowired
     private StatusRepository statusRepository;
+
+    @Autowired
+    private StatusMapper statusMapper;
 
     @Autowired
     private StatusSearchRepository statusSearchRepository;
@@ -99,8 +106,9 @@ class StatusResourceIT {
         int databaseSizeBeforeCreate = statusRepository.findAll().size();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
         restStatusMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(status)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(statusDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Status in the database
@@ -121,13 +129,14 @@ class StatusResourceIT {
     void createStatusWithExistingId() throws Exception {
         // Create the Status with an existing ID
         status.setId(1L);
+        StatusDTO statusDTO = statusMapper.toDto(status);
 
         int databaseSizeBeforeCreate = statusRepository.findAll().size();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restStatusMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(status)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(statusDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Status in the database
@@ -146,9 +155,10 @@ class StatusResourceIT {
         status.setDescription(null);
 
         // Create the Status, which fails.
+        StatusDTO statusDTO = statusMapper.toDto(status);
 
         restStatusMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(status)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(statusDTO)))
             .andExpect(status().isBadRequest());
 
         List<Status> statusList = statusRepository.findAll();
@@ -189,6 +199,171 @@ class StatusResourceIT {
 
     @Test
     @Transactional
+    void getStatusesByIdFiltering() throws Exception {
+        // Initialize the database
+        statusRepository.saveAndFlush(status);
+
+        Long id = status.getId();
+
+        defaultStatusShouldBeFound("id.equals=" + id);
+        defaultStatusShouldNotBeFound("id.notEquals=" + id);
+
+        defaultStatusShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultStatusShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultStatusShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultStatusShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        statusRepository.saveAndFlush(status);
+
+        // Get all the statusList where description equals to DEFAULT_DESCRIPTION
+        defaultStatusShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the statusList where description equals to UPDATED_DESCRIPTION
+        defaultStatusShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        statusRepository.saveAndFlush(status);
+
+        // Get all the statusList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultStatusShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the statusList where description equals to UPDATED_DESCRIPTION
+        defaultStatusShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        statusRepository.saveAndFlush(status);
+
+        // Get all the statusList where description is not null
+        defaultStatusShouldBeFound("description.specified=true");
+
+        // Get all the statusList where description is null
+        defaultStatusShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesByDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        statusRepository.saveAndFlush(status);
+
+        // Get all the statusList where description contains DEFAULT_DESCRIPTION
+        defaultStatusShouldBeFound("description.contains=" + DEFAULT_DESCRIPTION);
+
+        // Get all the statusList where description contains UPDATED_DESCRIPTION
+        defaultStatusShouldNotBeFound("description.contains=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesByDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        statusRepository.saveAndFlush(status);
+
+        // Get all the statusList where description does not contain DEFAULT_DESCRIPTION
+        defaultStatusShouldNotBeFound("description.doesNotContain=" + DEFAULT_DESCRIPTION);
+
+        // Get all the statusList where description does not contain UPDATED_DESCRIPTION
+        defaultStatusShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesByMainTaskIsEqualToSomething() throws Exception {
+        MainTask mainTask;
+        if (TestUtil.findAll(em, MainTask.class).isEmpty()) {
+            statusRepository.saveAndFlush(status);
+            mainTask = MainTaskResourceIT.createEntity(em);
+        } else {
+            mainTask = TestUtil.findAll(em, MainTask.class).get(0);
+        }
+        em.persist(mainTask);
+        em.flush();
+        status.addMainTask(mainTask);
+        statusRepository.saveAndFlush(status);
+        Long mainTaskId = mainTask.getId();
+        // Get all the statusList where mainTask equals to mainTaskId
+        defaultStatusShouldBeFound("mainTaskId.equals=" + mainTaskId);
+
+        // Get all the statusList where mainTask equals to (mainTaskId + 1)
+        defaultStatusShouldNotBeFound("mainTaskId.equals=" + (mainTaskId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllStatusesBySubTaskIsEqualToSomething() throws Exception {
+        SubTask subTask;
+        if (TestUtil.findAll(em, SubTask.class).isEmpty()) {
+            statusRepository.saveAndFlush(status);
+            subTask = SubTaskResourceIT.createEntity(em);
+        } else {
+            subTask = TestUtil.findAll(em, SubTask.class).get(0);
+        }
+        em.persist(subTask);
+        em.flush();
+        status.addSubTask(subTask);
+        statusRepository.saveAndFlush(status);
+        Long subTaskId = subTask.getId();
+        // Get all the statusList where subTask equals to subTaskId
+        defaultStatusShouldBeFound("subTaskId.equals=" + subTaskId);
+
+        // Get all the statusList where subTask equals to (subTaskId + 1)
+        defaultStatusShouldNotBeFound("subTaskId.equals=" + (subTaskId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultStatusShouldBeFound(String filter) throws Exception {
+        restStatusMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(status.getId().intValue())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+
+        // Check, that the count call also returns 1
+        restStatusMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultStatusShouldNotBeFound(String filter) throws Exception {
+        restStatusMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restStatusMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    @Transactional
     void getNonExistingStatus() throws Exception {
         // Get the status
         restStatusMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
@@ -209,12 +384,13 @@ class StatusResourceIT {
         // Disconnect from session so that the updates on updatedStatus are not directly saved in db
         em.detach(updatedStatus);
         updatedStatus.description(UPDATED_DESCRIPTION);
+        StatusDTO statusDTO = statusMapper.toDto(updatedStatus);
 
         restStatusMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedStatus.getId())
+                put(ENTITY_API_URL_ID, statusDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedStatus))
+                    .content(TestUtil.convertObjectToJsonBytes(statusDTO))
             )
             .andExpect(status().isOk());
 
@@ -241,12 +417,15 @@ class StatusResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         status.setId(longCount.incrementAndGet());
 
+        // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restStatusMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, status.getId())
+                put(ENTITY_API_URL_ID, statusDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(status))
+                    .content(TestUtil.convertObjectToJsonBytes(statusDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -264,12 +443,15 @@ class StatusResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         status.setId(longCount.incrementAndGet());
 
+        // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restStatusMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(status))
+                    .content(TestUtil.convertObjectToJsonBytes(statusDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -287,9 +469,12 @@ class StatusResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         status.setId(longCount.incrementAndGet());
 
+        // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restStatusMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(status)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(statusDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Status in the database
@@ -362,12 +547,15 @@ class StatusResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         status.setId(longCount.incrementAndGet());
 
+        // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restStatusMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, status.getId())
+                patch(ENTITY_API_URL_ID, statusDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(status))
+                    .content(TestUtil.convertObjectToJsonBytes(statusDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -385,12 +573,15 @@ class StatusResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         status.setId(longCount.incrementAndGet());
 
+        // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restStatusMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(status))
+                    .content(TestUtil.convertObjectToJsonBytes(statusDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -408,9 +599,14 @@ class StatusResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(statusSearchRepository.findAll());
         status.setId(longCount.incrementAndGet());
 
+        // Create the Status
+        StatusDTO statusDTO = statusMapper.toDto(status);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restStatusMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(status)))
+            .perform(
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(statusDTO))
+            )
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Status in the database

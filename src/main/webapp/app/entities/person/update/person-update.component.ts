@@ -8,7 +8,7 @@ import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IUser } from 'app/entities/user/user.model';
-import { UserService } from 'app/entities/user/user.service';
+import { UserService } from 'app/entities/user/service/user.service';
 import { IHierarchy } from 'app/entities/hierarchy/hierarchy.model';
 import { HierarchyService } from 'app/entities/hierarchy/service/hierarchy.service';
 import { PersonService } from '../service/person.service';
@@ -105,7 +105,7 @@ export class PersonUpdateComponent implements OnInit {
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
     this.hierarchyService
-      .query({ filter: 'person-is-null' })
+      .query({ 'personId.specified': 'false' })
       .pipe(map((res: HttpResponse<IHierarchy[]>) => res.body ?? []))
       .pipe(
         map((hierarchies: IHierarchy[]) =>

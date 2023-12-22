@@ -3,6 +3,7 @@
     "changelogDate": "20231218144412"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "hierarchy",
   "fields": [
     {
@@ -14,7 +15,9 @@
       "fieldValidateRulesPattern": "^[A-Z][a-z]+\\d$"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Hierarchy",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "person",
@@ -23,5 +26,7 @@
       "relationshipSide": "right",
       "relationshipType": "one-to-one"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

@@ -10,7 +10,7 @@ import { isPresent } from 'app/core/util/operators';
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ApplicationConfigService } from 'app/core/config/application-config.service';
 import { createRequestOption } from 'app/core/request/request-util';
-import { Search } from 'app/core/request/request.model';
+import { SearchWithPagination } from 'app/core/request/request.model';
 import { IMainTask, NewMainTask } from '../main-task.model';
 
 export type PartialUpdateMainTask = Partial<IMainTask> & Pick<IMainTask, 'id'>;
@@ -77,7 +77,7 @@ export class MainTaskService {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
 
-  search(req: Search): Observable<EntityArrayResponseType> {
+  search(req: SearchWithPagination): Observable<EntityArrayResponseType> {
     const options = createRequestOption(req);
     return this.http.get<RestMainTask[]>(this.resourceSearchUrl, { params: options, observe: 'response' }).pipe(
       map(res => this.convertResponseArrayFromServer(res)),

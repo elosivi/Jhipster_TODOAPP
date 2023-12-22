@@ -10,10 +10,10 @@ export interface IMainTask {
   deadline?: dayjs.Dayjs | null;
   creation?: dayjs.Dayjs | null;
   cost?: number | null;
-  category?: ICategory | null;
-  personOwner?: IPerson | null;
-  status?: IStatus | null;
-  subTasks?: ISubTask[] | null;
+  category?: Pick<ICategory, 'id'> | null;
+  personOwner?: Pick<IPerson, 'id'> | null;
+  status?: Pick<IStatus, 'id'> | null;
+  subTasks?: Pick<ISubTask, 'id'>[] | null;
 }
 
 export type NewMainTask = Omit<IMainTask, 'id'> & { id: null };

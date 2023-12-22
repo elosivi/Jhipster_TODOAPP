@@ -3,10 +3,14 @@ package com.ebarbe.repository.search;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryStringQuery;
 import com.ebarbe.domain.Hierarchy;
 import com.ebarbe.repository.HierarchyRepository;
-import java.util.stream.Stream;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -17,9 +21,9 @@ import org.springframework.scheduling.annotation.Async;
 public interface HierarchySearchRepository extends ElasticsearchRepository<Hierarchy, Long>, HierarchySearchRepositoryInternal {}
 
 interface HierarchySearchRepositoryInternal {
-    Stream<Hierarchy> search(String query);
+    Page<Hierarchy> search(String query, Pageable pageable);
 
-    Stream<Hierarchy> search(Query query);
+    Page<Hierarchy> search(Query query);
 
     @Async
     void index(Hierarchy entity);
@@ -39,14 +43,16 @@ class HierarchySearchRepositoryInternalImpl implements HierarchySearchRepository
     }
 
     @Override
-    public Stream<Hierarchy> search(String query) {
+    public Page<Hierarchy> search(String query, Pageable pageable) {
         NativeQuery nativeQuery = new NativeQuery(QueryStringQuery.of(qs -> qs.query(query))._toQuery());
-        return search(nativeQuery);
+        return search(nativeQuery.setPageable(pageable));
     }
 
     @Override
-    public Stream<Hierarchy> search(Query query) {
-        return elasticsearchTemplate.search(query, Hierarchy.class).map(SearchHit::getContent).stream();
+    public Page<Hierarchy> search(Query query) {
+        SearchHits<Hierarchy> searchHits = elasticsearchTemplate.search(query, Hierarchy.class);
+        List<Hierarchy> hits = searchHits.map(SearchHit::getContent).stream().toList();
+        return new PageImpl<>(hits, query.getPageable(), searchHits.getTotalHits());
     }
 
     @Override

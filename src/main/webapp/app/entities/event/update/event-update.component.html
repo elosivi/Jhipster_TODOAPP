@@ -194,7 +194,7 @@
             [compareWith]="compareEventType"
           >
             <option [ngValue]="null"></option>
-            @for (eventTypeOption of eventTypesCollection; track $index) {
+            @for (eventTypeOption of eventTypesSharedCollection; track $index) {
               <option [ngValue]="eventTypeOption">{{ eventTypeOption.id }}</option>
             }
           </select>

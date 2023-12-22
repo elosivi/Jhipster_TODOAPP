@@ -1,8 +1,10 @@
 package com.ebarbe.web.rest;
 
-import com.ebarbe.domain.Hierarchy;
 import com.ebarbe.repository.HierarchyRepository;
-import com.ebarbe.repository.search.HierarchySearchRepository;
+import com.ebarbe.service.HierarchyQueryService;
+import com.ebarbe.service.HierarchyService;
+import com.ebarbe.service.criteria.HierarchyCriteria;
+import com.ebarbe.service.dto.HierarchyDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.ElasticsearchExceptionMapper;
 import jakarta.validation.Valid;
@@ -12,14 +14,17 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -27,7 +32,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api/hierarchies")
-@Transactional
 public class HierarchyResource {
 
     private final Logger log = LoggerFactory.getLogger(HierarchyResource.class);
@@ -37,30 +41,36 @@ public class HierarchyResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final HierarchyService hierarchyService;
+
     private final HierarchyRepository hierarchyRepository;
 
-    private final HierarchySearchRepository hierarchySearchRepository;
+    private final HierarchyQueryService hierarchyQueryService;
 
-    public HierarchyResource(HierarchyRepository hierarchyRepository, HierarchySearchRepository hierarchySearchRepository) {
+    public HierarchyResource(
+        HierarchyService hierarchyService,
+        HierarchyRepository hierarchyRepository,
+        HierarchyQueryService hierarchyQueryService
+    ) {
+        this.hierarchyService = hierarchyService;
         this.hierarchyRepository = hierarchyRepository;
-        this.hierarchySearchRepository = hierarchySearchRepository;
+        this.hierarchyQueryService = hierarchyQueryService;
     }
 
     /**
      * {@code POST  /hierarchies} : Create a new hierarchy.
      *
-     * @param hierarchy the hierarchy to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new hierarchy, or with status {@code 400 (Bad Request)} if the hierarchy has already an ID.
+     * @param hierarchyDTO the hierarchyDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new hierarchyDTO, or with status {@code 400 (Bad Request)} if the hierarchy has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Hierarchy> createHierarchy(@Valid @RequestBody Hierarchy hierarchy) throws URISyntaxException {
-        log.debug("REST request to save Hierarchy : {}", hierarchy);
-        if (hierarchy.getId() != null) {
+    public ResponseEntity<HierarchyDTO> createHierarchy(@Valid @RequestBody HierarchyDTO hierarchyDTO) throws URISyntaxException {
+        log.debug("REST request to save Hierarchy : {}", hierarchyDTO);
+        if (hierarchyDTO.getId() != null) {
             throw new BadRequestAlertException("A new hierarchy cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Hierarchy result = hierarchyRepository.save(hierarchy);
-        hierarchySearchRepository.index(result);
+        HierarchyDTO result = hierarchyService.save(hierarchyDTO);
         return ResponseEntity
             .created(new URI("/api/hierarchies/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -70,23 +80,23 @@ public class HierarchyResource {
     /**
      * {@code PUT  /hierarchies/:id} : Updates an existing hierarchy.
      *
-     * @param id the id of the hierarchy to save.
-     * @param hierarchy the hierarchy to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated hierarchy,
-     * or with status {@code 400 (Bad Request)} if the hierarchy is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the hierarchy couldn't be updated.
+     * @param id the id of the hierarchyDTO to save.
+     * @param hierarchyDTO the hierarchyDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated hierarchyDTO,
+     * or with status {@code 400 (Bad Request)} if the hierarchyDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the hierarchyDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Hierarchy> updateHierarchy(
+    public ResponseEntity<HierarchyDTO> updateHierarchy(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody Hierarchy hierarchy
+        @Valid @RequestBody HierarchyDTO hierarchyDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update Hierarchy : {}, {}", id, hierarchy);
-        if (hierarchy.getId() == null) {
+        log.debug("REST request to update Hierarchy : {}, {}", id, hierarchyDTO);
+        if (hierarchyDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, hierarchy.getId())) {
+        if (!Objects.equals(id, hierarchyDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -94,35 +104,34 @@ public class HierarchyResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Hierarchy result = hierarchyRepository.save(hierarchy);
-        hierarchySearchRepository.index(result);
+        HierarchyDTO result = hierarchyService.update(hierarchyDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, hierarchy.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, hierarchyDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /hierarchies/:id} : Partial updates given fields of an existing hierarchy, field will ignore if it is null
      *
-     * @param id the id of the hierarchy to save.
-     * @param hierarchy the hierarchy to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated hierarchy,
-     * or with status {@code 400 (Bad Request)} if the hierarchy is not valid,
-     * or with status {@code 404 (Not Found)} if the hierarchy is not found,
-     * or with status {@code 500 (Internal Server Error)} if the hierarchy couldn't be updated.
+     * @param id the id of the hierarchyDTO to save.
+     * @param hierarchyDTO the hierarchyDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated hierarchyDTO,
+     * or with status {@code 400 (Bad Request)} if the hierarchyDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the hierarchyDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the hierarchyDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Hierarchy> partialUpdateHierarchy(
+    public ResponseEntity<HierarchyDTO> partialUpdateHierarchy(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody Hierarchy hierarchy
+        @NotNull @RequestBody HierarchyDTO hierarchyDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Hierarchy partially : {}, {}", id, hierarchy);
-        if (hierarchy.getId() == null) {
+        log.debug("REST request to partial update Hierarchy partially : {}, {}", id, hierarchyDTO);
+        if (hierarchyDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, hierarchy.getId())) {
+        if (!Objects.equals(id, hierarchyDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,70 +139,68 @@ public class HierarchyResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Hierarchy> result = hierarchyRepository
-            .findById(hierarchy.getId())
-            .map(existingHierarchy -> {
-                if (hierarchy.getDescription() != null) {
-                    existingHierarchy.setDescription(hierarchy.getDescription());
-                }
-
-                return existingHierarchy;
-            })
-            .map(hierarchyRepository::save)
-            .map(savedHierarchy -> {
-                hierarchySearchRepository.index(savedHierarchy);
-                return savedHierarchy;
-            });
+        Optional<HierarchyDTO> result = hierarchyService.partialUpdate(hierarchyDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, hierarchy.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, hierarchyDTO.getId().toString())
         );
     }
 
     /**
      * {@code GET  /hierarchies} : get all the hierarchies.
      *
-     * @param filter the filter of the request.
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of hierarchies in body.
      */
     @GetMapping("")
-    public List<Hierarchy> getAllHierarchies(@RequestParam(name = "filter", required = false) String filter) {
-        if ("person-is-null".equals(filter)) {
-            log.debug("REST request to get all Hierarchys where person is null");
-            return StreamSupport
-                .stream(hierarchyRepository.findAll().spliterator(), false)
-                .filter(hierarchy -> hierarchy.getPerson() == null)
-                .toList();
-        }
-        log.debug("REST request to get all Hierarchies");
-        return hierarchyRepository.findAll();
+    public ResponseEntity<List<HierarchyDTO>> getAllHierarchies(
+        HierarchyCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Hierarchies by criteria: {}", criteria);
+
+        Page<HierarchyDTO> page = hierarchyQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /hierarchies/count} : count all the hierarchies.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countHierarchies(HierarchyCriteria criteria) {
+        log.debug("REST request to count Hierarchies by criteria: {}", criteria);
+        return ResponseEntity.ok().body(hierarchyQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /hierarchies/:id} : get the "id" hierarchy.
      *
-     * @param id the id of the hierarchy to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the hierarchy, or with status {@code 404 (Not Found)}.
+     * @param id the id of the hierarchyDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the hierarchyDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Hierarchy> getHierarchy(@PathVariable("id") Long id) {
+    public ResponseEntity<HierarchyDTO> getHierarchy(@PathVariable("id") Long id) {
         log.debug("REST request to get Hierarchy : {}", id);
-        Optional<Hierarchy> hierarchy = hierarchyRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(hierarchy);
+        Optional<HierarchyDTO> hierarchyDTO = hierarchyService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(hierarchyDTO);
     }
 
     /**
      * {@code DELETE  /hierarchies/:id} : delete the "id" hierarchy.
      *
-     * @param id the id of the hierarchy to delete.
+     * @param id the id of the hierarchyDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteHierarchy(@PathVariable("id") Long id) {
         log.debug("REST request to delete Hierarchy : {}", id);
-        hierarchyRepository.deleteById(id);
-        hierarchySearchRepository.deleteFromIndexById(id);
+        hierarchyService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
@@ -205,13 +212,19 @@ public class HierarchyResource {
      * to the query.
      *
      * @param query the query of the hierarchy search.
+     * @param pageable the pagination information.
      * @return the result of the search.
      */
     @GetMapping("/_search")
-    public List<Hierarchy> searchHierarchies(@RequestParam("query") String query) {
-        log.debug("REST request to search Hierarchies for query {}", query);
+    public ResponseEntity<List<HierarchyDTO>> searchHierarchies(
+        @RequestParam("query") String query,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to search for a page of Hierarchies for query {}", query);
         try {
-            return StreamSupport.stream(hierarchySearchRepository.search(query).spliterator(), false).toList();
+            Page<HierarchyDTO> page = hierarchyService.search(query, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
         } catch (RuntimeException e) {
             throw ElasticsearchExceptionMapper.mapException(e);
         }

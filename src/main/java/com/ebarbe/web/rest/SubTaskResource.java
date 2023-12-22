@@ -1,8 +1,10 @@
 package com.ebarbe.web.rest;
 
-import com.ebarbe.domain.SubTask;
 import com.ebarbe.repository.SubTaskRepository;
-import com.ebarbe.repository.search.SubTaskSearchRepository;
+import com.ebarbe.service.SubTaskQueryService;
+import com.ebarbe.service.SubTaskService;
+import com.ebarbe.service.criteria.SubTaskCriteria;
+import com.ebarbe.service.dto.SubTaskDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.ElasticsearchExceptionMapper;
 import jakarta.validation.Valid;
@@ -12,14 +14,17 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -27,7 +32,6 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api/sub-tasks")
-@Transactional
 public class SubTaskResource {
 
     private final Logger log = LoggerFactory.getLogger(SubTaskResource.class);
@@ -37,30 +41,32 @@ public class SubTaskResource {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final SubTaskService subTaskService;
+
     private final SubTaskRepository subTaskRepository;
 
-    private final SubTaskSearchRepository subTaskSearchRepository;
+    private final SubTaskQueryService subTaskQueryService;
 
-    public SubTaskResource(SubTaskRepository subTaskRepository, SubTaskSearchRepository subTaskSearchRepository) {
+    public SubTaskResource(SubTaskService subTaskService, SubTaskRepository subTaskRepository, SubTaskQueryService subTaskQueryService) {
+        this.subTaskService = subTaskService;
         this.subTaskRepository = subTaskRepository;
-        this.subTaskSearchRepository = subTaskSearchRepository;
+        this.subTaskQueryService = subTaskQueryService;
     }
 
     /**
      * {@code POST  /sub-tasks} : Create a new subTask.
      *
-     * @param subTask the subTask to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new subTask, or with status {@code 400 (Bad Request)} if the subTask has already an ID.
+     * @param subTaskDTO the subTaskDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new subTaskDTO, or with status {@code 400 (Bad Request)} if the subTask has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<SubTask> createSubTask(@Valid @RequestBody SubTask subTask) throws URISyntaxException {
-        log.debug("REST request to save SubTask : {}", subTask);
-        if (subTask.getId() != null) {
+    public ResponseEntity<SubTaskDTO> createSubTask(@Valid @RequestBody SubTaskDTO subTaskDTO) throws URISyntaxException {
+        log.debug("REST request to save SubTask : {}", subTaskDTO);
+        if (subTaskDTO.getId() != null) {
             throw new BadRequestAlertException("A new subTask cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        SubTask result = subTaskRepository.save(subTask);
-        subTaskSearchRepository.index(result);
+        SubTaskDTO result = subTaskService.save(subTaskDTO);
         return ResponseEntity
             .created(new URI("/api/sub-tasks/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
@@ -70,23 +76,23 @@ public class SubTaskResource {
     /**
      * {@code PUT  /sub-tasks/:id} : Updates an existing subTask.
      *
-     * @param id the id of the subTask to save.
-     * @param subTask the subTask to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subTask,
-     * or with status {@code 400 (Bad Request)} if the subTask is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the subTask couldn't be updated.
+     * @param id the id of the subTaskDTO to save.
+     * @param subTaskDTO the subTaskDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subTaskDTO,
+     * or with status {@code 400 (Bad Request)} if the subTaskDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the subTaskDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<SubTask> updateSubTask(
+    public ResponseEntity<SubTaskDTO> updateSubTask(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody SubTask subTask
+        @Valid @RequestBody SubTaskDTO subTaskDTO
     ) throws URISyntaxException {
-        log.debug("REST request to update SubTask : {}, {}", id, subTask);
-        if (subTask.getId() == null) {
+        log.debug("REST request to update SubTask : {}, {}", id, subTaskDTO);
+        if (subTaskDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, subTask.getId())) {
+        if (!Objects.equals(id, subTaskDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -94,35 +100,34 @@ public class SubTaskResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        SubTask result = subTaskRepository.save(subTask);
-        subTaskSearchRepository.index(result);
+        SubTaskDTO result = subTaskService.update(subTaskDTO);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, subTask.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, subTaskDTO.getId().toString()))
             .body(result);
     }
 
     /**
      * {@code PATCH  /sub-tasks/:id} : Partial updates given fields of an existing subTask, field will ignore if it is null
      *
-     * @param id the id of the subTask to save.
-     * @param subTask the subTask to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subTask,
-     * or with status {@code 400 (Bad Request)} if the subTask is not valid,
-     * or with status {@code 404 (Not Found)} if the subTask is not found,
-     * or with status {@code 500 (Internal Server Error)} if the subTask couldn't be updated.
+     * @param id the id of the subTaskDTO to save.
+     * @param subTaskDTO the subTaskDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated subTaskDTO,
+     * or with status {@code 400 (Bad Request)} if the subTaskDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the subTaskDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the subTaskDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<SubTask> partialUpdateSubTask(
+    public ResponseEntity<SubTaskDTO> partialUpdateSubTask(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody SubTask subTask
+        @NotNull @RequestBody SubTaskDTO subTaskDTO
     ) throws URISyntaxException {
-        log.debug("REST request to partial update SubTask partially : {}, {}", id, subTask);
-        if (subTask.getId() == null) {
+        log.debug("REST request to partial update SubTask partially : {}, {}", id, subTaskDTO);
+        if (subTaskDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, subTask.getId())) {
+        if (!Objects.equals(id, subTaskDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -130,71 +135,68 @@ public class SubTaskResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<SubTask> result = subTaskRepository
-            .findById(subTask.getId())
-            .map(existingSubTask -> {
-                if (subTask.getDescription() != null) {
-                    existingSubTask.setDescription(subTask.getDescription());
-                }
-                if (subTask.getDeadline() != null) {
-                    existingSubTask.setDeadline(subTask.getDeadline());
-                }
-                if (subTask.getCreation() != null) {
-                    existingSubTask.setCreation(subTask.getCreation());
-                }
-                if (subTask.getCost() != null) {
-                    existingSubTask.setCost(subTask.getCost());
-                }
-
-                return existingSubTask;
-            })
-            .map(subTaskRepository::save)
-            .map(savedSubTask -> {
-                subTaskSearchRepository.index(savedSubTask);
-                return savedSubTask;
-            });
+        Optional<SubTaskDTO> result = subTaskService.partialUpdate(subTaskDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, subTask.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, subTaskDTO.getId().toString())
         );
     }
 
     /**
      * {@code GET  /sub-tasks} : get all the subTasks.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of subTasks in body.
      */
     @GetMapping("")
-    public List<SubTask> getAllSubTasks() {
-        log.debug("REST request to get all SubTasks");
-        return subTaskRepository.findAll();
+    public ResponseEntity<List<SubTaskDTO>> getAllSubTasks(
+        SubTaskCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get SubTasks by criteria: {}", criteria);
+
+        Page<SubTaskDTO> page = subTaskQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /sub-tasks/count} : count all the subTasks.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countSubTasks(SubTaskCriteria criteria) {
+        log.debug("REST request to count SubTasks by criteria: {}", criteria);
+        return ResponseEntity.ok().body(subTaskQueryService.countByCriteria(criteria));
     }
 
     /**
      * {@code GET  /sub-tasks/:id} : get the "id" subTask.
      *
-     * @param id the id of the subTask to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subTask, or with status {@code 404 (Not Found)}.
+     * @param id the id of the subTaskDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the subTaskDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<SubTask> getSubTask(@PathVariable("id") Long id) {
+    public ResponseEntity<SubTaskDTO> getSubTask(@PathVariable("id") Long id) {
         log.debug("REST request to get SubTask : {}", id);
-        Optional<SubTask> subTask = subTaskRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(subTask);
+        Optional<SubTaskDTO> subTaskDTO = subTaskService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(subTaskDTO);
     }
 
     /**
      * {@code DELETE  /sub-tasks/:id} : delete the "id" subTask.
      *
-     * @param id the id of the subTask to delete.
+     * @param id the id of the subTaskDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteSubTask(@PathVariable("id") Long id) {
         log.debug("REST request to delete SubTask : {}", id);
-        subTaskRepository.deleteById(id);
-        subTaskSearchRepository.deleteFromIndexById(id);
+        subTaskService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString()))
@@ -206,13 +208,19 @@ public class SubTaskResource {
      * to the query.
      *
      * @param query the query of the subTask search.
+     * @param pageable the pagination information.
      * @return the result of the search.
      */
     @GetMapping("/_search")
-    public List<SubTask> searchSubTasks(@RequestParam("query") String query) {
-        log.debug("REST request to search SubTasks for query {}", query);
+    public ResponseEntity<List<SubTaskDTO>> searchSubTasks(
+        @RequestParam("query") String query,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to search for a page of SubTasks for query {}", query);
         try {
-            return StreamSupport.stream(subTaskSearchRepository.search(query).spliterator(), false).toList();
+            Page<SubTaskDTO> page = subTaskService.search(query, pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
         } catch (RuntimeException e) {
             throw ElasticsearchExceptionMapper.mapException(e);
         }

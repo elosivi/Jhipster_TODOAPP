@@ -9,8 +9,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.ebarbe.IntegrationTest;
 import com.ebarbe.domain.Hierarchy;
+import com.ebarbe.domain.Person;
 import com.ebarbe.repository.HierarchyRepository;
 import com.ebarbe.repository.search.HierarchySearchRepository;
+import com.ebarbe.service.dto.HierarchyDTO;
+import com.ebarbe.service.mapper.HierarchyMapper;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +51,9 @@ class HierarchyResourceIT {
 
     @Autowired
     private HierarchyRepository hierarchyRepository;
+
+    @Autowired
+    private HierarchyMapper hierarchyMapper;
 
     @Autowired
     private HierarchySearchRepository hierarchySearchRepository;
@@ -99,8 +105,9 @@ class HierarchyResourceIT {
         int databaseSizeBeforeCreate = hierarchyRepository.findAll().size();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
         restHierarchyMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchy)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchyDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Hierarchy in the database
@@ -121,13 +128,14 @@ class HierarchyResourceIT {
     void createHierarchyWithExistingId() throws Exception {
         // Create the Hierarchy with an existing ID
         hierarchy.setId(1L);
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
 
         int databaseSizeBeforeCreate = hierarchyRepository.findAll().size();
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restHierarchyMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchy)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchyDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Hierarchy in the database
@@ -146,9 +154,10 @@ class HierarchyResourceIT {
         hierarchy.setDescription(null);
 
         // Create the Hierarchy, which fails.
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
 
         restHierarchyMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchy)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchyDTO)))
             .andExpect(status().isBadRequest());
 
         List<Hierarchy> hierarchyList = hierarchyRepository.findAll();
@@ -189,6 +198,150 @@ class HierarchyResourceIT {
 
     @Test
     @Transactional
+    void getHierarchiesByIdFiltering() throws Exception {
+        // Initialize the database
+        hierarchyRepository.saveAndFlush(hierarchy);
+
+        Long id = hierarchy.getId();
+
+        defaultHierarchyShouldBeFound("id.equals=" + id);
+        defaultHierarchyShouldNotBeFound("id.notEquals=" + id);
+
+        defaultHierarchyShouldBeFound("id.greaterThanOrEqual=" + id);
+        defaultHierarchyShouldNotBeFound("id.greaterThan=" + id);
+
+        defaultHierarchyShouldBeFound("id.lessThanOrEqual=" + id);
+        defaultHierarchyShouldNotBeFound("id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByDescriptionIsEqualToSomething() throws Exception {
+        // Initialize the database
+        hierarchyRepository.saveAndFlush(hierarchy);
+
+        // Get all the hierarchyList where description equals to DEFAULT_DESCRIPTION
+        defaultHierarchyShouldBeFound("description.equals=" + DEFAULT_DESCRIPTION);
+
+        // Get all the hierarchyList where description equals to UPDATED_DESCRIPTION
+        defaultHierarchyShouldNotBeFound("description.equals=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByDescriptionIsInShouldWork() throws Exception {
+        // Initialize the database
+        hierarchyRepository.saveAndFlush(hierarchy);
+
+        // Get all the hierarchyList where description in DEFAULT_DESCRIPTION or UPDATED_DESCRIPTION
+        defaultHierarchyShouldBeFound("description.in=" + DEFAULT_DESCRIPTION + "," + UPDATED_DESCRIPTION);
+
+        // Get all the hierarchyList where description equals to UPDATED_DESCRIPTION
+        defaultHierarchyShouldNotBeFound("description.in=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByDescriptionIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        hierarchyRepository.saveAndFlush(hierarchy);
+
+        // Get all the hierarchyList where description is not null
+        defaultHierarchyShouldBeFound("description.specified=true");
+
+        // Get all the hierarchyList where description is null
+        defaultHierarchyShouldNotBeFound("description.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByDescriptionContainsSomething() throws Exception {
+        // Initialize the database
+        hierarchyRepository.saveAndFlush(hierarchy);
+
+        // Get all the hierarchyList where description contains DEFAULT_DESCRIPTION
+        defaultHierarchyShouldBeFound("description.contains=" + DEFAULT_DESCRIPTION);
+
+        // Get all the hierarchyList where description contains UPDATED_DESCRIPTION
+        defaultHierarchyShouldNotBeFound("description.contains=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByDescriptionNotContainsSomething() throws Exception {
+        // Initialize the database
+        hierarchyRepository.saveAndFlush(hierarchy);
+
+        // Get all the hierarchyList where description does not contain DEFAULT_DESCRIPTION
+        defaultHierarchyShouldNotBeFound("description.doesNotContain=" + DEFAULT_DESCRIPTION);
+
+        // Get all the hierarchyList where description does not contain UPDATED_DESCRIPTION
+        defaultHierarchyShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByPersonIsEqualToSomething() throws Exception {
+        Person person;
+        if (TestUtil.findAll(em, Person.class).isEmpty()) {
+            hierarchyRepository.saveAndFlush(hierarchy);
+            person = PersonResourceIT.createEntity(em);
+        } else {
+            person = TestUtil.findAll(em, Person.class).get(0);
+        }
+        em.persist(person);
+        em.flush();
+        hierarchy.setPerson(person);
+        person.setHierarchy(hierarchy);
+        hierarchyRepository.saveAndFlush(hierarchy);
+        Long personId = person.getId();
+        // Get all the hierarchyList where person equals to personId
+        defaultHierarchyShouldBeFound("personId.equals=" + personId);
+
+        // Get all the hierarchyList where person equals to (personId + 1)
+        defaultHierarchyShouldNotBeFound("personId.equals=" + (personId + 1));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultHierarchyShouldBeFound(String filter) throws Exception {
+        restHierarchyMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(hierarchy.getId().intValue())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+
+        // Check, that the count call also returns 1
+        restHierarchyMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultHierarchyShouldNotBeFound(String filter) throws Exception {
+        restHierarchyMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restHierarchyMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    @Transactional
     void getNonExistingHierarchy() throws Exception {
         // Get the hierarchy
         restHierarchyMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
@@ -209,12 +362,13 @@ class HierarchyResourceIT {
         // Disconnect from session so that the updates on updatedHierarchy are not directly saved in db
         em.detach(updatedHierarchy);
         updatedHierarchy.description(UPDATED_DESCRIPTION);
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(updatedHierarchy);
 
         restHierarchyMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedHierarchy.getId())
+                put(ENTITY_API_URL_ID, hierarchyDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(updatedHierarchy))
+                    .content(TestUtil.convertObjectToJsonBytes(hierarchyDTO))
             )
             .andExpect(status().isOk());
 
@@ -241,12 +395,15 @@ class HierarchyResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         hierarchy.setId(longCount.incrementAndGet());
 
+        // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restHierarchyMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, hierarchy.getId())
+                put(ENTITY_API_URL_ID, hierarchyDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(hierarchy))
+                    .content(TestUtil.convertObjectToJsonBytes(hierarchyDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -264,12 +421,15 @@ class HierarchyResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         hierarchy.setId(longCount.incrementAndGet());
 
+        // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restHierarchyMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(TestUtil.convertObjectToJsonBytes(hierarchy))
+                    .content(TestUtil.convertObjectToJsonBytes(hierarchyDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -287,9 +447,12 @@ class HierarchyResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         hierarchy.setId(longCount.incrementAndGet());
 
+        // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restHierarchyMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchy)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(TestUtil.convertObjectToJsonBytes(hierarchyDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Hierarchy in the database
@@ -362,12 +525,15 @@ class HierarchyResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         hierarchy.setId(longCount.incrementAndGet());
 
+        // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restHierarchyMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, hierarchy.getId())
+                patch(ENTITY_API_URL_ID, hierarchyDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(hierarchy))
+                    .content(TestUtil.convertObjectToJsonBytes(hierarchyDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -385,12 +551,15 @@ class HierarchyResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         hierarchy.setId(longCount.incrementAndGet());
 
+        // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restHierarchyMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(hierarchy))
+                    .content(TestUtil.convertObjectToJsonBytes(hierarchyDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -408,10 +577,13 @@ class HierarchyResourceIT {
         int searchDatabaseSizeBefore = IterableUtil.sizeOf(hierarchySearchRepository.findAll());
         hierarchy.setId(longCount.incrementAndGet());
 
+        // Create the Hierarchy
+        HierarchyDTO hierarchyDTO = hierarchyMapper.toDto(hierarchy);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restHierarchyMockMvc
             .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(hierarchy))
+                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(TestUtil.convertObjectToJsonBytes(hierarchyDTO))
             )
             .andExpect(status().isMethodNotAllowed());
 

@@ -3,6 +3,7 @@
     "changelogDate": "20231218144312"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "category",
   "fields": [
     {
@@ -21,7 +22,9 @@
       "fieldValidateRulesMinlength": "3"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Category",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "mainTask",
@@ -30,5 +33,7 @@
       "relationshipSide": "right",
       "relationshipType": "one-to-many"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

@@ -25,7 +25,7 @@ export class EventUpdateComponent implements OnInit {
   isSaving = false;
   event: IEvent | null = null;
 
-  eventTypesCollection: IEventType[] = [];
+  eventTypesSharedCollection: IEventType[] = [];
   peopleSharedCollection: IPerson[] = [];
 
   editForm: EventFormGroup = this.eventFormService.createEventFormGroup();
@@ -90,8 +90,8 @@ export class EventUpdateComponent implements OnInit {
     this.event = event;
     this.eventFormService.resetForm(this.editForm, event);
 
-    this.eventTypesCollection = this.eventTypeService.addEventTypeToCollectionIfMissing<IEventType>(
-      this.eventTypesCollection,
+    this.eventTypesSharedCollection = this.eventTypeService.addEventTypeToCollectionIfMissing<IEventType>(
+      this.eventTypesSharedCollection,
       event.eventType,
     );
     this.peopleSharedCollection = this.personService.addPersonToCollectionIfMissing<IPerson>(
@@ -102,14 +102,14 @@ export class EventUpdateComponent implements OnInit {
 
   protected loadRelationshipsOptions(): void {
     this.eventTypeService
-      .query({ filter: 'event-is-null' })
+      .query()
       .pipe(map((res: HttpResponse<IEventType[]>) => res.body ?? []))
       .pipe(
         map((eventTypes: IEventType[]) =>
           this.eventTypeService.addEventTypeToCollectionIfMissing<IEventType>(eventTypes, this.event?.eventType),
         ),
       )
-      .subscribe((eventTypes: IEventType[]) => (this.eventTypesCollection = eventTypes));
+      .subscribe((eventTypes: IEventType[]) => (this.eventTypesSharedCollection = eventTypes));
 
     this.personService
       .query()

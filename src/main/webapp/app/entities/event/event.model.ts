@@ -13,8 +13,8 @@ export interface IEvent {
   placeDetails?: string | null;
   adress?: string | null;
   note?: string | null;
-  eventType?: IEventType | null;
-  people?: IPerson[] | null;
+  eventType?: Pick<IEventType, 'id'> | null;
+  people?: Pick<IPerson, 'id'>[] | null;
 }
 
 export type NewEvent = Omit<IEvent, 'id'> & { id: null };

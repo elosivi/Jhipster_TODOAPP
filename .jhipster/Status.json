@@ -3,6 +3,7 @@
     "changelogDate": "20231218144112"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "status",
   "fields": [
     {
@@ -13,7 +14,9 @@
       "fieldValidateRulesMinlength": "3"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Status",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "mainTask",
@@ -29,5 +32,7 @@
       "relationshipSide": "right",
       "relationshipType": "one-to-many"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

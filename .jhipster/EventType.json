@@ -3,6 +3,7 @@
     "changelogDate": "20231218144012"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "event_type",
   "fields": [
     {
@@ -25,14 +26,18 @@
       "fieldType": "Duration"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "EventType",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "event",
       "otherEntityRelationshipName": "eventType",
       "relationshipName": "event",
       "relationshipSide": "right",
-      "relationshipType": "one-to-one"
+      "relationshipType": "one-to-many"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

@@ -50,6 +50,8 @@
     </div>
   </form>
 
+  <jhi-filter [filters]="filters"></jhi-filter>
+
   @if (people?.length === 0) {
     <div class="alert alert-warning" id="no-result">
       <span jhiTranslate="todoApp.person.home.notFound">Aucun Person trouvé</span>
@@ -110,6 +112,21 @@
               </td>
               <td class="text-end">
                 <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/event']"
+                    [queryParams]="{ 'filter[personId.in]': person.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('todoApp.person.event' | translate) }"
+                      >Show Event</span
+                    >
+                  </button>
                   <a [routerLink]="['/person', person.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
                     <fa-icon icon="eye"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
@@ -130,6 +147,25 @@
           }
         </tbody>
       </table>
+    </div>
+  }
+  @if (people && people.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
     </div>
   }
 </div>

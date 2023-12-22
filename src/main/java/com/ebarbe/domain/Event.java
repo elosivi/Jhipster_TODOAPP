@@ -68,9 +68,8 @@ public class Event implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String note;
 
-    @JsonIgnoreProperties(value = { "event" }, allowSetters = true)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
+    @JsonIgnoreProperties(value = { "events" }, allowSetters = true)
     private EventType eventType;
 
     @ManyToMany(fetch = FetchType.LAZY)

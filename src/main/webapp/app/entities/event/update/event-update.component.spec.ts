@@ -52,22 +52,26 @@ describe('Event Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call eventType query and add missing value', () => {
+    it('Should call EventType query and add missing value', () => {
       const event: IEvent = { id: 456 };
       const eventType: IEventType = { id: 22628 };
       event.eventType = eventType;
 
       const eventTypeCollection: IEventType[] = [{ id: 17268 }];
       jest.spyOn(eventTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: eventTypeCollection })));
-      const expectedCollection: IEventType[] = [eventType, ...eventTypeCollection];
+      const additionalEventTypes = [eventType];
+      const expectedCollection: IEventType[] = [...additionalEventTypes, ...eventTypeCollection];
       jest.spyOn(eventTypeService, 'addEventTypeToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ event });
       comp.ngOnInit();
 
       expect(eventTypeService.query).toHaveBeenCalled();
-      expect(eventTypeService.addEventTypeToCollectionIfMissing).toHaveBeenCalledWith(eventTypeCollection, eventType);
-      expect(comp.eventTypesCollection).toEqual(expectedCollection);
+      expect(eventTypeService.addEventTypeToCollectionIfMissing).toHaveBeenCalledWith(
+        eventTypeCollection,
+        ...additionalEventTypes.map(expect.objectContaining),
+      );
+      expect(comp.eventTypesSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should call Person query and add missing value', () => {
@@ -102,7 +106,7 @@ describe('Event Management Update Component', () => {
       activatedRoute.data = of({ event });
       comp.ngOnInit();
 
-      expect(comp.eventTypesCollection).toContain(eventType);
+      expect(comp.eventTypesSharedCollection).toContain(eventType);
       expect(comp.peopleSharedCollection).toContain(person);
       expect(comp.event).toEqual(event);
     });

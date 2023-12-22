@@ -50,6 +50,8 @@
     </div>
   </form>
 
+  <jhi-filter [filters]="filters"></jhi-filter>
+
   @if (eventTypes?.length === 0) {
     <div class="alert alert-warning" id="no-result">
       <span jhiTranslate="todoApp.eventType.home.notFound">Aucun Event Type trouvé</span>
@@ -106,6 +108,21 @@
               <td title="{{ eventType.duration }}">{{ eventType.duration | duration }}</td>
               <td class="text-end">
                 <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/event']"
+                    [queryParams]="{ 'filter[eventTypeId.in]': eventType.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('todoApp.eventType.event' | translate) }"
+                      >Show Event</span
+                    >
+                  </button>
                   <a [routerLink]="['/event-type', eventType.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
                     <fa-icon icon="eye"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
@@ -126,6 +143,25 @@
           }
         </tbody>
       </table>
+    </div>
+  }
+  @if (eventTypes && eventTypes.length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page: page, totalItems: totalItems, itemsPerPage: itemsPerPage }"></jhi-item-count>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
     </div>
   }
 </div>

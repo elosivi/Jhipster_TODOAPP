@@ -66,3 +66,9 @@ relationship OneToOne{
 relationship ManyToMany{
 	Event to Person
 }
+
+filter *
+dto * with mapstruct
+paginate * with pagination
+service * with serviceClass
+search * with elasticsearch

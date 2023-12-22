@@ -3,6 +3,7 @@
     "changelogDate": "20231218143912"
   },
   "applications": "*",
+  "dto": "mapstruct",
   "entityTableName": "event",
   "fields": [
     {
@@ -58,14 +59,16 @@
       "fieldValidateRulesMinlength": "3"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Event",
+  "pagination": "pagination",
   "relationships": [
     {
       "otherEntityName": "eventType",
       "otherEntityRelationshipName": "event",
       "relationshipName": "eventType",
       "relationshipSide": "left",
-      "relationshipType": "one-to-one"
+      "relationshipType": "many-to-one"
     },
     {
       "otherEntityName": "person",
@@ -74,5 +77,7 @@
       "relationshipSide": "left",
       "relationshipType": "many-to-many"
     }
-  ]
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
 }

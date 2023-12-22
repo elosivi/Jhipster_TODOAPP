@@ -7,7 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
 import { IUser } from 'app/entities/user/user.model';
-import { UserService } from 'app/entities/user/user.service';
+import { UserService } from 'app/entities/user/service/user.service';
 import { IHierarchy } from 'app/entities/hierarchy/hierarchy.model';
 import { HierarchyService } from 'app/entities/hierarchy/service/hierarchy.service';
 import { IPerson } from '../person.model';

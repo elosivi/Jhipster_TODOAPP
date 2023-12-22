@@ -4,8 +4,8 @@ import { ISubTask } from 'app/entities/sub-task/sub-task.model';
 export interface IStatus {
   id: number;
   description?: string | null;
-  mainTasks?: IMainTask[] | null;
-  subTasks?: ISubTask[] | null;
+  mainTasks?: Pick<IMainTask, 'id'>[] | null;
+  subTasks?: Pick<ISubTask, 'id'>[] | null;
 }
 
 export type NewStatus = Omit<IStatus, 'id'> & { id: null };

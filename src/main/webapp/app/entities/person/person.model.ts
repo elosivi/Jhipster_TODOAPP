@@ -6,8 +6,8 @@ export interface IPerson {
   id: number;
   description?: string | null;
   user?: Pick<IUser, 'id'> | null;
-  hierarchy?: IHierarchy | null;
-  events?: IEvent[] | null;
+  hierarchy?: Pick<IHierarchy, 'id'> | null;
+  events?: Pick<IEvent, 'id'>[] | null;
 }
 
 export type NewPerson = Omit<IPerson, 'id'> & { id: null };

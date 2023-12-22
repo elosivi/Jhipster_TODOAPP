@@ -3,10 +3,14 @@ package com.ebarbe.repository.search;
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryStringQuery;
 import com.ebarbe.domain.MainTask;
 import com.ebarbe.repository.MainTaskRepository;
-import java.util.stream.Stream;
+import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.scheduling.annotation.Async;
@@ -17,9 +21,9 @@ import org.springframework.scheduling.annotation.Async;
 public interface MainTaskSearchRepository extends ElasticsearchRepository<MainTask, Long>, MainTaskSearchRepositoryInternal {}
 
 interface MainTaskSearchRepositoryInternal {
-    Stream<MainTask> search(String query);
+    Page<MainTask> search(String query, Pageable pageable);
 
-    Stream<MainTask> search(Query query);
+    Page<MainTask> search(Query query);
 
     @Async
     void index(MainTask entity);
@@ -39,14 +43,16 @@ class MainTaskSearchRepositoryInternalImpl implements MainTaskSearchRepositoryIn
     }
 
     @Override
-    public Stream<MainTask> search(String query) {
+    public Page<MainTask> search(String query, Pageable pageable) {
         NativeQuery nativeQuery = new NativeQuery(QueryStringQuery.of(qs -> qs.query(query))._toQuery());
-        return search(nativeQuery);
+        return search(nativeQuery.setPageable(pageable));
     }
 
     @Override
-    public Stream<MainTask> search(Query query) {
-        return elasticsearchTemplate.search(query, MainTask.class).map(SearchHit::getContent).stream();
+    public Page<MainTask> search(Query query) {
+        SearchHits<MainTask> searchHits = elasticsearchTemplate.search(query, MainTask.class);
+        List<MainTask> hits = searchHits.map(SearchHit::getContent).stream().toList();
+        return new PageImpl<>(hits, query.getPageable(), searchHits.getTotalHits());
     }
 
     @Override

@@ -5,6 +5,7 @@ import static com.ebarbe.domain.EventTypeTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ebarbe.web.rest.TestUtil;
+import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -29,12 +30,20 @@ class EventTypeTest {
         EventType eventType = getEventTypeRandomSampleGenerator();
         Event eventBack = getEventRandomSampleGenerator();
 
-        eventType.setEvents((Set<Event>) eventBack);
-        assertThat(eventType.getEvents()).isEqualTo(eventBack);
+        eventType.addEvent(eventBack);
+        assertThat(eventType.getEvents()).containsOnly(eventBack);
         assertThat(eventBack.getEventType()).isEqualTo(eventType);
 
-        eventType.events(null);
-        assertThat(eventType.getEvents()).isNull();
+        eventType.removeEvent(eventBack);
+        assertThat(eventType.getEvents()).doesNotContain(eventBack);
+        assertThat(eventBack.getEventType()).isNull();
+
+        eventType.events(new HashSet<>(Set.of(eventBack)));
+        assertThat(eventType.getEvents()).containsOnly(eventBack);
+        assertThat(eventBack.getEventType()).isEqualTo(eventType);
+
+        eventType.setEvents(new HashSet<>());
+        assertThat(eventType.getEvents()).doesNotContain(eventBack);
         assertThat(eventBack.getEventType()).isNull();
     }
 }
