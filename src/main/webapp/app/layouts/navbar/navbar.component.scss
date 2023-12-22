@@ -60,3 +60,30 @@ Logo styles
   background: url('/content/images/logoFiesta.png') no-repeat center center;
   background-size: contain;
 }
+
+/* ==========================================================================
+App own scss - ebarbe
+========================================================================== */
+
+//dropdown menu
+a.dropdown span.navBarText:hover,
+span.navBarText:hover {
+  color: $white;
+}
+a.dropdown-item.active,
+span.navBarText.active {
+  color: $white;
+}
+
+//main menu
+a.nav-link span:hover {
+  color: $blue;
+}
+
+//dropdown menu titles
+span.dropdown-menu-title {
+  font-weight: 400;
+  color: $blue;
+  font-size: 1.2rem;
+  padding-left: 5px;
+}

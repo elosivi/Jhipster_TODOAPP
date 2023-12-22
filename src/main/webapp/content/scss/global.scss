@@ -6,6 +6,7 @@
 $light-blue: rgba(155, 196, 203, 1);
 $blue: rgba(71, 141, 154, 1);
 $grey: rgba(60, 71, 75, 1);
+$grey-light: rgba(145, 145, 145, 1);
 $red: rgba(188, 65, 43, 1);
 $sunset: rgba(253, 214, 146, 1);
 $white: rgba(246, 246, 246, 1);
@@ -109,7 +110,10 @@ Generic styles
 }
 
 .footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  border-top: 1px solid $grey-light;
+  opacity: 0.5;
+  margin-top: 50px;
+  padding-top: 30px;
 }
 
 .hand,
@@ -314,10 +318,13 @@ a.link {
   color: $light-blue;
 }
 
-dark-font,
+//table header
+tr div.d-flex span,
+blue-font,
 span.blue-font {
   color: $blue;
 }
+
 /* ==========================================================================
 FORMS
 ========================================================================== */

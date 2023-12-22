@@ -9,19 +9,22 @@
 
   <!--  colonne principale/ modifier le texte selon la langue cf repo i18n-->
   <div class="col-md-5 centerText">
-    <h1 class="display-4" jhiTranslate="home.title">TODO LIST></h1>
-    <h2 class="display-4" jhiTranslate="home.subtitle">TODO LIST</h2>
+    <h1 class="display-4" jhiTranslate="homeapp.title">TODO LIST</h1>
+    <h2 class="display-4" jhiTranslate="homeapp.subtitle">TODO LIST</h2>
+
     <div [ngSwitch]="account !== null">
       <!-- utilisateur connecté-->
       <div class="" *ngSwitchCase="true">
-        <span id="home-logged-message" *ngIf="account" jhiTranslate="home.logged.message" [translateValues]="{ username: account.login }"
+        <span id="home-logged-message" *ngIf="account" jhiTranslate="homeapp.logged.message" [translateValues]="{ username: account.login }"
           >"{{ account.login }}", vous avez des choses à faire !.</span
         >
       </div>
 
       <!--aucun utilisateur connecté-->
       <div class="" *ngSwitchCase="false">
-        <p class="count-link link-text connexion-link"><a class="" (click)="login()" jhiTranslate="home.link.connexion">Se connecter</a></p>
+        <p class="count-link link-text connexion-link">
+          <a class="" (click)="login()" jhiTranslate="homeapp.link.connexion">Se connecter</a>
+        </p>
       </div>
       <br />
       <br />

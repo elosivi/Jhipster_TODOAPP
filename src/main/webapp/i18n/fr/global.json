@@ -6,17 +6,24 @@
       "home": "Accueil",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
-        "main": "Entités",
+        "main": "Consulter/Créer/Modifier",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
-        "event": "Event",
-        "mainTask": "Main Task",
-        "eventType": "Event Type",
-        "subTask": "Sub Task",
-        "status": "Status",
-        "person": "Person",
-        "category": "Category",
-        "hierarchy": "Hierarchy"
+        "event": "Evenements",
+        "mainTask": "Tâche",
+        "eventType": "type d'évenement",
+        "subTask": "Sous-tâche",
+        "status": "Status des tâches",
+        "person": "Participants",
+        "category": "Categorie d'évenement",
+        "hierarchy": "Responsabilités",
+        "users": "Utilisateurs",
+        "titles": {
+          "events": "Gestion des évènements : ",
+          "tasks": "Gestion des tâches",
+          "persons": "Gestion des participans"
+        }
       },
+
       "account": {
         "main": "Compte",
         "settings": "Profil",
