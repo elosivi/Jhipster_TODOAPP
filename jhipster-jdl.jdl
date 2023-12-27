@@ -19,6 +19,7 @@ description String required minlength(3) maxlength(100)
 
 entity Person {
 description String minlength(3) maxlength(300)
+    pseudo String minlength(3) maxlength(50)
 }
 
 entity Category {
