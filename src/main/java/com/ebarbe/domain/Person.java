@@ -29,6 +29,15 @@ public class Person implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
 
+    @Size(min = 3, max = 50)
+    @Column(name = "pseudo", length = 50)
+    @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
+    private String pseudo;
+
+    @Column(name = "name")
+    @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
+    private String name;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private User user;
@@ -69,6 +78,32 @@ public class Person implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPseudo() {
+        return this.pseudo;
+    }
+
+    public Person pseudo(String pseudo) {
+        this.setPseudo(pseudo);
+        return this;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Person name(String name) {
+        this.setName(name);
+        return this;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public User getUser() {
@@ -153,6 +188,8 @@ public class Person implements Serializable {
         return "Person{" +
             "id=" + getId() +
             ", description='" + getDescription() + "'" +
+            ", pseudo='" + getPseudo() + "'" +
+            ", name='" + getName() + "'" +
             "}";
     }
 }

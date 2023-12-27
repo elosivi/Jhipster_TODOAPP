@@ -1,10 +1,14 @@
 package com.ebarbe.service;
 
 import com.ebarbe.domain.Person;
+import com.ebarbe.repository.PersonExtendedRepository;
 import com.ebarbe.repository.PersonRepository;
+import com.ebarbe.repository.UserRepository;
 import com.ebarbe.repository.search.PersonSearchRepository;
 import com.ebarbe.service.dto.PersonDTO;
+import com.ebarbe.service.dto.UserDTO;
 import com.ebarbe.service.mapper.PersonMapper;
+import com.ebarbe.service.mapper.UserMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +25,28 @@ import org.springframework.transaction.annotation.Transactional;
 public class PersonService {
 
     private final Logger log = LoggerFactory.getLogger(PersonService.class);
-
+    private final PersonExtendedRepository personExtendedRepository;
     private final PersonRepository personRepository;
-
     private final PersonMapper personMapper;
 
     private final PersonSearchRepository personSearchRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
-    public PersonService(PersonRepository personRepository, PersonMapper personMapper, PersonSearchRepository personSearchRepository) {
+    public PersonService(
+        PersonExtendedRepository personExtendedRepository,
+        PersonRepository personRepository,
+        PersonMapper personMapper,
+        PersonSearchRepository personSearchRepository,
+        UserRepository userRepository,
+        UserMapper userMapper
+    ) {
+        this.personExtendedRepository = personExtendedRepository;
         this.personRepository = personRepository;
         this.personMapper = personMapper;
         this.personSearchRepository = personSearchRepository;
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -98,6 +113,30 @@ public class PersonService {
     public Page<PersonDTO> findAll(Pageable pageable) {
         log.debug("Request to get all People");
         return personRepository.findAll(pageable).map(personMapper::toDto);
+    }
+
+    /**
+     * Get all the people with user info.
+     * added by ebarbe
+     *
+     * @param pageable the pagination information.
+     * @return the list of entities.
+     */
+    @Transactional(readOnly = true)
+    public Page<PersonDTO> findAllWithUser(Pageable pageable) {
+        log.debug("Request to get all People with user informations");
+        Page<Person> persons = personRepository.findAll(pageable);
+        return persons.map(person -> {
+            PersonDTO personDTO = personMapper.toDto(person);
+
+            // Chargez les informations de l'utilisateur
+            if (person.getUser() != null) {
+                UserDTO userDTO = userMapper.userToUserDTO(userRepository.findById(person.getUser().getId()).orElse(null));
+                personDTO.setUser(userDTO);
+            }
+
+            return personDTO;
+        });
     }
 
     /**

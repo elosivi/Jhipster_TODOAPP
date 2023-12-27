@@ -25,6 +25,10 @@ public class PersonCriteria implements Serializable, Criteria {
 
     private StringFilter description;
 
+    private StringFilter pseudo;
+
+    private StringFilter name;
+
     private LongFilter userId;
 
     private LongFilter hierarchyId;
@@ -38,6 +42,8 @@ public class PersonCriteria implements Serializable, Criteria {
     public PersonCriteria(PersonCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.description = other.description == null ? null : other.description.copy();
+        this.pseudo = other.pseudo == null ? null : other.pseudo.copy();
+        this.name = other.name == null ? null : other.name.copy();
         this.userId = other.userId == null ? null : other.userId.copy();
         this.hierarchyId = other.hierarchyId == null ? null : other.hierarchyId.copy();
         this.eventId = other.eventId == null ? null : other.eventId.copy();
@@ -77,6 +83,36 @@ public class PersonCriteria implements Serializable, Criteria {
 
     public void setDescription(StringFilter description) {
         this.description = description;
+    }
+
+    public StringFilter getPseudo() {
+        return pseudo;
+    }
+
+    public StringFilter pseudo() {
+        if (pseudo == null) {
+            pseudo = new StringFilter();
+        }
+        return pseudo;
+    }
+
+    public void setPseudo(StringFilter pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public StringFilter getName() {
+        return name;
+    }
+
+    public StringFilter name() {
+        if (name == null) {
+            name = new StringFilter();
+        }
+        return name;
+    }
+
+    public void setName(StringFilter name) {
+        this.name = name;
     }
 
     public LongFilter getUserId() {
@@ -144,6 +180,8 @@ public class PersonCriteria implements Serializable, Criteria {
         return (
             Objects.equals(id, that.id) &&
             Objects.equals(description, that.description) &&
+            Objects.equals(pseudo, that.pseudo) &&
+            Objects.equals(name, that.name) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(hierarchyId, that.hierarchyId) &&
             Objects.equals(eventId, that.eventId) &&
@@ -153,7 +191,7 @@ public class PersonCriteria implements Serializable, Criteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, userId, hierarchyId, eventId, distinct);
+        return Objects.hash(id, description, pseudo, name, userId, hierarchyId, eventId, distinct);
     }
 
     // prettier-ignore
@@ -162,6 +200,8 @@ public class PersonCriteria implements Serializable, Criteria {
         return "PersonCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (description != null ? "description=" + description + ", " : "") +
+            (pseudo != null ? "pseudo=" + pseudo + ", " : "") +
+            (name != null ? "name=" + name + ", " : "") +
             (userId != null ? "userId=" + userId + ", " : "") +
             (hierarchyId != null ? "hierarchyId=" + hierarchyId + ", " : "") +
             (eventId != null ? "eventId=" + eventId + ", " : "") +

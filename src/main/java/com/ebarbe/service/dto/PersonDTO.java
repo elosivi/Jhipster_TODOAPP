@@ -1,5 +1,7 @@
 package com.ebarbe.service.dto;
 
+import com.ebarbe.service.dto.HierarchyDTO;
+import com.ebarbe.service.dto.UserDTO;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -14,6 +16,11 @@ public class PersonDTO implements Serializable {
 
     @Size(min = 3, max = 300)
     private String description;
+
+    @Size(min = 3, max = 50)
+    private String pseudo;
+
+    private String name;
 
     private UserDTO user;
 
@@ -33,6 +40,22 @@ public class PersonDTO implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getPseudo() {
+        return pseudo;
+    }
+
+    public void setPseudo(String pseudo) {
+        this.pseudo = pseudo;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public UserDTO getUser() {
@@ -78,7 +101,9 @@ public class PersonDTO implements Serializable {
         return "PersonDTO{" +
             "id=" + getId() +
             ", description='" + getDescription() + "'" +
-            ", user=" + getUser() +
+            ", pseudo='" + getPseudo() + "'" +
+            ", name='" + getName() + "'" +
+            ", user=" + (getUser() != null ? getUser().toString() : "null") +
             ", hierarchy=" + getHierarchy() +
             "}";
     }
