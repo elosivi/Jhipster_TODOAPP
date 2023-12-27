@@ -2,6 +2,7 @@ package com.ebarbe.repository.search;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryStringQuery;
 import com.ebarbe.domain.Person;
+import com.ebarbe.repository.PersonExtendedRepository;
 import com.ebarbe.repository.PersonRepository;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -36,10 +37,16 @@ class PersonSearchRepositoryInternalImpl implements PersonSearchRepositoryIntern
 
     private final ElasticsearchTemplate elasticsearchTemplate;
     private final PersonRepository repository;
+    private final PersonExtendedRepository extendedRepository;
 
-    PersonSearchRepositoryInternalImpl(ElasticsearchTemplate elasticsearchTemplate, PersonRepository repository) {
+    PersonSearchRepositoryInternalImpl(
+        ElasticsearchTemplate elasticsearchTemplate,
+        PersonRepository repository,
+        PersonExtendedRepository extendedRepository
+    ) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.repository = repository;
+        this.extendedRepository = extendedRepository;
     }
 
     @Override
