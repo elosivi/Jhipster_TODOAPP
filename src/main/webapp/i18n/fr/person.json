@@ -20,7 +20,12 @@
       },
       "id": "ID",
       "description": "Description",
-      "user": "User",
+      "pseudo": "Pseudo",
+      "name": "Name",
+      "user": {
+        "name": "nom de l'utilisateur",
+        "email": "email"
+      },
       "hierarchy": "Hierarchy",
       "event": "Event"
     }

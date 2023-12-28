@@ -80,10 +80,10 @@ describe('SubTask Management Update Component', () => {
 
     it('Should call Person query and add missing value', () => {
       const subTask: ISubTask = { id: 456 };
-      const personDoer: IPerson = { id: 31698 };
+      const personDoer: IPerson = { id: 17961 };
       subTask.personDoer = personDoer;
 
-      const personCollection: IPerson[] = [{ id: 8283 }];
+      const personCollection: IPerson[] = [{ id: 5737 }];
       jest.spyOn(personService, 'query').mockReturnValue(of(new HttpResponse({ body: personCollection })));
       const additionalPeople = [personDoer];
       const expectedCollection: IPerson[] = [...additionalPeople, ...personCollection];
@@ -126,7 +126,7 @@ describe('SubTask Management Update Component', () => {
       const subTask: ISubTask = { id: 456 };
       const mainTask: IMainTask = { id: 25142 };
       subTask.mainTask = mainTask;
-      const personDoer: IPerson = { id: 17961 };
+      const personDoer: IPerson = { id: 23860 };
       subTask.personDoer = personDoer;
       const status: IStatus = { id: 21923 };
       subTask.status = status;

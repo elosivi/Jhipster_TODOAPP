@@ -11,7 +11,7 @@ export interface IMainTask {
   creation?: dayjs.Dayjs | null;
   cost?: number | null;
   category?: Pick<ICategory, 'id'> | null;
-  personOwner?: Pick<IPerson, 'id'> | null;
+  personOwner?: IPerson | null;
   status?: Pick<IStatus, 'id'> | null;
   subTasks?: Pick<ISubTask, 'id'>[] | null;
 }

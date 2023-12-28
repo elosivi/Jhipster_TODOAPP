@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
+import { combineLatest, filter, Observable, Subscription, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -49,6 +49,7 @@ export class PersonComponent implements OnInit {
   totalItems = 0;
   page = 1;
 
+  private dataSubscription: Subscription | undefined;
   constructor(
     protected personService: PersonService,
     protected activatedRoute: ActivatedRoute,
@@ -90,6 +91,12 @@ export class PersonComponent implements OnInit {
       });
   }
 
+  /**
+   *  souscription au flux de données asynchrone "person" provenant du backend.
+   *  Lorsque de nouvelles données sont reçues (next:) ,
+   *  la fonction onResponseSuccess() est appelée pour traiter ces données et mettre à jour le composant en conséquence.
+   *
+   */
   load(): void {
     this.loadFromBackendWithRouteInformations().subscribe({
       next: (res: EntityArrayResponseType) => {
@@ -106,6 +113,11 @@ export class PersonComponent implements OnInit {
     this.handleNavigation(page, this.predicate, this.ascending, this.filters.filterOptions, this.currentSearch);
   }
 
+  /**
+   *  méthode responsable de préparer la requête HTTP en fonction des informations actuelles dans les paramètres de route ou d'état du composant.
+   *  retourne un observable
+   * @protected
+   */
   protected loadFromBackendWithRouteInformations(): Observable<EntityArrayResponseType> {
     return combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data]).pipe(
       tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
@@ -128,14 +140,30 @@ export class PersonComponent implements OnInit {
     }
   }
 
+  /**
+   * Récupère les infos du header de la requete
+   * Extrait les données du corps de la réponse et les assigne à people pour stockage
+   * @param response
+   * @protected
+   */
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
-    const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
+    console.log('************response');
+    console.dir(response);
+    const dataFromBody: any = this.fillComponentAttributesFromResponseBody(response.body);
+    console.log('************dataFromBody');
+    console.dir(dataFromBody);
     this.people = dataFromBody;
+    console.log(this.people);
   }
 
-  protected fillComponentAttributesFromResponseBody(data: IPerson[] | null): IPerson[] {
-    return data ?? [];
+  protected fillComponentAttributesFromResponseBody(data: IPerson[] | null) {
+    if (!(data && 'content' in data)) {
+      return [];
+    } else {
+      console.log('*******************fillComponentAttributesFromResponseBody', data.content);
+      return data.content;
+    }
   }
 
   protected fillComponentAttributesFromResponseHeader(headers: HttpHeaders): void {
@@ -163,7 +191,18 @@ export class PersonComponent implements OnInit {
     if (this.currentSearch && this.currentSearch !== '') {
       return this.personService.search(queryObject).pipe(tap(() => (this.isLoading = false)));
     } else {
-      return this.personService.query(queryObject).pipe(tap(() => (this.isLoading = false)));
+      // TEST
+      console.log('*******data from back');
+      this.personService.queryPersonsWithUsers(queryObject).subscribe(
+        (data: any) => {
+          console.log(data.body.content);
+        },
+        (error: any) => {
+          console.error("Une erreur s'est produite : ", error);
+        },
+      );
+      //END TEST
+      return this.personService.queryPersonsWithUsers(queryObject).pipe(tap(() => (this.isLoading = false)));
     }
   }
 

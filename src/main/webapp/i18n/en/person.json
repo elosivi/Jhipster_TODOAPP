@@ -20,6 +20,8 @@
       },
       "id": "ID",
       "description": "Description",
+      "pseudo": "Pseudo",
+      "name": "Name",
       "user": "User",
       "hierarchy": "Hierarchy",
       "event": "Event"

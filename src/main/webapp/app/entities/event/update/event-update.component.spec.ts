@@ -76,10 +76,10 @@ describe('Event Management Update Component', () => {
 
     it('Should call Person query and add missing value', () => {
       const event: IEvent = { id: 456 };
-      const people: IPerson[] = [{ id: 18168 }];
+      const people: IPerson[] = [{ id: 20839 }];
       event.people = people;
 
-      const personCollection: IPerson[] = [{ id: 24662 }];
+      const personCollection: IPerson[] = [{ id: 10567 }];
       jest.spyOn(personService, 'query').mockReturnValue(of(new HttpResponse({ body: personCollection })));
       const additionalPeople = [...people];
       const expectedCollection: IPerson[] = [...additionalPeople, ...personCollection];
@@ -100,7 +100,7 @@ describe('Event Management Update Component', () => {
       const event: IEvent = { id: 456 };
       const eventType: IEventType = { id: 11098 };
       event.eventType = eventType;
-      const person: IPerson = { id: 20839 };
+      const person: IPerson = { id: 24622 };
       event.people = [person];
 
       activatedRoute.data = of({ event });

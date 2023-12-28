@@ -19,6 +19,7 @@ export type EntityArrayResponseType = HttpResponse<IPerson[]>;
 export class PersonService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/people');
   protected resourceSearchUrl = this.applicationConfigService.getEndpointFor('api/people/_search');
+  protected resourcePersonsWithUsersUrl = this.applicationConfigService.getEndpointFor('api/people/persons-with-users');
 
   constructor(
     protected http: HttpClient,
@@ -46,6 +47,14 @@ export class PersonService {
     return this.http.get<IPerson[]>(this.resourceUrl, { params: options, observe: 'response' });
   }
 
+  /**
+   * Get all Persons with, for each, user data attached
+   * @param req
+   */
+  queryPersonsWithUsers(req?: any): Observable<EntityArrayResponseType> {
+    const options = createRequestOption(req);
+    return this.http.get<IPerson[]>(this.resourcePersonsWithUsersUrl, { params: options, observe: 'response' });
+  }
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }

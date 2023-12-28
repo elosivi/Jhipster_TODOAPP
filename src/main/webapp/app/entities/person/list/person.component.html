@@ -61,6 +61,7 @@
   @if (people && people.length > 0) {
     <div class="table-responsive table-entities" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
+        <!--  TABLE HEADER -->
         <thead>
           <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" (sortChange)="navigateToWithComponentValues()">
             <th scope="col" jhiSortBy="id">
@@ -78,9 +79,31 @@
                 }
               </div>
             </th>
-            <th scope="col" jhiSortBy="user.id">
+            <th scope="col" jhiSortBy="pseudo">
               <div class="d-flex">
-                <span jhiTranslate="todoApp.person.user">User</span>
+                <span jhiTranslate="todoApp.person.pseudo">Pseudo</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.person.name">Name</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="user.lastName">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.person.user.name">User name</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="user.email">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.person.user.email">User email</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -93,6 +116,8 @@
             <th scope="col"></th>
           </tr>
         </thead>
+
+        <!--  table body-->
         <tbody>
           @for (person of people; track trackId) {
             <tr data-cy="entityTable">
@@ -100,9 +125,10 @@
                 <a [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a>
               </td>
               <td>{{ person.description }}</td>
-              <td>
-                {{ person.user?.id }}
-              </td>
+              <td>{{ person.pseudo }}</td>
+              <td>{{ person.name }}</td>
+              <td>{{ person.user?.firstName }}</td>
+              <td>{{ person.user?.email }}</td>
               <td>
                 @if (person.hierarchy) {
                   <div>

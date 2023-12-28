@@ -1,16 +1,20 @@
 import { IPerson, NewPerson } from './person.model';
 
 export const sampleWithRequiredData: IPerson = {
-  id: 5737,
-};
-
-export const sampleWithPartialData: IPerson = {
   id: 21983,
 };
 
+export const sampleWithPartialData: IPerson = {
+  id: 2359,
+  description: 'avex à bas de présidence',
+  name: 'boum',
+};
+
 export const sampleWithFullData: IPerson = {
-  id: 15371,
-  description: 'tout à fait responsable commissionnaire',
+  id: 8113,
+  description: 'juriste cot cot',
+  pseudo: 'inventer',
+  name: 'envers',
 };
 
 export const sampleWithNewData: NewPerson = {

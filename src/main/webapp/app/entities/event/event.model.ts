@@ -14,7 +14,7 @@ export interface IEvent {
   adress?: string | null;
   note?: string | null;
   eventType?: Pick<IEventType, 'id'> | null;
-  people?: Pick<IPerson, 'id'>[] | null;
+  people?: IPerson[] | null;
 }
 
 export type NewEvent = Omit<IEvent, 'id'> & { id: null };
