@@ -19,6 +19,8 @@ type PersonFormDefaults = Pick<NewPerson, 'id'>;
 type PersonFormGroupContent = {
   id: FormControl<IPerson['id'] | NewPerson['id']>;
   description: FormControl<IPerson['description']>;
+  pseudo: FormControl<IPerson['pseudo']>;
+  name: FormControl<IPerson['name']>;
   user: FormControl<IPerson['user']>;
   hierarchy: FormControl<IPerson['hierarchy']>;
 };
@@ -43,6 +45,10 @@ export class PersonFormService {
       description: new FormControl(personRawValue.description, {
         validators: [Validators.minLength(3), Validators.maxLength(300)],
       }),
+      pseudo: new FormControl(personRawValue.pseudo, {
+        validators: [Validators.minLength(3), Validators.maxLength(50)],
+      }),
+      name: new FormControl(personRawValue.name),
       user: new FormControl(personRawValue.user),
       hierarchy: new FormControl(personRawValue.hierarchy),
     });

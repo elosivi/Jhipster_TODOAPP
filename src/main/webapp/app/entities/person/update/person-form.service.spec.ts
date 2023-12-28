@@ -21,6 +21,8 @@ describe('Person Form Service', () => {
           expect.objectContaining({
             id: expect.any(Object),
             description: expect.any(Object),
+            pseudo: expect.any(Object),
+            name: expect.any(Object),
             user: expect.any(Object),
             hierarchy: expect.any(Object),
           }),
@@ -34,6 +36,8 @@ describe('Person Form Service', () => {
           expect.objectContaining({
             id: expect.any(Object),
             description: expect.any(Object),
+            pseudo: expect.any(Object),
+            name: expect.any(Object),
             user: expect.any(Object),
             hierarchy: expect.any(Object),
           }),
