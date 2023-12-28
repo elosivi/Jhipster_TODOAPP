@@ -1,21 +1,26 @@
 {
   "global": {
-    "title": "TodoApp",
+    "title": "Organise ton évènement",
     "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "menu": {
       "home": "Accueil",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
-        "main": "Entités",
+        "main": "Consulter/Créer/Modifier",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
-        "event": "Event",
-        "mainTask": "Main Task",
-        "eventType": "Event Type",
-        "subTask": "Sub Task",
+        "event": "Evenements",
+        "mainTask": "Tâche",
+        "eventType": "type d'évènements",
+        "subTask": "sous-tâche",
         "status": "Status",
-        "person": "Person",
-        "category": "Category",
-        "hierarchy": "Hierarchy"
+        "person": "Participants",
+        "category": "Categorie",
+        "hierarchy": "Hierarchie",
+        "titles": {
+          "events": "evènement",
+          "tasks": "tâches",
+          "persons": "participants"
+        }
       },
       "account": {
         "main": "Compte",
