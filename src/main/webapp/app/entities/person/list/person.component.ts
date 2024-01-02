@@ -148,20 +148,14 @@ export class PersonComponent implements OnInit {
    */
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
-    console.log('************response');
-    console.dir(response);
     const dataFromBody: any = this.fillComponentAttributesFromResponseBody(response.body);
-    console.log('************dataFromBody');
-    console.dir(dataFromBody);
     this.people = dataFromBody;
-    console.log(this.people);
   }
 
   protected fillComponentAttributesFromResponseBody(data: IPerson[] | null) {
     if (!(data && 'content' in data)) {
       return [];
     } else {
-      console.log('*******************fillComponentAttributesFromResponseBody', data.content);
       return data.content;
     }
   }
@@ -191,17 +185,6 @@ export class PersonComponent implements OnInit {
     if (this.currentSearch && this.currentSearch !== '') {
       return this.personService.search(queryObject).pipe(tap(() => (this.isLoading = false)));
     } else {
-      // TEST
-      console.log('*******data from back');
-      this.personService.queryPersonsWithUsers(queryObject).subscribe(
-        (data: any) => {
-          console.log(data.body.content);
-        },
-        (error: any) => {
-          console.error("Une erreur s'est produite : ", error);
-        },
-      );
-      //END TEST
       return this.personService.queryPersonsWithUsers(queryObject).pipe(tap(() => (this.isLoading = false)));
     }
   }

@@ -5,7 +5,6 @@ import com.ebarbe.service.PersonQueryService;
 import com.ebarbe.service.PersonService;
 import com.ebarbe.service.criteria.PersonCriteria;
 import com.ebarbe.service.dto.PersonDTO;
-import com.ebarbe.service.dto.PersonWithUserDTO;
 import com.ebarbe.service.dto.UserDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.ElasticsearchExceptionMapper;

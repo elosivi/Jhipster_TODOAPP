@@ -40,11 +40,6 @@
                   >Ce champ doit faire moins de 50 caractères.</small
                 >
               }
-              @if (editForm.get('description')?.errors?.pattern) {
-                <small class="form-text text-danger" jhiTranslate="entity.validation.pattern" [translateValues]="{ pattern: 'Description' }"
-                  >Ce champ doit suivre l&apos;expression régulière Description.</small
-                >
-              }
             </div>
           }
         </div>

@@ -102,6 +102,7 @@
   },
   "entity": {
     "action": {
+      "associate": "Associer à un nouveau participant",
       "addblob": "Ajouter blob",
       "addimage": "Ajouter image",
       "back": "Retour",

@@ -2,32 +2,34 @@
   "todoApp": {
     "person": {
       "home": {
-        "title": "People",
-        "refreshListLabel": "Actualiser la liste",
-        "createLabel": "Créer un nouveau Person",
-        "createOrEditLabel": "Créer ou éditer un Person",
-        "search": "Recherche pour Person",
-        "notFound": "Aucun Person trouvé"
+        "title": "Participants",
+        "label": "participant associé",
+        "refreshListLabel": "Actualiser la liste des participants",
+        "createLabel": "Créer un nouveau participant",
+        "createOrEditLabel": "Créer ou éditer un participant",
+        "search": "Recherche pour Participant",
+        "notFound": "Aucun Participant trouvé"
       },
-      "created": "Un nouveau Person a été créé avec l'identifiant {{ param }}",
-      "updated": "Le Person avec l'identifiant {{ param }} a été mis à jour",
-      "deleted": "Le Person avec l'identifiant {{ param }} a été supprimé",
+      "created": "Un nouveau Participant a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Participant avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Participant avec l'identifiant {{ param }} a été supprimé",
       "delete": {
-        "question": "Êtes-vous certain de vouloir supprimer le Person {{ id }} ?"
+        "question": "Êtes-vous certain de vouloir supprimer le Participant {{ id }} ?"
       },
       "detail": {
-        "title": "Person"
+        "title": "Participants"
       },
       "id": "ID",
       "description": "Description",
       "pseudo": "Pseudo",
-      "name": "Name",
+      "name": "Nom du participant",
+      "userTitle": "Utilisateur associé",
       "user": {
-        "name": "nom de l'utilisateur",
-        "email": "email"
+        "name": "Nom de l'utilisateur associé",
+        "email": "Email de l'utilisateur associé"
       },
-      "hierarchy": "Hierarchy",
-      "event": "Event"
+      "hierarchy": "Hierarchie",
+      "event": "Evènement"
     }
   }
 }

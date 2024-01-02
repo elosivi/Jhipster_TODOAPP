@@ -27,9 +27,9 @@
           <dd>
             <span>{{ person.name }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.person.user">User</span></dt>
+          <dt><span jhiTranslate="todoApp.person.userTitle">User</span></dt>
           <dd>
-            <span>{{ person.user?.id }}</span>
+            <span>{{ person.user?.firstName }} {{ person.user?.lastName }}</span>
           </dd>
           <dt><span jhiTranslate="todoApp.person.hierarchy">Hierarchy</span></dt>
           <dd>

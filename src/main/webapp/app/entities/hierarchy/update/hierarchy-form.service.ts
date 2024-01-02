@@ -39,7 +39,7 @@ export class HierarchyFormService {
         },
       ),
       description: new FormControl(hierarchyRawValue.description, {
-        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[A-Z][a-z]+\\d$')],
+        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
       }),
     });
   }

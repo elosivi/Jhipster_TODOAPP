@@ -71,14 +71,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="description">
-              <div class="d-flex">
-                <span jhiTranslate="todoApp.person.description">Description</span>
-                @if (!currentSearch) {
-                  <fa-icon class="p-1" icon="sort"></fa-icon>
-                }
-              </div>
-            </th>
+
             <th scope="col" jhiSortBy="pseudo">
               <div class="d-flex">
                 <span jhiTranslate="todoApp.person.pseudo">Pseudo</span>
@@ -95,19 +88,27 @@
                 }
               </div>
             </th>
-            <th scope="col" jhiSortBy="user.lastName">
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="todoApp.person.description">Description</span>
+                @if (!currentSearch) {
+                  <fa-icon class="p-1" icon="sort"></fa-icon>
+                }
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="user.lastName" class="borderLeftColumn">
               <div class="d-flex">
                 <span jhiTranslate="todoApp.person.user.name">User name</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="user.email">
+            <th scope="col" jhiSortBy="user.email" class="borderRightColumn">
               <div class="d-flex">
                 <span jhiTranslate="todoApp.person.user.email">User email</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="hierarchy.id">
+            <th scope="col" jhiSortBy="hierarchy.description">
               <div class="d-flex">
                 <span jhiTranslate="todoApp.person.hierarchy">Hierarchy</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
@@ -124,15 +125,16 @@
               <td>
                 <a [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a>
               </td>
-              <td>{{ person.description }}</td>
+
               <td>{{ person.pseudo }}</td>
               <td>{{ person.name }}</td>
-              <td>{{ person.user?.firstName }}</td>
-              <td>{{ person.user?.email }}</td>
+              <td>{{ person.description }}</td>
+              <td class="borderLeftColumn">{{ person.user?.firstName }} {{ person.user?.lastName }}</td>
+              <td class="borderRightColumn">{{ person.user?.email }}</td>
               <td>
                 @if (person.hierarchy) {
                   <div>
-                    <a [routerLink]="['/hierarchy', person.hierarchy.id, 'view']">{{ person.hierarchy.id }}</a>
+                    <a [routerLink]="['/hierarchy', person.hierarchy.id, 'view']">{{ person.hierarchy.description }}</a>
                   </div>
                 }
               </td>

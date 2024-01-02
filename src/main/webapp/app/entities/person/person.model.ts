@@ -8,7 +8,7 @@ export interface IPerson {
   pseudo?: string | null;
   name?: string | null;
   user?: IUser | null;
-  hierarchy?: Pick<IHierarchy, 'id'> | null;
+  hierarchy?: IHierarchy | null;
   events?: Pick<IEvent, 'id'>[] | null;
 }
 

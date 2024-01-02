@@ -24,6 +24,7 @@
 
   <jhi-alert></jhi-alert>
 
+  <!--  SEARCH-->
   <form name="searchForm" class="row row-cols-sm-auto align-items-center">
     <div class="col-sm-12">
       <div class="input-group w-100 mt-3">
@@ -54,7 +55,7 @@
 
   @if (hierarchies?.length === 0) {
     <div class="alert alert-warning" id="no-result">
-      <span jhiTranslate="todoApp.hierarchy.home.notFound">Aucun Hierarchy trouvé</span>
+      <fa-icon icon="bell"></fa-icon> <span jhiTranslate="todoApp.hierarchy.home.notFound">Aucun Hierarchy trouvé</span>
     </div>
   }
 

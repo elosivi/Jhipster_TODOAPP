@@ -23,16 +23,16 @@ description String minlength(3) maxlength(300)
 }
 
 entity Category {
-label String required minlength(3) maxlength(50) pattern(/^[A-Z][a-z]+\d$/)
+label String required minlength(3) maxlength(50)
 description String minlength(3) maxlength(300)
 }
 
 entity Hierarchy{
-description String required minlength(3) maxlength(50) pattern(/^[A-Z][a-z]+\d$/)
+description String required minlength(3) maxlength(50)
 }
 
 entity Event{
-label String required minlength(3) maxlength(50) pattern(/^[A-Z][a-z]+\d$/)
+label String required minlength(3) maxlength(50)
 description String minlength(3) maxlength(300)
 theme String minlength(3) maxlength(300)
 dateStart LocalDate required
@@ -44,7 +44,7 @@ note  String minlength(3) maxlength(300)
 }
 
 entity EventType{
-label String required minlength(3) maxlength(50) pattern(/^[A-Z][a-z]+\d$/)
+label String required minlength(3) maxlength(50)
 description String minlength(3) maxlength(300)
 duration Duration
 }

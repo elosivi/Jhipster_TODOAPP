@@ -41,7 +41,7 @@ export class EventTypeFormService {
         },
       ),
       label: new FormControl(eventTypeRawValue.label, {
-        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(50), Validators.pattern('^[A-Z][a-z]+\\d$')],
+        validators: [Validators.required, Validators.minLength(3), Validators.maxLength(50)],
       }),
       description: new FormControl(eventTypeRawValue.description, {
         validators: [Validators.minLength(3), Validators.maxLength(300)],
