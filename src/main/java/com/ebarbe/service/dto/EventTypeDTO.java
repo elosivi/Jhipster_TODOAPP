@@ -15,7 +15,6 @@ public class EventTypeDTO implements Serializable {
 
     @NotNull
     @Size(min = 3, max = 50)
-    @Pattern(regexp = "^[A-Z][a-z]+\\d$")
     private String label;
 
     @Size(min = 3, max = 300)

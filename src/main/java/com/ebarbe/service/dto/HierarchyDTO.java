@@ -14,7 +14,6 @@ public class HierarchyDTO implements Serializable {
 
     @NotNull
     @Size(min = 3, max = 50)
-    @Pattern(regexp = "^[A-Z][a-z]+\\d$")
     private String description;
 
     public Long getId() {
