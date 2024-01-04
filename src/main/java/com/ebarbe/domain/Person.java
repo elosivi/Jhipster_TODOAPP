@@ -43,8 +43,8 @@ public class Person implements Serializable {
     private User user;
 
     @JsonIgnoreProperties(value = { "person" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(unique = true)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hierarchy_id")
     private Hierarchy hierarchy;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people")

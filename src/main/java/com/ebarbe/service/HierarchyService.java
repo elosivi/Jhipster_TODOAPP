@@ -117,7 +117,7 @@ public class HierarchyService {
         log.debug("Request to get all hierarchies where Person is null");
         return StreamSupport
             .stream(hierarchyRepository.findAll().spliterator(), false)
-            .filter(hierarchy -> hierarchy.getPerson() == null)
+            .filter(hierarchy -> hierarchy.getPersons() == null)
             .map(hierarchyMapper::toDto)
             .collect(Collectors.toCollection(LinkedList::new));
     }

@@ -27,7 +27,6 @@ public class Event implements Serializable {
 
     @NotNull
     @Size(min = 3, max = 50)
-    @Pattern(regexp = "^[A-Z][a-z]+\\d$")
     @Column(name = "label", length = 50, nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String label;

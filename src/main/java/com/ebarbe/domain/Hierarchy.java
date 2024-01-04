@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Hierarchy.
@@ -24,15 +26,13 @@ public class Hierarchy implements Serializable {
 
     @NotNull
     @Size(min = 3, max = 50)
-    @Pattern(regexp = "^[A-Z][a-z]+\\d$")
     @Column(name = "description", length = 50, nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
 
     @JsonIgnoreProperties(value = { "user", "hierarchy", "events" }, allowSetters = true)
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "hierarchy")
-    @org.springframework.data.annotation.Transient
-    private Person person;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "hierarchy")
+    private List<Person> persons = new ArrayList<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -62,22 +62,16 @@ public class Hierarchy implements Serializable {
         this.description = description;
     }
 
-    public Person getPerson() {
-        return this.person;
+    public List<Person> getPersons() {
+        return persons;
     }
 
-    public void setPerson(Person person) {
-        if (this.person != null) {
-            this.person.setHierarchy(null);
-        }
-        if (person != null) {
-            person.setHierarchy(this);
-        }
-        this.person = person;
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
     }
 
-    public Hierarchy person(Person person) {
-        this.setPerson(person);
+    public Hierarchy person(List<Person> person) {
+        this.setPersons((List<Person>) person);
         return this;
     }
 

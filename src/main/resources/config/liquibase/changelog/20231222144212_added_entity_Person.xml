@@ -7,24 +7,18 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity Person.
+        Added pseudo column to the entity Person.
     -->
-    <changeSet id="20231218144212-1" author="jhipster" runAlways = "true">
-        <createTable tableName="person">
-            <column name="id" type="bigint">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="description" type="varchar(300)">
-                <constraints nullable="true" />
-            </column>
-            <column name="user_id" type="bigint">
-                <constraints nullable="true" unique="true" uniqueConstraintName="ux_person__user_id" />
-            </column>
-            <column name="hierarchy_id" type="bigint">
-                <constraints nullable="true" unique="true" uniqueConstraintName="ux_person__hierarchy_id" />
-            </column>
-            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
-        </createTable>
+    <changeSet id="20231222144212_ajouter_colonne_pseudo" author="ebarbe">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="person"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="person">
+            <column name="pseudo" type="VARCHAR(50)"/>
+            <column name="name" type="VARCHAR(250)"/>
+        </addColumn>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -37,5 +31,17 @@
           This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
           Spring Boot configuration key.
     -->
-
+    <changeSet id="20231222144212-1-data" author="ebarbe" context="dev">
+        <loadData
+                  file="config/liquibase/data/person.csv"
+                  separator=";"
+                  tableName="person"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="description" type="string"/>
+            <column name="pseudo" type="string"/>
+            <column name="name" type="string"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
 </databaseChangeLog>
