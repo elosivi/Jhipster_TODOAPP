@@ -174,4 +174,24 @@ public class PersonService {
         log.debug("Request to search for a page of People for query {}", query);
         return personSearchRepository.search(query, pageable).map(personMapper::toDto);
     }
+
+    public void associateUserWithPerson(Long userId, Long personId) {
+        Person person = personRepository
+            .findById(personId)
+            .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + personId));
+        UserDTO userDTO = userRepository
+            .findById(userId)
+            .map(userMapper::userToUserDTO)
+            .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        person.setUser(userMapper.userDTOToSimpleUser(userDTO));
+
+        personRepository.save(person);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<PersonDTO> findOneByUser(Long id) {
+        log.debug("Request to get Person associated with user : {}", id);
+        return this.personExtendedRepository.findOneByUserId(id).map(personMapper::toDto);
+    }
 }
