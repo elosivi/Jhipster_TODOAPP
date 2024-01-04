@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
@@ -13,7 +13,7 @@ import { IHierarchy } from 'app/entities/hierarchy/hierarchy.model';
 import { HierarchyService } from 'app/entities/hierarchy/service/hierarchy.service';
 import { PersonService } from '../service/person.service';
 import { IPerson } from '../person.model';
-import { PersonFormService, PersonFormGroup } from './person-form.service';
+import { PersonFormGroup, PersonFormService } from './person-form.service';
 
 @Component({
   standalone: true,
@@ -30,12 +30,15 @@ export class PersonUpdateComponent implements OnInit {
 
   editForm: PersonFormGroup = this.personFormService.createPersonFormGroup();
 
+  private originalUrl: string = '';
+
   constructor(
     protected personService: PersonService,
     protected personFormService: PersonFormService,
     protected userService: UserService,
     protected hierarchyService: HierarchyService,
     protected activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {}
 
   compareUser = (o1: IUser | null, o2: IUser | null): boolean => this.userService.compareUser(o1, o2);
@@ -50,6 +53,8 @@ export class PersonUpdateComponent implements OnInit {
       }
 
       this.loadRelationshipsOptions();
+
+      this.originalUrl = this.getOriginalUrl();
     });
   }
 
@@ -74,8 +79,24 @@ export class PersonUpdateComponent implements OnInit {
     });
   }
 
+  /**
+   * if navigation come from other entity, on success navigate to this entity
+   * @protected
+   */
   protected onSaveSuccess(): void {
-    this.previousState();
+    if (this.originalUrl.includes('/admin/user-management/new')) {
+      this.router.navigate(['/admin/user-management']);
+    } else {
+      this.previousState();
+    }
+  }
+
+  /**
+   * to define where the user is coming from in the application
+   * @private
+   */
+  private getOriginalUrl(): string {
+    return this.activatedRoute.snapshot.queryParams['returnUrl'] || this.activatedRoute.snapshot.queryParams['redirect_uri'] || '/';
   }
 
   protected onSaveError(): void {
@@ -105,7 +126,7 @@ export class PersonUpdateComponent implements OnInit {
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
 
     this.hierarchyService
-      .query({ 'personId.specified': 'false' })
+      .query()
       .pipe(map((res: HttpResponse<IHierarchy[]>) => res.body ?? []))
       .pipe(
         map((hierarchies: IHierarchy[]) =>

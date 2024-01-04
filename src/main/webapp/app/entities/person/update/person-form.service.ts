@@ -2,6 +2,9 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 import { IPerson, NewPerson } from '../person.model';
+import { IUser } from '../../../admin/user-management/user-management.model';
+import { isPresent } from '../../../core/util/operators';
+import { getUserIdentifier } from '../../user/user.model';
 
 /**
  * A partial Type with required key is used as form input.

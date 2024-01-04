@@ -102,7 +102,7 @@
   },
   "entity": {
     "action": {
-      "associate": "Associer à un nouveau participant",
+      "associate": "Lier à un nouveau participant",
       "addblob": "Ajouter blob",
       "addimage": "Ajouter image",
       "back": "Retour",
@@ -111,6 +111,7 @@
       "delete": "Supprimer",
       "open": "Ouvrir",
       "save": "Sauvegarder",
+      "saveAndLink": "Sauvegarder et lier",
       "view": "Voir",
       "show": "Show {{otherEntity}}"
     },

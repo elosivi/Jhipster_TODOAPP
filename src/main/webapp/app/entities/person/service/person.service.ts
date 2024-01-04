@@ -93,4 +93,18 @@ export class PersonService {
     }
     return personCollection;
   }
+
+  /**
+   * Associates an existing user with an existing person
+   * @param userId user id
+   * @param personId person ID
+   */
+  associateUserWithPerson(userId: number, personId: number): Observable<HttpResponse<{}>> {
+    const url = `${this.resourceUrl}/associate-user/${userId}/with-person/${personId}`;
+    return this.http.post(url, {}, { observe: 'response' });
+  }
+
+  findByUserAssociated(userId: number): Observable<EntityResponseType> {
+    return this.http.get<IPerson>(`${this.resourceUrl}/person?userId=${userId}`, { observe: 'response' });
+  }
 }

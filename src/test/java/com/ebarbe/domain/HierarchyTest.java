@@ -5,6 +5,7 @@ import static com.ebarbe.domain.PersonTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ebarbe.web.rest.TestUtil;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class HierarchyTest {
@@ -28,12 +29,12 @@ class HierarchyTest {
         Hierarchy hierarchy = getHierarchyRandomSampleGenerator();
         Person personBack = getPersonRandomSampleGenerator();
 
-        hierarchy.setPerson(personBack);
-        assertThat(hierarchy.getPerson()).isEqualTo(personBack);
+        hierarchy.setPersons((List<Person>) personBack);
+        assertThat(hierarchy.getPersons()).isEqualTo(personBack);
         assertThat(personBack.getHierarchy()).isEqualTo(hierarchy);
 
         hierarchy.person(null);
-        assertThat(hierarchy.getPerson()).isNull();
+        assertThat(hierarchy.getPersons()).isNull();
         assertThat(personBack.getHierarchy()).isNull();
     }
 }

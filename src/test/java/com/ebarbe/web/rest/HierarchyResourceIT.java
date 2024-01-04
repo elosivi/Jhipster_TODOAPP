@@ -291,7 +291,7 @@ class HierarchyResourceIT {
         }
         em.persist(person);
         em.flush();
-        hierarchy.setPerson(person);
+        hierarchy.setPersons((List<Person>) person);
         person.setHierarchy(hierarchy);
         hierarchyRepository.saveAndFlush(hierarchy);
         Long personId = person.getId();
