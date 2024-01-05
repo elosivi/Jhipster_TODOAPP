@@ -15,12 +15,12 @@ import { UserManagementService } from '../service/user-management.service';
 import { User } from '../user-management.model';
 import UserManagementDeleteDialogComponent from '../delete/user-management-delete-dialog.component';
 import { DatePipe } from '@angular/common';
+import { IPerson } from '../../../entities/person/person.model';
+import { PersonService } from '../../../entities/person/service/person.service';
 
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
-import { IPerson } from '../../../entities/person/person.model';
-import { PersonService } from '../../../entities/person/service/person.service';
 registerLocaleData(localeFr);
 
 @Component({

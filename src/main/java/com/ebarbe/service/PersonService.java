@@ -175,18 +175,45 @@ public class PersonService {
         return personSearchRepository.search(query, pageable).map(personMapper::toDto);
     }
 
+    /**
+     * Link or unlink a user with a person
+     * if the two are not null : link the two
+     * if one is null : unlink
+     * if the two are null: do nothing
+     * @param userId
+     * @param personId
+     */
     public void associateUserWithPerson(Long userId, Long personId) {
-        Person person = personRepository
-            .findById(personId)
-            .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + personId));
-        UserDTO userDTO = userRepository
-            .findById(userId)
-            .map(userMapper::userToUserDTO)
-            .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        Person person = null;
+        if (userId != null || personId != null) {
+            if (userId != null && personId != null) {
+                person =
+                    personRepository
+                        .findById(personId)
+                        .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + personId));
+                UserDTO userDTO = userRepository
+                    .findById(userId)
+                    .map(userMapper::userToUserDTO)
+                    .orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
 
-        person.setUser(userMapper.userDTOToSimpleUser(userDTO));
+                person.setUser(userMapper.userDTOToSimpleUser(userDTO));
+            }
+            if (userId != null && personId == null) {
+                person =
+                    this.personExtendedRepository.findOneByUserId(userId)
+                        .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + personId));
 
-        personRepository.save(person);
+                person.setUser(null);
+            }
+            if (userId == null && personId != null) {
+                person =
+                    personRepository
+                        .findById(personId)
+                        .orElseThrow(() -> new EntityNotFoundException("Person not found with id: " + personId));
+                person.setUser(null);
+            }
+            personRepository.save(person);
+        }
     }
 
     @Transactional(readOnly = true)

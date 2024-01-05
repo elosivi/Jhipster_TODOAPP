@@ -95,11 +95,12 @@ export class PersonService {
   }
 
   /**
-   * Associates an existing user with an existing person
+   * Link or unlink an existing user with an existing person
    * @param userId user id
    * @param personId person ID
    */
   associateUserWithPerson(userId: number, personId: number): Observable<HttpResponse<{}>> | undefined {
+    //link or unlink
     if (userId != null && personId != null) {
       const url = `${this.resourceUrl}/associate-user/${userId}/with-person/${personId}`;
       return this.http.post(url, {}, { observe: 'response' });

@@ -247,18 +247,19 @@ public class PersonResource {
     }
 
     /**
-     * Associates an existing user with an existing person
+     * link or unlink an existing user with an existing person
      * @param userId
      * @param personId
      * @return
      */
     @PostMapping("/associate-user/{userId}/with-person/{personId}")
     public ResponseEntity<Void> associateUserWithPerson(@PathVariable Long userId, @PathVariable Long personId) {
+        if (userId == null && personId == null) {
+            log.debug("REST request to associate User with Person: {} - {} : avorted ", userId, personId);
+            return ResponseEntity.ok().build();
+        }
         log.debug("REST request to associate User with Person: {} - {}", userId, personId);
-
-        // Logique pour associer l'utilisateur à la personne dans votre service
         personService.associateUserWithPerson(userId, personId);
-
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createAlert(applicationName, "Association successful", userId.toString()))

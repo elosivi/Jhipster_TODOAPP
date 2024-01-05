@@ -34,6 +34,7 @@ export default class UserManagementUpdateComponent implements OnInit {
   languages = LANGUAGES;
   authorities: string[] = [];
   personsCollection: IPerson[] = [];
+  initialPersonAssociated: IPerson | null = null;
   selectedPerson: IPerson | null = null;
   isSaving = false;
   isLinked: boolean = false; // indicates if the user must be linked to a participant (Person)
@@ -85,6 +86,9 @@ export default class UserManagementUpdateComponent implements OnInit {
     this.loadThePersonAssociated(this.editForm?.get('id')?.value ?? null);
   }
 
+  /**
+   * load all the persons with user associated data
+   */
   loadPersons(): void {
     this.personService.queryPersonsWithUsers().subscribe((response: HttpResponse<IPerson[]>) => {
       const content = (response.body as any)?.content as IPerson[];
@@ -103,11 +107,10 @@ export default class UserManagementUpdateComponent implements OnInit {
   loadThePersonAssociated(userId: number | null) {
     if (userId != null) {
       this.personService.findByUserAssociated(userId).subscribe((response: HttpResponse<IPerson>) => {
-        console.log('******body');
-        console.log(response.body);
         const content = response.body as IPerson;
         if (content) {
-          this.selectedPerson = content;
+          this.initialPersonAssociated = content;
+          this.selectedPerson = this.initialPersonAssociated;
         } else {
           console.log("ce user n'est associé à aucun participant");
         }
@@ -167,7 +170,7 @@ export default class UserManagementUpdateComponent implements OnInit {
       this.userService.update(user).subscribe(
         (updatedUser: IUser) => {
           //if api update user and a person is selected, link the user with it
-          if (updatedUser && this.selectedPerson) {
+          if (updatedUser && this.selectedPerson != this.initialPersonAssociated) {
             this.linkExistingPerson(updatedUser.id!, selectedPersonId!);
           } else if (this.selectedPerson == null) {
             console.warn('le user est bien enregistré, sans lien avec un participant de type Person ');
@@ -201,19 +204,27 @@ export default class UserManagementUpdateComponent implements OnInit {
     }
   }
 
+  /**
+   * link or unlink a user with a person
+   * @param userId cant be null here
+   * @param personId if null -> unlink
+   * @private
+   */
   private linkExistingPerson(userId: number, personId: number) {
-    this.personService.associateUserWithPerson(userId, personId).subscribe(
-      () => {
-        // Le lien entre le user et la person a été établi avec succès
-        console.log('Lien établi entre le user et la person');
-        this.onSaveSuccess();
-      },
-      () => {
-        // Gestion des erreurs lors de l'établissement du lien
-        console.error("Erreur lors de l'établissement du lien entre le user et la person");
-        () => this.onSaveError();
-      },
-    );
+    if (userId != null) {
+      this.personService.associateUserWithPerson(userId, personId)?.subscribe(
+        () => {
+          // Le lien entre le user et la person a été établi avec succès
+          console.log('Lien établi entre le user et la person');
+          this.onSaveSuccess();
+        },
+        () => {
+          // Gestion des erreurs lors de l'établissement du lien
+          console.error("Erreur lors de l'établissement du lien entre le user et la person");
+          () => this.onSaveError();
+        },
+      );
+    }
   }
   private onSaveSuccess(association?: string): void {
     this.isSaving = false;

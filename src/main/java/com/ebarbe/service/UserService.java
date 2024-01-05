@@ -12,7 +12,10 @@ import com.ebarbe.service.dto.AdminUserDTO;
 import com.ebarbe.service.dto.UserDTO;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,6 +226,10 @@ public class UserService {
                 userSearchRepository.deleteFromIndex(user);
                 log.debug("Deleted User: {}", user);
             });
+    }
+
+    public User getUserByLogin(String login) {
+        return userRepository.findOneByLogin(login).orElse(null);
     }
 
     /**
