@@ -92,9 +92,9 @@ export class PersonComponent implements OnInit {
   }
 
   /**
-   *  souscription au flux de données asynchrone "person" provenant du backend.
-   *  Lorsque de nouvelles données sont reçues (next:) ,
-   *  la fonction onResponseSuccess() est appelée pour traiter ces données et mettre à jour le composant en conséquence.
+   * subscription to the asynchronous "person" data flow coming from the backend.
+   *  When new data is received (next:),
+   *  the onResponseSuccess() function is called to process this data and update the component accordingly..
    *
    */
   load(): void {

@@ -19,6 +19,8 @@ import { DatePipe } from '@angular/common';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { LOCALE_ID } from '@angular/core';
+import { IPerson } from '../../../entities/person/person.model';
+import { PersonService } from '../../../entities/person/service/person.service';
 registerLocaleData(localeFr);
 
 @Component({
@@ -30,6 +32,7 @@ registerLocaleData(localeFr);
 export default class UserManagementComponent implements OnInit {
   currentAccount: Account | null = null;
   users: User[] | null = null;
+  persons: IPerson[] | null = null;
   isLoading = false;
   totalItems = 0;
   itemsPerPage = ITEMS_PER_PAGE;
@@ -43,11 +46,13 @@ export default class UserManagementComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private router: Router,
     private modalService: NgbModal,
+    protected personService: PersonService,
   ) {}
 
   ngOnInit(): void {
     this.accountService.identity().subscribe(account => (this.currentAccount = account));
     this.handleNavigation();
+    this.loadPersons();
   }
 
   setActive(user: User, isActivated: boolean): void {
@@ -84,6 +89,35 @@ export default class UserManagementComponent implements OnInit {
         },
         error: () => (this.isLoading = false),
       });
+  }
+
+  /**
+   * load persons to then ssociated them to each user
+   */
+  loadPersons(): void {
+    this.personService.query().subscribe(
+      res => {
+        if (res.body) {
+          this.persons = res.body;
+        } else {
+          console.error('La réponse ne contient pas de corps.');
+        }
+      },
+      error => {
+        console.error("Une erreur s'est produite lors de la récupération des personnes :", error);
+      },
+    );
+  }
+
+  /**
+   * return the person associated with the user in param
+   * @param user
+   */
+  getUserAssociatedPerson(user: User): IPerson | undefined {
+    if (this.persons != null && this.persons.length > 0) {
+      return this.persons.find(person => person.user?.id === user.id);
+    }
+    return undefined;
   }
 
   transition(): void {

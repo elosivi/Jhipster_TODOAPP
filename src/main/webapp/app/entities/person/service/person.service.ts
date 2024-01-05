@@ -99,11 +99,19 @@ export class PersonService {
    * @param userId user id
    * @param personId person ID
    */
-  associateUserWithPerson(userId: number, personId: number): Observable<HttpResponse<{}>> {
-    const url = `${this.resourceUrl}/associate-user/${userId}/with-person/${personId}`;
-    return this.http.post(url, {}, { observe: 'response' });
+  associateUserWithPerson(userId: number, personId: number): Observable<HttpResponse<{}>> | undefined {
+    if (userId != null && personId != null) {
+      const url = `${this.resourceUrl}/associate-user/${userId}/with-person/${personId}`;
+      return this.http.post(url, {}, { observe: 'response' });
+    }
+    console.warn("impossible d'associer le user : {} avec le participant {}", userId, personId);
+    return undefined;
   }
 
+  /**
+   * load the person associated to the user in param
+   * @param userId
+   */
   findByUserAssociated(userId: number): Observable<EntityResponseType> {
     return this.http.get<IPerson>(`${this.resourceUrl}/person?userId=${userId}`, { observe: 'response' });
   }
