@@ -42,6 +42,9 @@
           <dt><span jhiTranslate="userManagement.lastModifiedDate">Modifié le</span></dt>
           <dd>{{ user.lastModifiedDate | date: 'dd/MM/yy HH:mm' }}</dd>
 
+          <dt><span jhiTranslate="userManagement.person">Participant associé:</span></dt>
+          <dd>{{ associatedPerson?.pseudo }} ({{ associatedPerson?.name }})</dd>
+
           <dt><span jhiTranslate="userManagement.profiles">Droits</span></dt>
           <dd>
             <ul class="list-unstyled">
