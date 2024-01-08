@@ -9,10 +9,9 @@
     {
       "fieldName": "label",
       "fieldType": "String",
-      "fieldValidateRules": ["required", "minlength", "maxlength", "pattern"],
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
       "fieldValidateRulesMaxlength": "50",
-      "fieldValidateRulesMinlength": "3",
-      "fieldValidateRulesPattern": "^[A-Z][a-z]+\\d$"
+      "fieldValidateRulesMinlength": "3"
     },
     {
       "fieldName": "description",

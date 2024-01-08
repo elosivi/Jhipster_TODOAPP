@@ -9,10 +9,9 @@
     {
       "fieldName": "description",
       "fieldType": "String",
-      "fieldValidateRules": ["required", "minlength", "maxlength", "pattern"],
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
       "fieldValidateRulesMaxlength": "50",
-      "fieldValidateRulesMinlength": "3",
-      "fieldValidateRulesPattern": "^[A-Z][a-z]+\\d$"
+      "fieldValidateRulesMinlength": "3"
     }
   ],
   "jpaMetamodelFiltering": true,
@@ -24,7 +23,7 @@
       "otherEntityRelationshipName": "hierarchy",
       "relationshipName": "person",
       "relationshipSide": "right",
-      "relationshipType": "one-to-one"
+      "relationshipType": "one-to-many"
     }
   ],
   "searchEngine": "elasticsearch",
