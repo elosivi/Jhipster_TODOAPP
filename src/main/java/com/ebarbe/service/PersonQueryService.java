@@ -109,15 +109,7 @@ public class PersonQueryService extends QueryService<Person> {
                         buildSpecification(criteria.getUserId(), root -> root.join(Person_.user, JoinType.LEFT).get(User_.id))
                     );
             }
-            if (criteria.getHierarchyId() != null) {
-                specification =
-                    specification.and(
-                        buildSpecification(
-                            criteria.getHierarchyId(),
-                            root -> root.join(Person_.hierarchy, JoinType.LEFT).get(Hierarchy_.id)
-                        )
-                    );
-            }
+
             if (criteria.getEventId() != null) {
                 specification =
                     specification.and(

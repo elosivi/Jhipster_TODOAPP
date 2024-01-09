@@ -25,8 +25,6 @@ public class HierarchyCriteria implements Serializable, Criteria {
 
     private StringFilter description;
 
-    private LongFilter personId;
-
     private Boolean distinct;
 
     public HierarchyCriteria() {}
@@ -34,7 +32,6 @@ public class HierarchyCriteria implements Serializable, Criteria {
     public HierarchyCriteria(HierarchyCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.description = other.description == null ? null : other.description.copy();
-        this.personId = other.personId == null ? null : other.personId.copy();
         this.distinct = other.distinct;
     }
 
@@ -73,21 +70,6 @@ public class HierarchyCriteria implements Serializable, Criteria {
         this.description = description;
     }
 
-    public LongFilter getPersonId() {
-        return personId;
-    }
-
-    public LongFilter personId() {
-        if (personId == null) {
-            personId = new LongFilter();
-        }
-        return personId;
-    }
-
-    public void setPersonId(LongFilter personId) {
-        this.personId = personId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -105,17 +87,12 @@ public class HierarchyCriteria implements Serializable, Criteria {
             return false;
         }
         final HierarchyCriteria that = (HierarchyCriteria) o;
-        return (
-            Objects.equals(id, that.id) &&
-            Objects.equals(description, that.description) &&
-            Objects.equals(personId, that.personId) &&
-            Objects.equals(distinct, that.distinct)
-        );
+        return (Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(distinct, that.distinct));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, personId, distinct);
+        return Objects.hash(id, description, distinct);
     }
 
     // prettier-ignore
@@ -124,7 +101,6 @@ public class HierarchyCriteria implements Serializable, Criteria {
         return "HierarchyCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (description != null ? "description=" + description + ", " : "") +
-            (personId != null ? "personId=" + personId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

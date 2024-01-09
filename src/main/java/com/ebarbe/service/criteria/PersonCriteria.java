@@ -31,8 +31,6 @@ public class PersonCriteria implements Serializable, Criteria {
 
     private LongFilter userId;
 
-    private LongFilter hierarchyId;
-
     private LongFilter eventId;
 
     private Boolean distinct;
@@ -45,7 +43,6 @@ public class PersonCriteria implements Serializable, Criteria {
         this.pseudo = other.pseudo == null ? null : other.pseudo.copy();
         this.name = other.name == null ? null : other.name.copy();
         this.userId = other.userId == null ? null : other.userId.copy();
-        this.hierarchyId = other.hierarchyId == null ? null : other.hierarchyId.copy();
         this.eventId = other.eventId == null ? null : other.eventId.copy();
         this.distinct = other.distinct;
     }
@@ -130,21 +127,6 @@ public class PersonCriteria implements Serializable, Criteria {
         this.userId = userId;
     }
 
-    public LongFilter getHierarchyId() {
-        return hierarchyId;
-    }
-
-    public LongFilter hierarchyId() {
-        if (hierarchyId == null) {
-            hierarchyId = new LongFilter();
-        }
-        return hierarchyId;
-    }
-
-    public void setHierarchyId(LongFilter hierarchyId) {
-        this.hierarchyId = hierarchyId;
-    }
-
     public LongFilter getEventId() {
         return eventId;
     }
@@ -183,7 +165,6 @@ public class PersonCriteria implements Serializable, Criteria {
             Objects.equals(pseudo, that.pseudo) &&
             Objects.equals(name, that.name) &&
             Objects.equals(userId, that.userId) &&
-            Objects.equals(hierarchyId, that.hierarchyId) &&
             Objects.equals(eventId, that.eventId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -191,7 +172,7 @@ public class PersonCriteria implements Serializable, Criteria {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, pseudo, name, userId, hierarchyId, eventId, distinct);
+        return Objects.hash(id, description, pseudo, name, userId, eventId, distinct);
     }
 
     // prettier-ignore
@@ -203,7 +184,6 @@ public class PersonCriteria implements Serializable, Criteria {
             (pseudo != null ? "pseudo=" + pseudo + ", " : "") +
             (name != null ? "name=" + name + ", " : "") +
             (userId != null ? "userId=" + userId + ", " : "") +
-            (hierarchyId != null ? "hierarchyId=" + hierarchyId + ", " : "") +
             (eventId != null ? "eventId=" + eventId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";

@@ -42,11 +42,6 @@ public class Person implements Serializable {
     @JoinColumn(unique = true)
     private User user;
 
-    @JsonIgnoreProperties(value = { "person" }, allowSetters = true)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "hierarchy_id")
-    private Hierarchy hierarchy;
-
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people")
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "eventType", "people" }, allowSetters = true)
@@ -116,19 +111,6 @@ public class Person implements Serializable {
 
     public Person user(User user) {
         this.setUser(user);
-        return this;
-    }
-
-    public Hierarchy getHierarchy() {
-        return this.hierarchy;
-    }
-
-    public void setHierarchy(Hierarchy hierarchy) {
-        this.hierarchy = hierarchy;
-    }
-
-    public Person hierarchy(Hierarchy hierarchy) {
-        this.setHierarchy(hierarchy);
         return this;
     }
 

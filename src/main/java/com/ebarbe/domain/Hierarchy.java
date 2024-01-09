@@ -30,10 +30,6 @@ public class Hierarchy implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
 
-    @JsonIgnoreProperties(value = { "user", "hierarchy", "events" }, allowSetters = true)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "hierarchy")
-    private List<Person> persons = new ArrayList<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -60,19 +56,6 @@ public class Hierarchy implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Person> getPersons() {
-        return persons;
-    }
-
-    public void setPersons(List<Person> persons) {
-        this.persons = persons;
-    }
-
-    public Hierarchy person(List<Person> person) {
-        this.setPersons((List<Person>) person);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

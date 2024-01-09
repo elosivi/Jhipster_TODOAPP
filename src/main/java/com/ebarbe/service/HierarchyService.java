@@ -109,20 +109,6 @@ public class HierarchyService {
     }
 
     /**
-     *  Get all the hierarchies where Person is {@code null}.
-     *  @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<HierarchyDTO> findAllWherePersonIsNull() {
-        log.debug("Request to get all hierarchies where Person is null");
-        return StreamSupport
-            .stream(hierarchyRepository.findAll().spliterator(), false)
-            .filter(hierarchy -> hierarchy.getPersons() == null)
-            .map(hierarchyMapper::toDto)
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    /**
      * Get one hierarchy by id.
      *
      * @param id the id of the entity.
