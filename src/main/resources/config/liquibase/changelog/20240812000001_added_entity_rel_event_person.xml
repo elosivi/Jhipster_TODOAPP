@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="addColumnsToRelEventPerson" author="elodiebarbe">
+        <addColumn tableName="rel_event__person">
+            <column name="hierarchy_id" type="BIGINT"/>
+        </addColumn>
+        <addForeignKeyConstraint
+            baseTableName="rel_event__person"
+            baseColumnNames="hierarchy_id"
+            constraintName="fk_rel_event_person_hierarchy"
+            referencedTableName="hierarchy"
+            referencedColumnNames="id"
+        />
+        <addColumn tableName="rel_event__person">
+            <column name="participation" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>
