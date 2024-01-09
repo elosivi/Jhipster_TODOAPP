@@ -2,7 +2,6 @@ package com.ebarbe.service;
 
 import com.ebarbe.domain.*; // for static metamodels
 import com.ebarbe.domain.Person;
-import com.ebarbe.repository.PersonExtendedRepository;
 import com.ebarbe.repository.PersonRepository;
 import com.ebarbe.repository.search.PersonSearchRepository;
 import com.ebarbe.service.criteria.PersonCriteria;
@@ -32,6 +31,7 @@ public class PersonQueryService extends QueryService<Person> {
     private final Logger log = LoggerFactory.getLogger(PersonQueryService.class);
 
     private final PersonRepository personRepository;
+
     private final PersonMapper personMapper;
 
     private final PersonSearchRepository personSearchRepository;
@@ -109,11 +109,19 @@ public class PersonQueryService extends QueryService<Person> {
                         buildSpecification(criteria.getUserId(), root -> root.join(Person_.user, JoinType.LEFT).get(User_.id))
                     );
             }
-
             if (criteria.getEventId() != null) {
                 specification =
                     specification.and(
                         buildSpecification(criteria.getEventId(), root -> root.join(Person_.events, JoinType.LEFT).get(Event_.id))
+                    );
+            }
+            if (criteria.getRelEventPersonId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getRelEventPersonId(),
+                            root -> root.join(Person_.relEventPeople, JoinType.LEFT).get(RelEventPerson_.id)
+                        )
                     );
             }
         }

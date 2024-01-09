@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A Hierarchy.
@@ -29,6 +29,11 @@ public class Hierarchy implements Serializable {
     @Column(name = "description", length = 50, nullable = false)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "hierarchies")
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "events", "people", "hierarchies" }, allowSetters = true)
+    private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -56,6 +61,37 @@ public class Hierarchy implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Set<RelEventPerson> getRelEventPeople() {
+        return this.relEventPeople;
+    }
+
+    public void setRelEventPeople(Set<RelEventPerson> relEventPeople) {
+        if (this.relEventPeople != null) {
+            this.relEventPeople.forEach(i -> i.removeHierarchy(this));
+        }
+        if (relEventPeople != null) {
+            relEventPeople.forEach(i -> i.addHierarchy(this));
+        }
+        this.relEventPeople = relEventPeople;
+    }
+
+    public Hierarchy relEventPeople(Set<RelEventPerson> relEventPeople) {
+        this.setRelEventPeople(relEventPeople);
+        return this;
+    }
+
+    public Hierarchy addRelEventPerson(RelEventPerson relEventPerson) {
+        this.relEventPeople.add(relEventPerson);
+        relEventPerson.getHierarchies().add(this);
+        return this;
+    }
+
+    public Hierarchy removeRelEventPerson(RelEventPerson relEventPerson) {
+        this.relEventPeople.remove(relEventPerson);
+        relEventPerson.getHierarchies().remove(this);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

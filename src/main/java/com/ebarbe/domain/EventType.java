@@ -41,7 +41,7 @@ public class EventType implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "eventType")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "eventType", "people" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "eventType", "people", "relEventPeople" }, allowSetters = true)
     private Set<Event> events = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

@@ -77,8 +77,13 @@ public class Event implements Serializable {
         joinColumns = @JoinColumn(name = "event_id"),
         inverseJoinColumns = @JoinColumn(name = "person_id")
     )
-    @JsonIgnoreProperties(value = { "user", "hierarchy", "events" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "events", "relEventPeople" }, allowSetters = true)
     private Set<Person> people = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "events")
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "events", "people", "hierarchies" }, allowSetters = true)
+    private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -245,6 +250,37 @@ public class Event implements Serializable {
 
     public Event removePerson(Person person) {
         this.people.remove(person);
+        return this;
+    }
+
+    public Set<RelEventPerson> getRelEventPeople() {
+        return this.relEventPeople;
+    }
+
+    public void setRelEventPeople(Set<RelEventPerson> relEventPeople) {
+        if (this.relEventPeople != null) {
+            this.relEventPeople.forEach(i -> i.removeEvent(this));
+        }
+        if (relEventPeople != null) {
+            relEventPeople.forEach(i -> i.addEvent(this));
+        }
+        this.relEventPeople = relEventPeople;
+    }
+
+    public Event relEventPeople(Set<RelEventPerson> relEventPeople) {
+        this.setRelEventPeople(relEventPeople);
+        return this;
+    }
+
+    public Event addRelEventPerson(RelEventPerson relEventPerson) {
+        this.relEventPeople.add(relEventPerson);
+        relEventPerson.getEvents().add(this);
+        return this;
+    }
+
+    public Event removeRelEventPerson(RelEventPerson relEventPerson) {
+        this.relEventPeople.remove(relEventPerson);
+        relEventPerson.getEvents().remove(this);
         return this;
     }
 

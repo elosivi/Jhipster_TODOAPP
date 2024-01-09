@@ -25,6 +25,8 @@ public class HierarchyCriteria implements Serializable, Criteria {
 
     private StringFilter description;
 
+    private LongFilter relEventPersonId;
+
     private Boolean distinct;
 
     public HierarchyCriteria() {}
@@ -32,6 +34,7 @@ public class HierarchyCriteria implements Serializable, Criteria {
     public HierarchyCriteria(HierarchyCriteria other) {
         this.id = other.id == null ? null : other.id.copy();
         this.description = other.description == null ? null : other.description.copy();
+        this.relEventPersonId = other.relEventPersonId == null ? null : other.relEventPersonId.copy();
         this.distinct = other.distinct;
     }
 
@@ -70,6 +73,21 @@ public class HierarchyCriteria implements Serializable, Criteria {
         this.description = description;
     }
 
+    public LongFilter getRelEventPersonId() {
+        return relEventPersonId;
+    }
+
+    public LongFilter relEventPersonId() {
+        if (relEventPersonId == null) {
+            relEventPersonId = new LongFilter();
+        }
+        return relEventPersonId;
+    }
+
+    public void setRelEventPersonId(LongFilter relEventPersonId) {
+        this.relEventPersonId = relEventPersonId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -87,12 +105,17 @@ public class HierarchyCriteria implements Serializable, Criteria {
             return false;
         }
         final HierarchyCriteria that = (HierarchyCriteria) o;
-        return (Objects.equals(id, that.id) && Objects.equals(description, that.description) && Objects.equals(distinct, that.distinct));
+        return (
+            Objects.equals(id, that.id) &&
+            Objects.equals(description, that.description) &&
+            Objects.equals(relEventPersonId, that.relEventPersonId) &&
+            Objects.equals(distinct, that.distinct)
+        );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, distinct);
+        return Objects.hash(id, description, relEventPersonId, distinct);
     }
 
     // prettier-ignore
@@ -101,6 +124,7 @@ public class HierarchyCriteria implements Serializable, Criteria {
         return "HierarchyCriteria{" +
             (id != null ? "id=" + id + ", " : "") +
             (description != null ? "description=" + description + ", " : "") +
+            (relEventPersonId != null ? "relEventPersonId=" + relEventPersonId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

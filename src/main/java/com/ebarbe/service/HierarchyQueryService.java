@@ -101,6 +101,15 @@ public class HierarchyQueryService extends QueryService<Hierarchy> {
             if (criteria.getDescription() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getDescription(), Hierarchy_.description));
             }
+            if (criteria.getRelEventPersonId() != null) {
+                specification =
+                    specification.and(
+                        buildSpecification(
+                            criteria.getRelEventPersonId(),
+                            root -> root.join(Hierarchy_.relEventPeople, JoinType.LEFT).get(RelEventPerson_.id)
+                        )
+                    );
+            }
         }
         return specification;
     }

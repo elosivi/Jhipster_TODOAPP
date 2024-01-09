@@ -33,6 +33,8 @@ public class PersonCriteria implements Serializable, Criteria {
 
     private LongFilter eventId;
 
+    private LongFilter relEventPersonId;
+
     private Boolean distinct;
 
     public PersonCriteria() {}
@@ -44,6 +46,7 @@ public class PersonCriteria implements Serializable, Criteria {
         this.name = other.name == null ? null : other.name.copy();
         this.userId = other.userId == null ? null : other.userId.copy();
         this.eventId = other.eventId == null ? null : other.eventId.copy();
+        this.relEventPersonId = other.relEventPersonId == null ? null : other.relEventPersonId.copy();
         this.distinct = other.distinct;
     }
 
@@ -142,6 +145,21 @@ public class PersonCriteria implements Serializable, Criteria {
         this.eventId = eventId;
     }
 
+    public LongFilter getRelEventPersonId() {
+        return relEventPersonId;
+    }
+
+    public LongFilter relEventPersonId() {
+        if (relEventPersonId == null) {
+            relEventPersonId = new LongFilter();
+        }
+        return relEventPersonId;
+    }
+
+    public void setRelEventPersonId(LongFilter relEventPersonId) {
+        this.relEventPersonId = relEventPersonId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -166,13 +184,14 @@ public class PersonCriteria implements Serializable, Criteria {
             Objects.equals(name, that.name) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(eventId, that.eventId) &&
+            Objects.equals(relEventPersonId, that.relEventPersonId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, description, pseudo, name, userId, eventId, distinct);
+        return Objects.hash(id, description, pseudo, name, userId, eventId, relEventPersonId, distinct);
     }
 
     // prettier-ignore
@@ -185,6 +204,7 @@ public class PersonCriteria implements Serializable, Criteria {
             (name != null ? "name=" + name + ", " : "") +
             (userId != null ? "userId=" + userId + ", " : "") +
             (eventId != null ? "eventId=" + eventId + ", " : "") +
+            (relEventPersonId != null ? "relEventPersonId=" + relEventPersonId + ", " : "") +
             (distinct != null ? "distinct=" + distinct + ", " : "") +
             "}";
     }

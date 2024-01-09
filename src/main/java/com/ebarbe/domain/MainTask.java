@@ -45,7 +45,7 @@ public class MainTask implements Serializable {
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "user", "hierarchy", "events" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "events", "relEventPeople" }, allowSetters = true)
     private Person personOwner;
 
     @ManyToOne(fetch = FetchType.LAZY)

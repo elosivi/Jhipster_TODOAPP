@@ -14,12 +14,5 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"
                                  />
-
-        <addForeignKeyConstraint baseColumnNames="hierarchy_id"
-                                 baseTableName="person"
-                                 constraintName="fk_person__hierarchy_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="hierarchy"
-                                 />
     </changeSet>
 </databaseChangeLog>

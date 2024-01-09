@@ -17,15 +17,7 @@
   "jpaMetamodelFiltering": true,
   "name": "Hierarchy",
   "pagination": "pagination",
-  "relationships": [
-    {
-      "otherEntityName": "person",
-      "otherEntityRelationshipName": "hierarchy",
-      "relationshipName": "person",
-      "relationshipSide": "right",
-      "relationshipType": "one-to-many"
-    }
-  ],
+  "relationships": [],
   "searchEngine": "elasticsearch",
   "service": "serviceClass"
 }

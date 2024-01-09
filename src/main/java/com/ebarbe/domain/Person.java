@@ -34,7 +34,8 @@ public class Person implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String pseudo;
 
-    @Column(name = "name")
+    @Size(min = 3, max = 250)
+    @Column(name = "name", length = 250)
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String name;
 
@@ -44,8 +45,13 @@ public class Person implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "eventType", "people" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "eventType", "people", "relEventPeople" }, allowSetters = true)
     private Set<Event> events = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people")
+    @org.springframework.data.annotation.Transient
+    @JsonIgnoreProperties(value = { "events", "people", "hierarchies" }, allowSetters = true)
+    private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -142,6 +148,37 @@ public class Person implements Serializable {
     public Person removeEvent(Event event) {
         this.events.remove(event);
         event.getPeople().remove(this);
+        return this;
+    }
+
+    public Set<RelEventPerson> getRelEventPeople() {
+        return this.relEventPeople;
+    }
+
+    public void setRelEventPeople(Set<RelEventPerson> relEventPeople) {
+        if (this.relEventPeople != null) {
+            this.relEventPeople.forEach(i -> i.removePerson(this));
+        }
+        if (relEventPeople != null) {
+            relEventPeople.forEach(i -> i.addPerson(this));
+        }
+        this.relEventPeople = relEventPeople;
+    }
+
+    public Person relEventPeople(Set<RelEventPerson> relEventPeople) {
+        this.setRelEventPeople(relEventPeople);
+        return this;
+    }
+
+    public Person addRelEventPerson(RelEventPerson relEventPerson) {
+        this.relEventPeople.add(relEventPerson);
+        relEventPerson.getPeople().add(this);
+        return this;
+    }
+
+    public Person removeRelEventPerson(RelEventPerson relEventPerson) {
+        this.relEventPeople.remove(relEventPerson);
+        relEventPerson.getPeople().remove(this);
         return this;
     }
 

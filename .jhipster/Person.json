@@ -40,13 +40,6 @@
       "relationshipWithBuiltInEntity": true
     },
     {
-      "otherEntityName": "hierarchy",
-      "otherEntityRelationshipName": "person",
-      "relationshipName": "hierarchy",
-      "relationshipSide": "left",
-      "relationshipType": "one-to-one"
-    },
-    {
       "otherEntityName": "event",
       "otherEntityRelationshipName": "person",
       "relationshipName": "event",
