@@ -83,24 +83,6 @@
             }
           </select>
         </div>
-
-        <!--HIERARCHIE-->
-        <div class="mb-3">
-          <label class="form-label" jhiTranslate="todoApp.person.hierarchy" for="field_hierarchy">Hierarchy</label>
-          <select
-            class="form-control"
-            id="field_hierarchy"
-            data-cy="hierarchy"
-            name="hierarchy"
-            formControlName="hierarchy"
-            [compareWith]="compareHierarchy"
-          >
-            <option [ngValue]="null"></option>
-            @for (hierarchyOption of hierarchiesCollection; track $index) {
-              <option [ngValue]="hierarchyOption">{{ hierarchyOption.description }}</option>
-            }
-          </select>
-        </div>
       </div>
 
       <!--BOUTONS ANNULER/VALIDER-->

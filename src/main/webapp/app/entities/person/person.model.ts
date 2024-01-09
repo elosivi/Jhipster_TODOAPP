@@ -1,5 +1,4 @@
 import { IUser } from 'app/entities/user/user.model';
-import { IHierarchy } from 'app/entities/hierarchy/hierarchy.model';
 import { IEvent } from 'app/entities/event/event.model';
 
 export interface IPerson {
@@ -8,7 +7,6 @@ export interface IPerson {
   pseudo?: string | null;
   name?: string | null;
   user?: IUser | null;
-  hierarchy?: IHierarchy | null;
   events?: Pick<IEvent, 'id'>[] | null;
 }
 

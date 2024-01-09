@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.ebarbe.IntegrationTest;
 import com.ebarbe.domain.Hierarchy;
-import com.ebarbe.domain.Person;
 import com.ebarbe.repository.HierarchyRepository;
 import com.ebarbe.repository.search.HierarchySearchRepository;
 import com.ebarbe.service.dto.HierarchyDTO;
@@ -277,29 +276,6 @@ class HierarchyResourceIT {
 
         // Get all the hierarchyList where description does not contain UPDATED_DESCRIPTION
         defaultHierarchyShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
-    }
-
-    @Test
-    @Transactional
-    void getAllHierarchiesByPersonIsEqualToSomething() throws Exception {
-        Person person;
-        if (TestUtil.findAll(em, Person.class).isEmpty()) {
-            hierarchyRepository.saveAndFlush(hierarchy);
-            person = PersonResourceIT.createEntity(em);
-        } else {
-            person = TestUtil.findAll(em, Person.class).get(0);
-        }
-        em.persist(person);
-        em.flush();
-        hierarchy.setPersons((List<Person>) person);
-        person.setHierarchy(hierarchy);
-        hierarchyRepository.saveAndFlush(hierarchy);
-        Long personId = person.getId();
-        // Get all the hierarchyList where person equals to personId
-        defaultHierarchyShouldBeFound("personId.equals=" + personId);
-
-        // Get all the hierarchyList where person equals to (personId + 1)
-        defaultHierarchyShouldNotBeFound("personId.equals=" + (personId + 1));
     }
 
     /**

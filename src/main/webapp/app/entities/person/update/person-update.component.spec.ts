@@ -7,9 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { of, Subject, from } from 'rxjs';
 
 import { IUser } from 'app/entities/user/user.model';
-import { UserService } from 'app/entities/user/user.service';
-import { IHierarchy } from 'app/entities/hierarchy/hierarchy.model';
-import { HierarchyService } from 'app/entities/hierarchy/service/hierarchy.service';
+import { UserService } from 'app/entities/user/service/user.service';
 import { IPerson } from '../person.model';
 import { PersonService } from '../service/person.service';
 import { PersonFormService } from './person-form.service';
@@ -23,7 +21,6 @@ describe('Person Management Update Component', () => {
   let personFormService: PersonFormService;
   let personService: PersonService;
   let userService: UserService;
-  let hierarchyService: HierarchyService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -46,7 +43,6 @@ describe('Person Management Update Component', () => {
     personFormService = TestBed.inject(PersonFormService);
     personService = TestBed.inject(PersonService);
     userService = TestBed.inject(UserService);
-    hierarchyService = TestBed.inject(HierarchyService);
 
     comp = fixture.componentInstance;
   });
@@ -74,36 +70,15 @@ describe('Person Management Update Component', () => {
       expect(comp.usersSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should call hierarchy query and add missing value', () => {
-      const person: IPerson = { id: 456 };
-      const hierarchy: IHierarchy = { id: 18619 };
-      person.hierarchy = hierarchy;
-
-      const hierarchyCollection: IHierarchy[] = [{ id: 21823 }];
-      jest.spyOn(hierarchyService, 'query').mockReturnValue(of(new HttpResponse({ body: hierarchyCollection })));
-      const expectedCollection: IHierarchy[] = [hierarchy, ...hierarchyCollection];
-      jest.spyOn(hierarchyService, 'addHierarchyToCollectionIfMissing').mockReturnValue(expectedCollection);
-
-      activatedRoute.data = of({ person });
-      comp.ngOnInit();
-
-      expect(hierarchyService.query).toHaveBeenCalled();
-      expect(hierarchyService.addHierarchyToCollectionIfMissing).toHaveBeenCalledWith(hierarchyCollection, hierarchy);
-      expect(comp.hierarchiesCollection).toEqual(expectedCollection);
-    });
-
     it('Should update editForm', () => {
       const person: IPerson = { id: 456 };
       const user: IUser = { id: 30533 };
       person.user = user;
-      const hierarchy: IHierarchy = { id: 21049 };
-      person.hierarchy = hierarchy;
 
       activatedRoute.data = of({ person });
       comp.ngOnInit();
 
       expect(comp.usersSharedCollection).toContain(user);
-      expect(comp.hierarchiesCollection).toContain(hierarchy);
       expect(comp.person).toEqual(person);
     });
   });
@@ -184,16 +159,6 @@ describe('Person Management Update Component', () => {
         jest.spyOn(userService, 'compareUser');
         comp.compareUser(entity, entity2);
         expect(userService.compareUser).toHaveBeenCalledWith(entity, entity2);
-      });
-    });
-
-    describe('compareHierarchy', () => {
-      it('Should forward to hierarchyService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
-        jest.spyOn(hierarchyService, 'compareHierarchy');
-        comp.compareHierarchy(entity, entity2);
-        expect(hierarchyService.compareHierarchy).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

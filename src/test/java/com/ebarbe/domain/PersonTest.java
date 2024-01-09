@@ -1,7 +1,6 @@
 package com.ebarbe.domain;
 
 import static com.ebarbe.domain.EventTestSamples.*;
-import static com.ebarbe.domain.HierarchyTestSamples.*;
 import static com.ebarbe.domain.PersonTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -24,18 +23,6 @@ class PersonTest {
 
         person2 = getPersonSample2();
         assertThat(person1).isNotEqualTo(person2);
-    }
-
-    @Test
-    void hierarchyTest() throws Exception {
-        Person person = getPersonRandomSampleGenerator();
-        Hierarchy hierarchyBack = getHierarchyRandomSampleGenerator();
-
-        person.setHierarchy(hierarchyBack);
-        assertThat(person.getHierarchy()).isEqualTo(hierarchyBack);
-
-        person.hierarchy(null);
-        assertThat(person.getHierarchy()).isNull();
     }
 
     @Test

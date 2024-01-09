@@ -108,12 +108,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="hierarchy.description">
-              <div class="d-flex">
-                <span jhiTranslate="todoApp.person.hierarchy">Hierarchy</span>
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -131,13 +125,6 @@
               <td>{{ person.description }}</td>
               <td class="borderLeftColumn">{{ person.user?.firstName }} {{ person.user?.lastName }}</td>
               <td class="borderRightColumn">{{ person.user?.email }}</td>
-              <td>
-                @if (person.hierarchy) {
-                  <div>
-                    <a [routerLink]="['/hierarchy', person.hierarchy.id, 'view']">{{ person.hierarchy.description }}</a>
-                  </div>
-                }
-              </td>
               <td class="text-end">
                 <div class="btn-group">
                   <button

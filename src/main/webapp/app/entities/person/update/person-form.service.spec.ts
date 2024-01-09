@@ -24,7 +24,6 @@ describe('Person Form Service', () => {
             pseudo: expect.any(Object),
             name: expect.any(Object),
             user: expect.any(Object),
-            hierarchy: expect.any(Object),
           }),
         );
       });
@@ -39,7 +38,6 @@ describe('Person Form Service', () => {
             pseudo: expect.any(Object),
             name: expect.any(Object),
             user: expect.any(Object),
-            hierarchy: expect.any(Object),
           }),
         );
       });

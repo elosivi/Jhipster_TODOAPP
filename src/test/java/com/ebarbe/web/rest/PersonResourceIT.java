@@ -9,7 +9,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.ebarbe.IntegrationTest;
 import com.ebarbe.domain.Event;
-import com.ebarbe.domain.Hierarchy;
 import com.ebarbe.domain.Person;
 import com.ebarbe.domain.User;
 import com.ebarbe.repository.PersonRepository;
@@ -280,28 +279,6 @@ class PersonResourceIT {
 
         // Get all the personList where user equals to (userId + 1)
         defaultPersonShouldNotBeFound("userId.equals=" + (userId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllPeopleByHierarchyIsEqualToSomething() throws Exception {
-        Hierarchy hierarchy;
-        if (TestUtil.findAll(em, Hierarchy.class).isEmpty()) {
-            personRepository.saveAndFlush(person);
-            hierarchy = HierarchyResourceIT.createEntity(em);
-        } else {
-            hierarchy = TestUtil.findAll(em, Hierarchy.class).get(0);
-        }
-        em.persist(hierarchy);
-        em.flush();
-        person.setHierarchy(hierarchy);
-        personRepository.saveAndFlush(person);
-        Long hierarchyId = hierarchy.getId();
-        // Get all the personList where hierarchy equals to hierarchyId
-        defaultPersonShouldBeFound("hierarchyId.equals=" + hierarchyId);
-
-        // Get all the personList where hierarchy equals to (hierarchyId + 1)
-        defaultPersonShouldNotBeFound("hierarchyId.equals=" + (hierarchyId + 1));
     }
 
     @Test

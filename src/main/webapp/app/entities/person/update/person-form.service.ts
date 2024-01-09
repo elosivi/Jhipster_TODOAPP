@@ -25,7 +25,6 @@ type PersonFormGroupContent = {
   pseudo: FormControl<IPerson['pseudo']>;
   name: FormControl<IPerson['name']>;
   user: FormControl<IPerson['user']>;
-  hierarchy: FormControl<IPerson['hierarchy']>;
 };
 
 export type PersonFormGroup = FormGroup<PersonFormGroupContent>;
@@ -53,7 +52,6 @@ export class PersonFormService {
       }),
       name: new FormControl(personRawValue.name),
       user: new FormControl(personRawValue.user),
-      hierarchy: new FormControl(personRawValue.hierarchy),
     });
   }
 

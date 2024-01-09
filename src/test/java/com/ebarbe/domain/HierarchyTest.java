@@ -23,18 +23,4 @@ class HierarchyTest {
         hierarchy2 = getHierarchySample2();
         assertThat(hierarchy1).isNotEqualTo(hierarchy2);
     }
-
-    @Test
-    void personTest() throws Exception {
-        Hierarchy hierarchy = getHierarchyRandomSampleGenerator();
-        Person personBack = getPersonRandomSampleGenerator();
-
-        hierarchy.setPersons((List<Person>) personBack);
-        assertThat(hierarchy.getPersons()).isEqualTo(personBack);
-        assertThat(personBack.getHierarchy()).isEqualTo(hierarchy);
-
-        hierarchy.person(null);
-        assertThat(hierarchy.getPersons()).isNull();
-        assertThat(personBack.getHierarchy()).isNull();
-    }
 }

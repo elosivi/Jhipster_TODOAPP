@@ -20,6 +20,7 @@ description String required minlength(3) maxlength(100)
 entity Person {
 description String minlength(3) maxlength(300)
     pseudo String minlength(3) maxlength(50)
+    name String minlength(3) maxlength(250)
 }
 
 entity Category {
@@ -49,6 +50,10 @@ description String minlength(3) maxlength(300)
 duration Duration
 }
 
+entity RelEventPerson{
+    participation String
+}
+
 relationship ManyToOne {
   SubTask to MainTask
   MainTask to Category
@@ -65,7 +70,9 @@ relationship OneToOne{
 }
 
 relationship ManyToMany{
-	Event to Person
+    relEventPerson to Person
+    relEventPerson to Event
+    relEventPerson to Hierarchy
 }
 
 filter *

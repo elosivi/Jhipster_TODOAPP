@@ -31,14 +31,6 @@
           <dd>
             <span>{{ person.user?.firstName }} {{ person.user?.lastName }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.person.hierarchy">Hierarchy</span></dt>
-          <dd>
-            @if (person.hierarchy) {
-              <div>
-                <a [routerLink]="['/hierarchy', person.hierarchy.id, 'view']">{{ person.hierarchy.id }}</a>
-              </div>
-            }
-          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

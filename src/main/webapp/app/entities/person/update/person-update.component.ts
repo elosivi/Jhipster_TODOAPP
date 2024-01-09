@@ -9,8 +9,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/service/user.service';
-import { IHierarchy } from 'app/entities/hierarchy/hierarchy.model';
-import { HierarchyService } from 'app/entities/hierarchy/service/hierarchy.service';
 import { PersonService } from '../service/person.service';
 import { IPerson } from '../person.model';
 import { PersonFormGroup, PersonFormService } from './person-form.service';
@@ -26,7 +24,6 @@ export class PersonUpdateComponent implements OnInit {
   person: IPerson | null = null;
 
   usersSharedCollection: IUser[] = [];
-  hierarchiesCollection: IHierarchy[] = [];
 
   editForm: PersonFormGroup = this.personFormService.createPersonFormGroup();
 
@@ -36,14 +33,11 @@ export class PersonUpdateComponent implements OnInit {
     protected personService: PersonService,
     protected personFormService: PersonFormService,
     protected userService: UserService,
-    protected hierarchyService: HierarchyService,
     protected activatedRoute: ActivatedRoute,
     private router: Router,
   ) {}
 
   compareUser = (o1: IUser | null, o2: IUser | null): boolean => this.userService.compareUser(o1, o2);
-
-  compareHierarchy = (o1: IHierarchy | null, o2: IHierarchy | null): boolean => this.hierarchyService.compareHierarchy(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ person }) => {
@@ -112,10 +106,6 @@ export class PersonUpdateComponent implements OnInit {
     this.personFormService.resetForm(this.editForm, person);
 
     this.usersSharedCollection = this.userService.addUserToCollectionIfMissing<IUser>(this.usersSharedCollection, person.user);
-    this.hierarchiesCollection = this.hierarchyService.addHierarchyToCollectionIfMissing<IHierarchy>(
-      this.hierarchiesCollection,
-      person.hierarchy,
-    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -124,15 +114,5 @@ export class PersonUpdateComponent implements OnInit {
       .pipe(map((res: HttpResponse<IUser[]>) => res.body ?? []))
       .pipe(map((users: IUser[]) => this.userService.addUserToCollectionIfMissing<IUser>(users, this.person?.user)))
       .subscribe((users: IUser[]) => (this.usersSharedCollection = users));
-
-    this.hierarchyService
-      .query()
-      .pipe(map((res: HttpResponse<IHierarchy[]>) => res.body ?? []))
-      .pipe(
-        map((hierarchies: IHierarchy[]) =>
-          this.hierarchyService.addHierarchyToCollectionIfMissing<IHierarchy>(hierarchies, this.person?.hierarchy),
-        ),
-      )
-      .subscribe((hierarchies: IHierarchy[]) => (this.hierarchiesCollection = hierarchies));
   }
 }
