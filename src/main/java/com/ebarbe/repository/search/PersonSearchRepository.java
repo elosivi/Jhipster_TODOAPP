@@ -5,6 +5,9 @@ import com.ebarbe.domain.Person;
 import com.ebarbe.repository.PersonExtendedRepository;
 import com.ebarbe.repository.PersonRepository;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -15,10 +18,12 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 /**
  * Spring Data Elasticsearch repository for the {@link Person} entity.
  */
+
 public interface PersonSearchRepository extends ElasticsearchRepository<Person, Long>, PersonSearchRepositoryInternal {}
 
 interface PersonSearchRepositoryInternal {
@@ -33,20 +38,20 @@ interface PersonSearchRepositoryInternal {
     void deleteFromIndexById(Long id);
 }
 
+@Component
+@Primary
 class PersonSearchRepositoryInternalImpl implements PersonSearchRepositoryInternal {
 
     private final ElasticsearchTemplate elasticsearchTemplate;
     private final PersonRepository repository;
-    private final PersonExtendedRepository extendedRepository;
 
+    @Autowired
     PersonSearchRepositoryInternalImpl(
         ElasticsearchTemplate elasticsearchTemplate,
-        PersonRepository repository,
-        PersonExtendedRepository extendedRepository
+        @Qualifier("personRepository") PersonRepository repository
     ) {
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.repository = repository;
-        this.extendedRepository = extendedRepository;
     }
 
     @Override
