@@ -30,9 +30,9 @@ public class Hierarchy implements Serializable {
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "hierarchies")
+    @OneToMany(mappedBy = "hierarchy")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "events", "people", "hierarchies" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "event", "person", "hierarchy" }, allowSetters = true)
     private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -69,10 +69,10 @@ public class Hierarchy implements Serializable {
 
     public void setRelEventPeople(Set<RelEventPerson> relEventPeople) {
         if (this.relEventPeople != null) {
-            this.relEventPeople.forEach(i -> i.removeHierarchy(this));
+            this.relEventPeople.forEach(i -> i.setHierarchy(this));
         }
         if (relEventPeople != null) {
-            relEventPeople.forEach(i -> i.addHierarchy(this));
+            relEventPeople.forEach(i -> i.setHierarchy(this));
         }
         this.relEventPeople = relEventPeople;
     }
@@ -84,13 +84,13 @@ public class Hierarchy implements Serializable {
 
     public Hierarchy addRelEventPerson(RelEventPerson relEventPerson) {
         this.relEventPeople.add(relEventPerson);
-        relEventPerson.getHierarchies().add(this);
+        relEventPerson.setHierarchy(this);
         return this;
     }
 
     public Hierarchy removeRelEventPerson(RelEventPerson relEventPerson) {
         this.relEventPeople.remove(relEventPerson);
-        relEventPerson.getHierarchies().remove(this);
+        relEventPerson.setHierarchy(null);
         return this;
     }
 

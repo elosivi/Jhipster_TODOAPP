@@ -68,7 +68,7 @@ public class Event implements Serializable {
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "events" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "event" }, allowSetters = true)
     private EventType eventType;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -77,12 +77,12 @@ public class Event implements Serializable {
         joinColumns = @JoinColumn(name = "event_id"),
         inverseJoinColumns = @JoinColumn(name = "person_id")
     )
-    @JsonIgnoreProperties(value = { "user", "events", "relEventPeople" }, allowSetters = true)
-    private Set<Person> people = new HashSet<>();
+    @JsonIgnoreProperties(value = { "user", "event", "relEventPeople" }, allowSetters = true)
+    private Set<Person> person = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "events")
+    @OneToMany(mappedBy = "event")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "events", "people", "hierarchies" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "event", "person", "hierarchy" }, allowSetters = true)
     private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -231,25 +231,25 @@ public class Event implements Serializable {
     }
 
     public Set<Person> getPeople() {
-        return this.people;
+        return this.person;
     }
 
-    public void setPeople(Set<Person> people) {
-        this.people = people;
+    public void setPeople(Set<Person> person) {
+        this.person = person;
     }
 
-    public Event people(Set<Person> people) {
-        this.setPeople(people);
+    public Event person(Set<Person> person) {
+        this.setPeople(person);
         return this;
     }
 
     public Event addPerson(Person person) {
-        this.people.add(person);
+        this.person.add(person);
         return this;
     }
 
     public Event removePerson(Person person) {
-        this.people.remove(person);
+        this.person.remove(person);
         return this;
     }
 
@@ -259,10 +259,10 @@ public class Event implements Serializable {
 
     public void setRelEventPeople(Set<RelEventPerson> relEventPeople) {
         if (this.relEventPeople != null) {
-            this.relEventPeople.forEach(i -> i.removeEvent(this));
+            this.relEventPeople.forEach(i -> i.setEvent(this));
         }
         if (relEventPeople != null) {
-            relEventPeople.forEach(i -> i.addEvent(this));
+            relEventPeople.forEach(i -> i.setEvent(this));
         }
         this.relEventPeople = relEventPeople;
     }
@@ -274,13 +274,13 @@ public class Event implements Serializable {
 
     public Event addRelEventPerson(RelEventPerson relEventPerson) {
         this.relEventPeople.add(relEventPerson);
-        relEventPerson.getEvents().add(this);
+        relEventPerson.setEvent(this);
         return this;
     }
 
     public Event removeRelEventPerson(RelEventPerson relEventPerson) {
         this.relEventPeople.remove(relEventPerson);
-        relEventPerson.getEvents().remove(this);
+        relEventPerson.setEvent(null);
         return this;
     }
 

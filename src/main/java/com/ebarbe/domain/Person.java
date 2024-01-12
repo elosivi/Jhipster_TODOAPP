@@ -43,14 +43,14 @@ public class Person implements Serializable {
     @JoinColumn(unique = true)
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "person")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "eventType", "people", "relEventPeople" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "eventType", "person", "relEventPeople" }, allowSetters = true)
     private Set<Event> events = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "people")
+    @OneToMany(mappedBy = "person")
     @org.springframework.data.annotation.Transient
-    @JsonIgnoreProperties(value = { "events", "people", "hierarchies" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "event", "person", "hierarchies" }, allowSetters = true)
     private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -157,10 +157,10 @@ public class Person implements Serializable {
 
     public void setRelEventPeople(Set<RelEventPerson> relEventPeople) {
         if (this.relEventPeople != null) {
-            this.relEventPeople.forEach(i -> i.removePerson(this));
+            this.relEventPeople.forEach(i -> i.setPerson(null));
         }
         if (relEventPeople != null) {
-            relEventPeople.forEach(i -> i.addPerson(this));
+            relEventPeople.forEach(i -> i.setPerson(this));
         }
         this.relEventPeople = relEventPeople;
     }
@@ -172,13 +172,13 @@ public class Person implements Serializable {
 
     public Person addRelEventPerson(RelEventPerson relEventPerson) {
         this.relEventPeople.add(relEventPerson);
-        relEventPerson.getPeople().add(this);
+        relEventPerson.setPerson(this);
         return this;
     }
 
     public Person removeRelEventPerson(RelEventPerson relEventPerson) {
         this.relEventPeople.remove(relEventPerson);
-        relEventPerson.getPeople().remove(this);
+        relEventPerson.setPerson(null);
         return this;
     }
 
