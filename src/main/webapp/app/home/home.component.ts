@@ -40,7 +40,22 @@ export default class HomeComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(account => (this.account = account));
 
-    this.loadPersonLinkedToTheConnectedUser();
+    if (this.account == null) {
+      this.loadAccountService();
+    } else {
+      this.loadPersonLinkedToTheConnectedUser();
+    }
+  }
+
+  loadAccountService() {
+    if (this.account == null) {
+      this.accountService.getAuthenticationState().subscribe(account => {
+        // `account` contient le compte actuellement connecté (ou null si non connecté)
+        this.account = account;
+        console.log('Compte connecté :', account);
+        this.loadPersonLinkedToTheConnectedUser();
+      });
+    }
   }
 
   /**
