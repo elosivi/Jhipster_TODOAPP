@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, switchMap, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -16,6 +16,8 @@ import { IEvent } from '../event.model';
 
 import { EntityArrayResponseType, EventService } from '../service/event.service';
 import { EventDeleteDialogComponent } from '../delete/event-delete-dialog.component';
+import { IEventType } from '../../event-type/event-type.model';
+import { EventTypeService } from '../../event-type/service/event-type.service';
 
 @Component({
   standalone: true,
@@ -38,6 +40,7 @@ export class EventComponent implements OnInit {
   private static readonly NOT_SORTABLE_FIELDS_AFTER_SEARCH = ['label', 'description', 'theme', 'place', 'placeDetails', 'adress', 'note'];
 
   events?: IEvent[];
+  eventTypes?: IEventType[];
   isLoading = false;
 
   predicate = 'id';
@@ -51,6 +54,7 @@ export class EventComponent implements OnInit {
 
   constructor(
     protected eventService: EventService,
+    protected eventTypeService: EventTypeService,
     protected activatedRoute: ActivatedRoute,
     public router: Router,
     protected modalService: NgbModal,
@@ -132,6 +136,7 @@ export class EventComponent implements OnInit {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
     this.events = dataFromBody;
+    this.loadEventype();
   }
 
   protected fillComponentAttributesFromResponseBody(data: IEvent[] | null): IEvent[] {
@@ -198,6 +203,37 @@ export class EventComponent implements OnInit {
       return [];
     } else {
       return [predicate + ',' + ascendingQueryParam];
+    }
+  }
+
+  /**
+   * load data about all type event available
+   * @private
+   */
+  private loadEventype() {
+    this.eventTypeService.query().subscribe((res: HttpResponse<IEventType[]>) => {
+      const content = (res.body as any)?.content as IEventType[];
+      if (content) {
+        //this.eventTypes = content;
+        this.associateTypeByEvent(content);
+      } else {
+        console.warn('Aucun type d evenement récupéré via le service query()');
+      }
+    });
+  }
+
+  /**
+   * associates the complete event type object with each event in the list
+   * @param eventTypes
+   * @private
+   */
+  private associateTypeByEvent(eventTypes: IEventType[]) {
+    if (this.events && this.events?.length > 0) {
+      this.events.forEach((event: IEvent) => {
+        if (event.eventType?.id != null) {
+          event.eventType = this.eventTypes?.find((type: IEventType) => type.id === event.eventType?.id);
+        }
+      });
     }
   }
 }

@@ -15,7 +15,8 @@
         "status": "Status",
         "person": "Person",
         "category": "Category",
-        "hierarchy": "Hierarchy"
+        "hierarchy": "Hierarchy",
+        "relEventPerson": "Rel Event Person"
       },
       "account": {
         "main": "Account",

@@ -1,22 +1,22 @@
 import { IStatus, NewStatus } from './status.model';
 
 export const sampleWithRequiredData: IStatus = {
-  id: 10970,
-  description: 'cueillir depuis au point que',
+  id: 12956,
+  description: 'espiègle dehors innombrable',
 };
 
 export const sampleWithPartialData: IStatus = {
-  id: 599,
-  description: 'au-devant chut',
+  id: 21841,
+  description: 'conseil municipal du moment que',
 };
 
 export const sampleWithFullData: IStatus = {
-  id: 17385,
-  description: 'proche de euh',
+  id: 8254,
+  description: 'cuicui',
 };
 
 export const sampleWithNewData: NewStatus = {
-  description: 'que derechef',
+  description: 'selon circulaire revivre',
   id: null,
 };
 

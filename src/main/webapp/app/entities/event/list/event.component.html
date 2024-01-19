@@ -165,14 +165,36 @@
               <td>{{ event.adress }}</td>
               <td>{{ event.note }}</td>
               <td>
+                <!--if type of events are loading return the label, otherwise the id allready in event object-->
                 @if (event.eventType) {
-                  <div>
-                    <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.id }}</a>
-                  </div>
+                  @if (event.eventType.label) {
+                    <div>
+                      <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.label }}</a>
+                    </div>
+                  } @else {
+                    <div>
+                      <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.id }}</a>
+                    </div>
+                  }
                 }
               </td>
               <td class="text-end">
                 <div class="btn-group">
+                  <button
+                    type="submit"
+                    [routerLink]="['/rel-event-person']"
+                    [queryParams]="{ 'filter[eventId.in]': event.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('todoApp.event.relEventPerson' | translate) }"
+                      >Show Rel Event Person</span
+                    >
+                  </button>
                   <a [routerLink]="['/event', event.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
                     <fa-icon icon="eye"></fa-icon>
                     <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>

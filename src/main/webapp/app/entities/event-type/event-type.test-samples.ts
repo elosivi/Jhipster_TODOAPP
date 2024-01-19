@@ -1,26 +1,24 @@
 import { IEventType, NewEventType } from './event-type.model';
 
 export const sampleWithRequiredData: IEventType = {
-  id: 19293,
-  label: 'Xzcnv6',
+  id: 4643,
+  label: 'aussitôt que lunatique',
 };
 
 export const sampleWithPartialData: IEventType = {
-  id: 23228,
-  label: 'Frxib4',
-  description: 'dans projeter à défaut de ',
-  duration: '23432',
+  id: 31225,
+  label: 'touriste cadre',
 };
 
 export const sampleWithFullData: IEventType = {
-  id: 10255,
-  label: 'Zcyzj1',
-  description: 'clientèle',
-  duration: '22215',
+  id: 14649,
+  label: 'dater',
+  description: 'envers',
+  duration: '18453',
 };
 
 export const sampleWithNewData: NewEventType = {
-  label: 'Sdhxm2',
+  label: 'recueillir',
   id: null,
 };
 

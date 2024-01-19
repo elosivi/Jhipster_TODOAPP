@@ -114,6 +114,6 @@ export class PersonService {
    * @param userId
    */
   findByUserAssociated(userId: number): Observable<EntityResponseType> {
-    return this.http.get<IPerson>(`${this.resourceUrl}/person?userId=${userId}`, { observe: 'response' });
+    return this.http.get<IPerson>(`${this.resourceUrl}/management/byUser/${userId}`, { observe: 'response' });
   }
 }

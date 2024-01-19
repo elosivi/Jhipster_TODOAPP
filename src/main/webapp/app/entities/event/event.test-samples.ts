@@ -3,42 +3,39 @@ import dayjs from 'dayjs/esm';
 import { IEvent, NewEvent } from './event.model';
 
 export const sampleWithRequiredData: IEvent = {
-  id: 240,
-  label: 'Unvakm4',
+  id: 1322,
+  label: 'tant électorat assez',
   dateStart: dayjs('2023-12-18'),
   dateEnd: dayjs('2023-12-18'),
-  place: 'tandis que menacer collègue',
+  place: 'derrière',
 };
 
 export const sampleWithPartialData: IEvent = {
-  id: 21555,
-  label: 'Etq6',
-  description: 'dans la mesure où',
-  dateStart: dayjs('2023-12-17'),
-  dateEnd: dayjs('2023-12-17'),
-  place: 'blablabla au-devant',
-  placeDetails: 'plus conseil d’administration',
-  note: 'soit simple peut-être',
+  id: 9683,
+  label: 'drelin blablabla modeler',
+  dateStart: dayjs('2023-12-18'),
+  dateEnd: dayjs('2023-12-18'),
+  place: 'biathlète',
 };
 
 export const sampleWithFullData: IEvent = {
-  id: 30796,
-  label: 'Kxdtnn5',
-  description: 'ahX',
-  theme: 'venir aussitôt que',
+  id: 23703,
+  label: 'vraisemblablement du fait que',
+  description: 'un peu solliciter solliciter',
+  theme: 'apte',
   dateStart: dayjs('2023-12-18'),
   dateEnd: dayjs('2023-12-18'),
-  place: 'secours collègue résigner',
-  placeDetails: 'entre',
-  adress: 'dessus',
-  note: 'commis terriblement cultiver',
+  place: 'pacifique accorder terriblement',
+  placeDetails: 'horrible dériver',
+  adress: 'outre dès d’autant que',
+  note: 'vlan',
 };
 
 export const sampleWithNewData: NewEvent = {
-  label: 'Ba8',
-  dateStart: dayjs('2023-12-18'),
+  label: 'afin que de sorte que',
+  dateStart: dayjs('2023-12-17'),
   dateEnd: dayjs('2023-12-18'),
-  place: 'considérable dans la mesure où',
+  place: 'de manière à hausser en guise de',
   id: null,
 };
 

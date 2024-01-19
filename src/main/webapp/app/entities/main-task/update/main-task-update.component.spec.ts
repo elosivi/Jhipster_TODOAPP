@@ -58,10 +58,10 @@ describe('MainTask Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Category query and add missing value', () => {
       const mainTask: IMainTask = { id: 456 };
-      const category: ICategory = { id: 7881 };
+      const category: ICategory = { id: 17100 };
       mainTask.category = category;
 
-      const categoryCollection: ICategory[] = [{ id: 19294 }];
+      const categoryCollection: ICategory[] = [{ id: 17327 }];
       jest.spyOn(categoryService, 'query').mockReturnValue(of(new HttpResponse({ body: categoryCollection })));
       const additionalCategories = [category];
       const expectedCollection: ICategory[] = [...additionalCategories, ...categoryCollection];
@@ -80,10 +80,10 @@ describe('MainTask Management Update Component', () => {
 
     it('Should call Person query and add missing value', () => {
       const mainTask: IMainTask = { id: 456 };
-      const personOwner: IPerson = { id: 27685 };
+      const personOwner: IPerson = { id: 28625 };
       mainTask.personOwner = personOwner;
 
-      const personCollection: IPerson[] = [{ id: 31698 }];
+      const personCollection: IPerson[] = [{ id: 403 }];
       jest.spyOn(personService, 'query').mockReturnValue(of(new HttpResponse({ body: personCollection })));
       const additionalPeople = [personOwner];
       const expectedCollection: IPerson[] = [...additionalPeople, ...personCollection];
@@ -102,10 +102,10 @@ describe('MainTask Management Update Component', () => {
 
     it('Should call Status query and add missing value', () => {
       const mainTask: IMainTask = { id: 456 };
-      const status: IStatus = { id: 17332 };
+      const status: IStatus = { id: 23270 };
       mainTask.status = status;
 
-      const statusCollection: IStatus[] = [{ id: 32105 }];
+      const statusCollection: IStatus[] = [{ id: 29622 }];
       jest.spyOn(statusService, 'query').mockReturnValue(of(new HttpResponse({ body: statusCollection })));
       const additionalStatuses = [status];
       const expectedCollection: IStatus[] = [...additionalStatuses, ...statusCollection];
@@ -124,11 +124,11 @@ describe('MainTask Management Update Component', () => {
 
     it('Should update editForm', () => {
       const mainTask: IMainTask = { id: 456 };
-      const category: ICategory = { id: 8579 };
+      const category: ICategory = { id: 31305 };
       mainTask.category = category;
-      const personOwner: IPerson = { id: 8283 };
+      const personOwner: IPerson = { id: 3168 };
       mainTask.personOwner = personOwner;
-      const status: IStatus = { id: 4732 };
+      const status: IStatus = { id: 8593 };
       mainTask.status = status;
 
       activatedRoute.data = of({ mainTask });

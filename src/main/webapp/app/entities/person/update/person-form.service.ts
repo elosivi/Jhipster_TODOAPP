@@ -50,7 +50,9 @@ export class PersonFormService {
       pseudo: new FormControl(personRawValue.pseudo, {
         validators: [Validators.minLength(3), Validators.maxLength(50)],
       }),
-      name: new FormControl(personRawValue.name),
+      name: new FormControl(personRawValue.name, {
+        validators: [Validators.minLength(3), Validators.maxLength(250)],
+      }),
       user: new FormControl(personRawValue.user),
     });
   }

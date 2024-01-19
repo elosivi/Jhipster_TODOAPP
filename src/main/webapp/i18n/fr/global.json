@@ -1,25 +1,26 @@
 {
   "global": {
-    "title": "Organise ton évènement",
+    "title": "TodoApp",
     "browsehappy": "Vous utilisez un <strong>ancien</strong> navigateur. Veuillez <a href=\"http://browsehappy.com/?locale=fr\">mettre à jour votre navigateur</a> pour une meilleure expérience.",
     "menu": {
       "home": "Accueil",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
-        "main": "Consulter/Créer/Modifier",
+        "main": "Créer/Modifier",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
         "event": "Evenements",
-        "mainTask": "Tâche",
-        "eventType": "type d'évènements",
-        "subTask": "sous-tâche",
-        "status": "Status",
+        "mainTask": "Tâches",
+        "eventType": "Types d'évenement",
+        "subTask": "Sous-Tâches",
+        "status": "Statuts",
         "person": "Participants",
-        "category": "Categorie",
-        "hierarchy": "Hierarchie",
+        "category": "Categories d'évenement",
+        "hierarchy": "Hierarchies",
+        "relEventPerson": "Participants aux évenements",
         "titles": {
-          "events": "evènement",
-          "tasks": "tâches",
-          "persons": "participants"
+          "events": "Evenements",
+          "tasks": "Tâches",
+          "persons": "Participants"
         }
       },
       "account": {
@@ -93,7 +94,10 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "event": "Evènement",
+      "person": "Participant",
+      "hyerarchy": "Statut"
     },
     "ribbon": {
       "dev": "Développement"
@@ -102,7 +106,6 @@
   },
   "entity": {
     "action": {
-      "associate": "Lier à un nouveau participant",
       "addblob": "Ajouter blob",
       "addimage": "Ajouter image",
       "back": "Retour",
@@ -111,7 +114,6 @@
       "delete": "Supprimer",
       "open": "Ouvrir",
       "save": "Sauvegarder",
-      "saveAndLink": "Sauvegarder et lier",
       "view": "Voir",
       "show": "Show {{otherEntity}}"
     },

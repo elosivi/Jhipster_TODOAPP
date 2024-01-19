@@ -3,30 +3,29 @@ import dayjs from 'dayjs/esm';
 import { ISubTask, NewSubTask } from './sub-task.model';
 
 export const sampleWithRequiredData: ISubTask = {
-  id: 31821,
-  description: 'du fait que',
+  id: 3815,
+  description: 'partout',
   deadline: dayjs('2023-12-17'),
 };
 
 export const sampleWithPartialData: ISubTask = {
-  id: 32423,
-  description: 'dans la mesure où accompagner',
-  deadline: dayjs('2023-12-17'),
-  creation: dayjs('2023-12-18'),
-  cost: 28739.47,
+  id: 936,
+  description: 'jeune après que paf',
+  deadline: dayjs('2023-12-18'),
+  cost: 16133.18,
 };
 
 export const sampleWithFullData: ISubTask = {
-  id: 5001,
-  description: 'bien que commis',
-  deadline: dayjs('2023-12-17'),
+  id: 26211,
+  description: 'commis de cuisine neutre',
+  deadline: dayjs('2023-12-18'),
   creation: dayjs('2023-12-18'),
-  cost: 16421.39,
+  cost: 24758.5,
 };
 
 export const sampleWithNewData: NewSubTask = {
-  description: 'électorat',
-  deadline: dayjs('2023-12-17'),
+  description: 'nager',
+  deadline: dayjs('2023-12-18'),
   id: null,
 };
 

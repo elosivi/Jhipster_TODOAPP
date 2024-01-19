@@ -3,10 +3,9 @@
     "person": {
       "home": {
         "title": "Participants",
-        "label": "participant associé",
-        "refreshListLabel": "Actualiser la liste des participants",
+        "refreshListLabel": "Actualiser la liste",
         "createLabel": "Créer un nouveau participant",
-        "createOrEditLabel": "Créer ou éditer un participant",
+        "createOrEditLabel": "Créer ou éditer un Participant",
         "search": "Recherche pour Participant",
         "notFound": "Aucun Participant trouvé"
       },
@@ -17,19 +16,15 @@
         "question": "Êtes-vous certain de vouloir supprimer le Participant {{ id }} ?"
       },
       "detail": {
-        "title": "Participants"
+        "title": "Participant"
       },
       "id": "ID",
       "description": "Description",
       "pseudo": "Pseudo",
-      "name": "Nom du participant",
-      "userTitle": "Utilisateur associé",
-      "user": {
-        "name": "Nom de l'utilisateur associé",
-        "email": "Email de l'utilisateur associé"
-      },
-      "hierarchy": "Hierarchie",
-      "event": "Evènement"
+      "name": "Nom",
+      "user": "Utilisateur",
+      "event": "Evenement",
+      "relEventPerson": "Participation aux évenements"
     }
   }
 }

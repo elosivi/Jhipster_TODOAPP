@@ -20,7 +20,7 @@
       },
       "id": "ID",
       "description": "Description",
-      "person": "Person"
+      "relEventPerson": "Rel Event Person"
     }
   }
 }

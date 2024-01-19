@@ -58,10 +58,10 @@ describe('SubTask Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call MainTask query and add missing value', () => {
       const subTask: ISubTask = { id: 456 };
-      const mainTask: IMainTask = { id: 30326 };
+      const mainTask: IMainTask = { id: 32585 };
       subTask.mainTask = mainTask;
 
-      const mainTaskCollection: IMainTask[] = [{ id: 13884 }];
+      const mainTaskCollection: IMainTask[] = [{ id: 19278 }];
       jest.spyOn(mainTaskService, 'query').mockReturnValue(of(new HttpResponse({ body: mainTaskCollection })));
       const additionalMainTasks = [mainTask];
       const expectedCollection: IMainTask[] = [...additionalMainTasks, ...mainTaskCollection];
@@ -80,10 +80,10 @@ describe('SubTask Management Update Component', () => {
 
     it('Should call Person query and add missing value', () => {
       const subTask: ISubTask = { id: 456 };
-      const personDoer: IPerson = { id: 17961 };
+      const personDoer: IPerson = { id: 5184 };
       subTask.personDoer = personDoer;
 
-      const personCollection: IPerson[] = [{ id: 5737 }];
+      const personCollection: IPerson[] = [{ id: 32047 }];
       jest.spyOn(personService, 'query').mockReturnValue(of(new HttpResponse({ body: personCollection })));
       const additionalPeople = [personDoer];
       const expectedCollection: IPerson[] = [...additionalPeople, ...personCollection];
@@ -102,10 +102,10 @@ describe('SubTask Management Update Component', () => {
 
     it('Should call Status query and add missing value', () => {
       const subTask: ISubTask = { id: 456 };
-      const status: IStatus = { id: 11886 };
+      const status: IStatus = { id: 11623 };
       subTask.status = status;
 
-      const statusCollection: IStatus[] = [{ id: 7974 }];
+      const statusCollection: IStatus[] = [{ id: 5094 }];
       jest.spyOn(statusService, 'query').mockReturnValue(of(new HttpResponse({ body: statusCollection })));
       const additionalStatuses = [status];
       const expectedCollection: IStatus[] = [...additionalStatuses, ...statusCollection];
@@ -124,11 +124,11 @@ describe('SubTask Management Update Component', () => {
 
     it('Should update editForm', () => {
       const subTask: ISubTask = { id: 456 };
-      const mainTask: IMainTask = { id: 25142 };
+      const mainTask: IMainTask = { id: 3659 };
       subTask.mainTask = mainTask;
-      const personDoer: IPerson = { id: 23860 };
+      const personDoer: IPerson = { id: 30654 };
       subTask.personDoer = personDoer;
-      const status: IStatus = { id: 21923 };
+      const status: IStatus = { id: 27202 };
       subTask.status = status;
 
       activatedRoute.data = of({ subTask });

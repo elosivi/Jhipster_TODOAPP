@@ -54,10 +54,10 @@ describe('Event Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call EventType query and add missing value', () => {
       const event: IEvent = { id: 456 };
-      const eventType: IEventType = { id: 22628 };
+      const eventType: IEventType = { id: 10797 };
       event.eventType = eventType;
 
-      const eventTypeCollection: IEventType[] = [{ id: 17268 }];
+      const eventTypeCollection: IEventType[] = [{ id: 5422 }];
       jest.spyOn(eventTypeService, 'query').mockReturnValue(of(new HttpResponse({ body: eventTypeCollection })));
       const additionalEventTypes = [eventType];
       const expectedCollection: IEventType[] = [...additionalEventTypes, ...eventTypeCollection];
@@ -76,10 +76,10 @@ describe('Event Management Update Component', () => {
 
     it('Should call Person query and add missing value', () => {
       const event: IEvent = { id: 456 };
-      const people: IPerson[] = [{ id: 20839 }];
+      const people: IPerson[] = [{ id: 26888 }];
       event.people = people;
 
-      const personCollection: IPerson[] = [{ id: 10567 }];
+      const personCollection: IPerson[] = [{ id: 13129 }];
       jest.spyOn(personService, 'query').mockReturnValue(of(new HttpResponse({ body: personCollection })));
       const additionalPeople = [...people];
       const expectedCollection: IPerson[] = [...additionalPeople, ...personCollection];
@@ -98,9 +98,9 @@ describe('Event Management Update Component', () => {
 
     it('Should update editForm', () => {
       const event: IEvent = { id: 456 };
-      const eventType: IEventType = { id: 11098 };
+      const eventType: IEventType = { id: 25328 };
       event.eventType = eventType;
-      const person: IPerson = { id: 24622 };
+      const person: IPerson = { id: 14788 };
       event.people = [person];
 
       activatedRoute.data = of({ event });

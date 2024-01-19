@@ -23,8 +23,8 @@
       "pseudo": "Pseudo",
       "name": "Name",
       "user": "User",
-      "hierarchy": "Hierarchy",
-      "event": "Event"
+      "event": "Event",
+      "relEventPerson": "Rel Event Person"
     }
   }
 }

@@ -29,7 +29,8 @@
       "adress": "Adress",
       "note": "Note",
       "eventType": "Event Type",
-      "person": "Person"
+      "person": "Person",
+      "relEventPerson": "Rel Event Person"
     }
   }
 }

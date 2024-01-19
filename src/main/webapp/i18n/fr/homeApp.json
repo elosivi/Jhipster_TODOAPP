@@ -3,7 +3,10 @@
     "title": "READY TO FUN ?!",
     "subtitle": "Organisons un évenement sympa!",
     "logged": {
-      "message": "A toi de jouer \"{{username}}\"."
+      "message": "Vous pouvez organiser ou participer à des évènements,  \"{{username}}\"!"
+    },
+    "loggedAndperson": {
+      "message": "Hello  \"{{username}}\"!"
     },
     "question": "Si vous avez des questions :",
     "link": {

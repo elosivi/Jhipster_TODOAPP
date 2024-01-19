@@ -116,6 +116,13 @@ Generic styles
   padding-top: 30px;
 }
 
+.separation {
+  border-top: 1px solid $grey-light;
+  opacity: 0.5;
+  margin-top: 50px;
+  padding-top: 30px;
+}
+
 .hand,
 [jhisortby] {
   cursor: pointer;
@@ -329,6 +336,10 @@ jhi-item-count {
   color: $white;
 }
 
+#home-logged-message {
+  font-size: 1.1rem;
+  color: $blue;
+}
 /* ==========================================================================
 MESSAGES & ALERTS
 ========================================================================== */

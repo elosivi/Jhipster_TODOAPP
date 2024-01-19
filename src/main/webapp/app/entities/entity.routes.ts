@@ -46,6 +46,11 @@ const routes: Routes = [
     data: { pageTitle: 'todoApp.eventType.home.title' },
     loadChildren: () => import('./event-type/event-type.routes'),
   },
+  {
+    path: 'rel-event-person',
+    data: { pageTitle: 'todoApp.relEventPerson.home.title' },
+    loadChildren: () => import('./rel-event-person/rel-event-person.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

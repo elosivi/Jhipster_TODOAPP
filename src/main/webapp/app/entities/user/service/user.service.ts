@@ -7,7 +7,7 @@ import { createRequestOption } from 'app/core/request/request-util';
 import { isPresent } from 'app/core/util/operators';
 import { Pagination } from 'app/core/request/request.model';
 import { IUser, getUserIdentifier } from '../user.model';
-
+export type EntityResponseType = HttpResponse<IUser>;
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private resourceUrl = this.applicationConfigService.getEndpointFor('api/users');
@@ -24,6 +24,14 @@ export class UserService {
 
   compareUser(o1: Pick<IUser, 'id'> | null, o2: Pick<IUser, 'id'> | null): boolean {
     return o1 && o2 ? o1.id === o2.id : o1 === o2;
+  }
+
+  /**
+   * load the user
+   * @param userLogin
+   */
+  findByUserByLogin(userLogin: String): Observable<EntityResponseType> {
+    return this.http.get<IUser>(`${this.resourceUrl}/userByLogin/${userLogin}`, { observe: 'response' });
   }
 
   addUserToCollectionIfMissing<Type extends Partial<IUser> & Pick<IUser, 'id'>>(

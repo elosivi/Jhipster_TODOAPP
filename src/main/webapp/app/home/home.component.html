@@ -1,41 +1,57 @@
-<div class="row">
-  <!--  colonne gauche-->
-  <div class="col-md-2"></div>
+<!-- -------------------------------------------------------------------------------------------- -->
+<!------------------------------ A C C U E I L   /   C O N N E X I O N  ---------------------------->
 
-  <!--  colonne image-->
-  <div class="col-md-3">
-    <span class="hipster img-fluid rounded"></span>
-  </div>
+<div *ngIf="!userConnectedHasAPersonLinked">
+  <div class="row">
+    <!--  colonne gauche-->
+    <div class="col-md-2"></div>
 
-  <!--  colonne principale/ modifier le texte selon la langue cf repo i18n-->
-  <div class="col-md-5 centerText">
-    <h1 class="display-4" jhiTranslate="homeapp.title">TODO LIST</h1>
-    <h2 class="display-4" jhiTranslate="homeapp.subtitle">TODO LIST</h2>
+    <!--  colonne image-->
+    <div class="col-md-3">
+      <span class="hipster img-fluid rounded"></span>
+    </div>
 
-    <div [ngSwitch]="account !== null">
-      <!-- utilisateur connecté-->
-      <div class="" *ngSwitchCase="true">
-        <span id="home-logged-message" *ngIf="account" jhiTranslate="homeapp.logged.message" [translateValues]="{ username: account.login }"
-          >"{{ account.login }}", vous avez des choses à faire !.</span
-        >
-      </div>
+    <!--  colonne principale/ modifier le texte selon la langue cf repo i18n-->
+    <div class="col-md-5 centerText">
+      <h1 class="display-4" jhiTranslate="homeapp.title">TODO LIST</h1>
+      <h2 class="display-4" jhiTranslate="homeapp.subtitle">TODO LIST</h2>
 
-      <!--aucun utilisateur connecté-->
-      <div class="" *ngSwitchCase="false">
-        <p class="count-link link-text connexion-link">
-          <a class="" (click)="login()" jhiTranslate="homeapp.link.connexion">Se connecter</a>
-        </p>
-      </div>
-      <br />
-      <br />
-      <div class="" *ngSwitchCase="false">
-        <span jhiTranslate="global.messages.info.register.noaccount">Vous n'avez pas encore de compte ?</span>&nbsp;<br />
-        <p class="count-link link-text">
-          <a class="link-text" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Créer un compte</a>
-        </p>
+      <div [ngSwitch]="account !== null">
+        <!-- utilisateur connecté-->
+        <div class="" *ngSwitchCase="true">
+          <div class="separation"></div>
+          <p id="home-logged-message" *ngIf="account">
+            {{ account.login }}, vous n'avez pas encore crée de compte participant! Si vous voulez organiser ou participer à des évènements,
+            c'est juste dessous !
+          </p>
+          <div class="separation"></div>
+          <p class="count-link link-text">
+            <a class="link-text" routerLink="/person/new" jhiTranslate="todoApp.person.home.createLabel">Créer un participant</a>
+          </p>
+        </div>
+
+        <!--aucun utilisateur connecté-->
+        <div class="" *ngSwitchCase="false">
+          <p class="count-link link-text connexion-link">
+            <a class="" (click)="login()" jhiTranslate="homeapp.link.connexion">Se connecter</a>
+          </p>
+        </div>
+        <br />
+        <br />
+        <div class="" *ngSwitchCase="false">
+          <span jhiTranslate="global.messages.info.register.noaccount">Vous n'avez pas encore de compte ?</span>&nbsp;<br />
+          <p class="count-link link-text">
+            <a class="link-text" routerLink="/account/register" jhiTranslate="global.messages.info.register.link">Créer un compte</a>
+          </p>
+        </div>
       </div>
     </div>
+    <!--    colonne droite-->
+    <div class="col-md-2"></div>
   </div>
-  <!--    colonne droite-->
-  <div class="col-md-2"></div>
+</div>
+<!-- -------------------------------------------------------------------------------------------------- -->
+<!------------------------------ A C C U E I L   /   e v e n t s    l i s t   ---------------------------->
+<div *ngIf="userConnectedHasAPersonLinked">
+  <h1 class="display-4">hello</h1>
 </div>

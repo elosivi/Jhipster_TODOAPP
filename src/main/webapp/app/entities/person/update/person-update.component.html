@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm" class="EditForm">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
       <h2 id="jhi-person-heading" data-cy="PersonCreateUpdateHeading" jhiTranslate="todoApp.person.home.createOrEditLabel">
         Créer ou éditer un Person
       </h2>
@@ -11,28 +11,20 @@
         @if (editForm.controls.id.value !== null) {
           <div class="mb-3">
             <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
-            <input
-              type="number"
-              class="form-control readOnlyInput"
-              name="id"
-              id="field_id"
-              data-cy="id"
-              formControlName="id"
-              [readonly]="true"
-            />
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
           </div>
         }
 
-        <!-- DESCRIPTION -->
         <div class="mb-3">
           <label class="form-label" jhiTranslate="todoApp.person.description" for="field_description">Description</label>
-          <textarea
+          <input
+            type="text"
             class="form-control"
             name="description"
             id="field_description"
             data-cy="description"
             formControlName="description"
-          ></textarea>
+          />
           @if (editForm.get('description')!.invalid && (editForm.get('description')!.dirty || editForm.get('description')!.touched)) {
             <div>
               @if (editForm.get('description')?.errors?.minlength) {
@@ -49,7 +41,6 @@
           }
         </div>
 
-        <!-- PSEUDO -->
         <div class="mb-3">
           <label class="form-label" jhiTranslate="todoApp.person.pseudo" for="field_pseudo">Pseudo</label>
           <input type="text" class="form-control" name="pseudo" id="field_pseudo" data-cy="pseudo" formControlName="pseudo" />
@@ -68,24 +59,37 @@
             </div>
           }
         </div>
-        <!--NOM -->
+
         <div class="mb-3">
           <label class="form-label" jhiTranslate="todoApp.person.name" for="field_name">Name</label>
           <input type="text" class="form-control" name="name" id="field_name" data-cy="name" formControlName="name" />
+          @if (editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)) {
+            <div>
+              @if (editForm.get('name')?.errors?.minlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.minlength" [translateValues]="{ min: 3 }"
+                  >Ce champ doit faire au minimum 3 caractères.</small
+                >
+              }
+              @if (editForm.get('name')?.errors?.maxlength) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.maxlength" [translateValues]="{ max: 250 }"
+                  >Ce champ doit faire moins de 250 caractères.</small
+                >
+              }
+            </div>
+          }
         </div>
-        <!--UTILISATEUR A ASSOCIER-->
+
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="todoApp.person.user.name" for="field_user">User</label>
+          <label class="form-label" jhiTranslate="todoApp.person.user" for="field_user">User</label>
           <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" [compareWith]="compareUser">
             <option [ngValue]="null"></option>
             @for (userOption of usersSharedCollection; track $index) {
-              <option [ngValue]="userOption">{{ userOption.lastName }} {{ userOption.firstName }}</option>
+              <option [ngValue]="userOption">{{ userOption.id }}</option>
             }
           </select>
         </div>
       </div>
 
-      <!--BOUTONS ANNULER/VALIDER-->
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>

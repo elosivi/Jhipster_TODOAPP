@@ -3,24 +3,23 @@ import dayjs from 'dayjs/esm';
 import { IMainTask, NewMainTask } from './main-task.model';
 
 export const sampleWithRequiredData: IMainTask = {
-  id: 11769,
-  deadline: dayjs('2023-12-18'),
+  id: 22150,
+  deadline: dayjs('2023-12-17'),
 };
 
 export const sampleWithPartialData: IMainTask = {
-  id: 32427,
-  description: 'sans que adorable snif',
+  id: 27645,
   deadline: dayjs('2023-12-18'),
-  creation: dayjs('2023-12-17'),
-  cost: 9406.19,
+  creation: dayjs('2023-12-18'),
+  cost: 32723.59,
 };
 
 export const sampleWithFullData: IMainTask = {
-  id: 17296,
-  description: 'conseil d’administration',
+  id: 16442,
+  description: 'glouglou si énorme',
   deadline: dayjs('2023-12-18'),
   creation: dayjs('2023-12-18'),
-  cost: 24386.79,
+  cost: 23538.69,
 };
 
 export const sampleWithNewData: NewMainTask = {

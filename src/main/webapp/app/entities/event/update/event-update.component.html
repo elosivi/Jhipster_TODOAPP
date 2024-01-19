@@ -190,7 +190,7 @@
           >
             <option [ngValue]="null"></option>
             @for (eventTypeOption of eventTypesSharedCollection; track $index) {
-              <option [ngValue]="eventTypeOption">{{ eventTypeOption.label }} ({{ eventTypeOption.description }})</option>
+              <option [ngValue]="eventTypeOption">{{ eventTypeOption.id }}</option>
             }
           </select>
         </div>
@@ -207,7 +207,7 @@
             [compareWith]="comparePerson"
           >
             @for (personOption of peopleSharedCollection; track $index) {
-              <option [ngValue]="personOption">{{ personOption.pseudo }} ({{ personOption.name }})</option>
+              <option [ngValue]="personOption">{{ personOption.id }}</option>
             }
           </select>
         </div>

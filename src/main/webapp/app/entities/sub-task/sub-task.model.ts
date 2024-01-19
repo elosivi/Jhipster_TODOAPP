@@ -10,7 +10,7 @@ export interface ISubTask {
   creation?: dayjs.Dayjs | null;
   cost?: number | null;
   mainTask?: Pick<IMainTask, 'id'> | null;
-  personDoer?: IPerson | null;
+  personDoer?: Pick<IPerson, 'id'> | null;
   status?: Pick<IStatus, 'id'> | null;
 }
 

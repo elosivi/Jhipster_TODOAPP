@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { catchError, map, takeUntil } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
+import { IUser } from 'app/admin/user-management/user-management.model';
+import { IPerson } from 'app/entities/person/person.model';
+import { EntityResponseType, PersonService } from 'app/entities/person/service/person.service';
+import { UserService } from 'app/entities/user/service/user.service';
 
 @Component({
   standalone: true,
@@ -16,11 +20,17 @@ import { Account } from 'app/core/auth/account.model';
 })
 export default class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
+  userConnected: IUser | null = null;
+  personConnected: IPerson | null = null;
+  userConnectedHasAPersonLinked: boolean | undefined;
 
   private readonly destroy$ = new Subject<void>();
+  private readonly destroyUser$ = new Subject<void>();
 
   constructor(
     private accountService: AccountService,
+    protected personService: PersonService,
+    protected userService: UserService,
     private router: Router,
   ) {}
 
@@ -29,6 +39,56 @@ export default class HomeComponent implements OnInit, OnDestroy {
       .getAuthenticationState()
       .pipe(takeUntil(this.destroy$))
       .subscribe(account => (this.account = account));
+
+    this.loadPersonLinkedToTheConnectedUser();
+  }
+
+  /**
+   * We need to know if the connected account is llinked to a person
+   * If yes : load table of events to which the person is linked.
+   */
+
+  loadPersonLinkedToTheConnectedUser(): void {
+    this.getUserId()
+      .pipe(takeUntil(this.destroyUser$))
+      .subscribe((user: IUser | null) => {
+        if (user != null && user.id != null) {
+          this.personService
+            .findByUserAssociated(user.id)
+            .pipe(takeUntil(this.destroyUser$))
+            .subscribe(
+              (person: EntityResponseType) => {
+                this.personConnected = person.body;
+                this.userConnectedHasAPersonLinked = true;
+              },
+              () => {
+                console.log("Impossible de charger le participant lié à l'utilisateur connecté");
+                this.userConnectedHasAPersonLinked = false;
+              },
+            );
+        }
+      });
+  }
+
+  getUserId(): Observable<IUser | null> {
+    if (this.account != null && this.account.login !== '') {
+      return this.userService.findByUserByLogin(this.account.login).pipe(
+        takeUntil(this.destroy$),
+        map((user: any) => {
+          if (user && typeof user === 'object') {
+            this.userConnected = user.body as IUser;
+            return this.userConnected;
+          } else {
+            return null;
+          }
+        }),
+        catchError(() => {
+          console.log("Impossible de charger le participant lié à l'utilisateur connecté");
+          return of(null);
+        }),
+      );
+    }
+    return of(null);
   }
 
   login(): void {
@@ -38,5 +98,7 @@ export default class HomeComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+    this.destroyUser$.next();
+    this.destroyUser$.complete();
   }
 }

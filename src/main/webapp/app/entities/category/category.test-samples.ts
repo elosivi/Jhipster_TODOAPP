@@ -1,24 +1,23 @@
 import { ICategory, NewCategory } from './category.model';
 
 export const sampleWithRequiredData: ICategory = {
-  id: 20939,
-  label: 'Kcjziq2',
+  id: 14317,
+  label: 'responsable',
 };
 
 export const sampleWithPartialData: ICategory = {
-  id: 14553,
-  label: 'Ozqw5',
-  description: 'solitaire',
+  id: 5621,
+  label: 'oups à peu près siffler',
 };
 
 export const sampleWithFullData: ICategory = {
-  id: 28965,
-  label: 'Wdwe3',
-  description: 'circulaire figurer',
+  id: 24931,
+  label: 'coupable sage',
+  description: 'subito du moment que vlan',
 };
 
 export const sampleWithNewData: NewCategory = {
-  label: 'Tuztw9',
+  label: "d'entre entièrement après que",
   id: null,
 };
 

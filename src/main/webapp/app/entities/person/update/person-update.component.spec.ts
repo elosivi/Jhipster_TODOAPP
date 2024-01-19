@@ -8,8 +8,9 @@ import { of, Subject, from } from 'rxjs';
 
 import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/service/user.service';
-import { IPerson } from '../person.model';
 import { PersonService } from '../service/person.service';
+import { IPerson } from '../person.model';
+
 import { PersonFormService } from './person-form.service';
 
 import { PersonUpdateComponent } from './person-update.component';
@@ -50,10 +51,10 @@ describe('Person Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call User query and add missing value', () => {
       const person: IPerson = { id: 456 };
-      const user: IUser = { id: 6001 };
+      const user: IUser = { id: 2461 };
       person.user = user;
 
-      const userCollection: IUser[] = [{ id: 1445 }];
+      const userCollection: IUser[] = [{ id: 23350 }];
       jest.spyOn(userService, 'query').mockReturnValue(of(new HttpResponse({ body: userCollection })));
       const additionalUsers = [user];
       const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
@@ -72,7 +73,7 @@ describe('Person Management Update Component', () => {
 
     it('Should update editForm', () => {
       const person: IPerson = { id: 456 };
-      const user: IUser = { id: 30533 };
+      const user: IUser = { id: 31326 };
       person.user = user;
 
       activatedRoute.data = of({ person });
