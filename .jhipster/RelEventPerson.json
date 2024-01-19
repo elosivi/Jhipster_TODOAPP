@@ -1,0 +1,44 @@
+{
+  "annotations": {
+    "changelogDate": "20240109141600"
+  },
+  "dto": "mapstruct",
+  "entityTableName": "rel_event_person",
+  "fields": [
+    {
+      "fieldName": "participation",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "RelEventPerson",
+  "pagination": "pagination",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "event",
+      "otherEntityRelationshipName": "relEventPerson",
+      "relationshipName": "event",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "person",
+      "otherEntityRelationshipName": "relEventPerson",
+      "relationshipName": "person",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityField": "id",
+      "otherEntityName": "hierarchy",
+      "otherEntityRelationshipName": "relEventPerson",
+      "relationshipName": "hierarchy",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

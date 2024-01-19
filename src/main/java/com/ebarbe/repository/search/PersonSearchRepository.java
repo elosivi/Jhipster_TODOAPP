@@ -2,7 +2,6 @@ package com.ebarbe.repository.search;
 
 import co.elastic.clients.elasticsearch._types.query_dsl.QueryStringQuery;
 import com.ebarbe.domain.Person;
-import com.ebarbe.repository.PersonExtendedRepository;
 import com.ebarbe.repository.PersonRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;

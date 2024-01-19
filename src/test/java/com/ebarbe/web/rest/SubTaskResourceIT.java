@@ -853,7 +853,7 @@ class SubTaskResourceIT {
         SubTask partialUpdatedSubTask = new SubTask();
         partialUpdatedSubTask.setId(subTask.getId());
 
-        partialUpdatedSubTask.description(UPDATED_DESCRIPTION).deadline(UPDATED_DEADLINE).creation(UPDATED_CREATION);
+        partialUpdatedSubTask.deadline(UPDATED_DEADLINE).creation(UPDATED_CREATION).cost(UPDATED_COST);
 
         restSubTaskMockMvc
             .perform(
@@ -867,10 +867,10 @@ class SubTaskResourceIT {
         List<SubTask> subTaskList = subTaskRepository.findAll();
         assertThat(subTaskList).hasSize(databaseSizeBeforeUpdate);
         SubTask testSubTask = subTaskList.get(subTaskList.size() - 1);
-        assertThat(testSubTask.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testSubTask.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testSubTask.getDeadline()).isEqualTo(UPDATED_DEADLINE);
         assertThat(testSubTask.getCreation()).isEqualTo(UPDATED_CREATION);
-        assertThat(testSubTask.getCost()).isEqualTo(DEFAULT_COST);
+        assertThat(testSubTask.getCost()).isEqualTo(UPDATED_COST);
     }
 
     @Test

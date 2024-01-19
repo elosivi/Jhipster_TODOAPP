@@ -855,7 +855,7 @@ class MainTaskResourceIT {
         MainTask partialUpdatedMainTask = new MainTask();
         partialUpdatedMainTask.setId(mainTask.getId());
 
-        partialUpdatedMainTask.description(UPDATED_DESCRIPTION).deadline(UPDATED_DEADLINE).creation(UPDATED_CREATION);
+        partialUpdatedMainTask.creation(UPDATED_CREATION);
 
         restMainTaskMockMvc
             .perform(
@@ -869,8 +869,8 @@ class MainTaskResourceIT {
         List<MainTask> mainTaskList = mainTaskRepository.findAll();
         assertThat(mainTaskList).hasSize(databaseSizeBeforeUpdate);
         MainTask testMainTask = mainTaskList.get(mainTaskList.size() - 1);
-        assertThat(testMainTask.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testMainTask.getDeadline()).isEqualTo(UPDATED_DEADLINE);
+        assertThat(testMainTask.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testMainTask.getDeadline()).isEqualTo(DEFAULT_DEADLINE);
         assertThat(testMainTask.getCreation()).isEqualTo(UPDATED_CREATION);
         assertThat(testMainTask.getCost()).isEqualTo(DEFAULT_COST);
     }

@@ -11,6 +11,7 @@ import com.ebarbe.IntegrationTest;
 import com.ebarbe.domain.Event;
 import com.ebarbe.domain.EventType;
 import com.ebarbe.domain.Person;
+import com.ebarbe.domain.RelEventPerson;
 import com.ebarbe.repository.EventRepository;
 import com.ebarbe.repository.search.EventSearchRepository;
 import com.ebarbe.service.EventService;
@@ -50,8 +51,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class EventResourceIT {
 
-    private static final String DEFAULT_LABEL = "Vvqcf2";
-    private static final String UPDATED_LABEL = "Pkquv5";
+    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBB";
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -1060,6 +1061,28 @@ class EventResourceIT {
         defaultEventShouldNotBeFound("personId.equals=" + (personId + 1));
     }
 
+    @Test
+    @Transactional
+    void getAllEventsByRelEventPersonIsEqualToSomething() throws Exception {
+        RelEventPerson relEventPerson;
+        if (TestUtil.findAll(em, RelEventPerson.class).isEmpty()) {
+            eventRepository.saveAndFlush(event);
+            relEventPerson = RelEventPersonResourceIT.createEntity(em);
+        } else {
+            relEventPerson = TestUtil.findAll(em, RelEventPerson.class).get(0);
+        }
+        em.persist(relEventPerson);
+        em.flush();
+        event.addRelEventPerson(relEventPerson);
+        eventRepository.saveAndFlush(event);
+        Long relEventPersonId = relEventPerson.getId();
+        // Get all the eventList where relEventPerson equals to relEventPersonId
+        defaultEventShouldBeFound("relEventPersonId.equals=" + relEventPersonId);
+
+        // Get all the eventList where relEventPerson equals to (relEventPersonId + 1)
+        defaultEventShouldNotBeFound("relEventPersonId.equals=" + (relEventPersonId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -1265,7 +1288,7 @@ class EventResourceIT {
         Event partialUpdatedEvent = new Event();
         partialUpdatedEvent.setId(event.getId());
 
-        partialUpdatedEvent.description(UPDATED_DESCRIPTION).theme(UPDATED_THEME).place(UPDATED_PLACE).note(UPDATED_NOTE);
+        partialUpdatedEvent.dateStart(UPDATED_DATE_START).dateEnd(UPDATED_DATE_END).adress(UPDATED_ADRESS);
 
         restEventMockMvc
             .perform(
@@ -1280,14 +1303,14 @@ class EventResourceIT {
         assertThat(eventList).hasSize(databaseSizeBeforeUpdate);
         Event testEvent = eventList.get(eventList.size() - 1);
         assertThat(testEvent.getLabel()).isEqualTo(DEFAULT_LABEL);
-        assertThat(testEvent.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
-        assertThat(testEvent.getTheme()).isEqualTo(UPDATED_THEME);
-        assertThat(testEvent.getDateStart()).isEqualTo(DEFAULT_DATE_START);
-        assertThat(testEvent.getDateEnd()).isEqualTo(DEFAULT_DATE_END);
-        assertThat(testEvent.getPlace()).isEqualTo(UPDATED_PLACE);
+        assertThat(testEvent.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testEvent.getTheme()).isEqualTo(DEFAULT_THEME);
+        assertThat(testEvent.getDateStart()).isEqualTo(UPDATED_DATE_START);
+        assertThat(testEvent.getDateEnd()).isEqualTo(UPDATED_DATE_END);
+        assertThat(testEvent.getPlace()).isEqualTo(DEFAULT_PLACE);
         assertThat(testEvent.getPlaceDetails()).isEqualTo(DEFAULT_PLACE_DETAILS);
-        assertThat(testEvent.getAdress()).isEqualTo(DEFAULT_ADRESS);
-        assertThat(testEvent.getNote()).isEqualTo(UPDATED_NOTE);
+        assertThat(testEvent.getAdress()).isEqualTo(UPDATED_ADRESS);
+        assertThat(testEvent.getNote()).isEqualTo(DEFAULT_NOTE);
     }
 
     @Test

@@ -40,8 +40,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class EventTypeResourceIT {
 
-    private static final String DEFAULT_LABEL = "Fmzblm0";
-    private static final String UPDATED_LABEL = "Fnzayl0";
+    private static final String DEFAULT_LABEL = "AAAAAAAAAA";
+    private static final String UPDATED_LABEL = "BBBBBBBBBB";
 
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
@@ -649,6 +649,8 @@ class EventTypeResourceIT {
         EventType partialUpdatedEventType = new EventType();
         partialUpdatedEventType.setId(eventType.getId());
 
+        partialUpdatedEventType.label(UPDATED_LABEL).duration(UPDATED_DURATION);
+
         restEventTypeMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedEventType.getId())
@@ -661,9 +663,9 @@ class EventTypeResourceIT {
         List<EventType> eventTypeList = eventTypeRepository.findAll();
         assertThat(eventTypeList).hasSize(databaseSizeBeforeUpdate);
         EventType testEventType = eventTypeList.get(eventTypeList.size() - 1);
-        assertThat(testEventType.getLabel()).isEqualTo(DEFAULT_LABEL);
+        assertThat(testEventType.getLabel()).isEqualTo(UPDATED_LABEL);
         assertThat(testEventType.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-        assertThat(testEventType.getDuration()).isEqualTo(DEFAULT_DURATION);
+        assertThat(testEventType.getDuration()).isEqualTo(UPDATED_DURATION);
     }
 
     @Test

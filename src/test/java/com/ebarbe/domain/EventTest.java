@@ -3,6 +3,7 @@ package com.ebarbe.domain;
 import static com.ebarbe.domain.EventTestSamples.*;
 import static com.ebarbe.domain.EventTypeTestSamples.*;
 import static com.ebarbe.domain.PersonTestSamples.*;
+import static com.ebarbe.domain.RelEventPersonTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ebarbe.web.rest.TestUtil;
@@ -49,7 +50,7 @@ class EventTest {
         event.removePerson(personBack);
         assertThat(event.getPeople()).doesNotContain(personBack);
 
-        event.people(new HashSet<>(Set.of(personBack)));
+        event.person(new HashSet<>(Set.of(personBack)));
         assertThat(event.getPeople()).containsOnly(personBack);
 
         event.setPeople(new HashSet<>());

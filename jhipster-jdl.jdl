@@ -70,9 +70,9 @@ relationship OneToOne{
 }
 
 relationship ManyToMany{
-    relEventPerson to Person
-    relEventPerson to Event
-    relEventPerson to Hierarchy
+    RelEventPerson to Person
+    RelEventPerson to Event
+    RelEventPerson to Hierarchy
 }
 
 filter *

@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.ebarbe.IntegrationTest;
 import com.ebarbe.domain.Event;
 import com.ebarbe.domain.Person;
+import com.ebarbe.domain.RelEventPerson;
 import com.ebarbe.domain.User;
 import com.ebarbe.repository.PersonRepository;
 import com.ebarbe.repository.search.PersonSearchRepository;
@@ -43,6 +44,12 @@ class PersonResourceIT {
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
+    private static final String DEFAULT_PSEUDO = "AAAAAAAAAA";
+    private static final String UPDATED_PSEUDO = "BBBBBBBBBB";
+
+    private static final String DEFAULT_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_NAME = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/people";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
     private static final String ENTITY_SEARCH_API_URL = "/api/people/_search";
@@ -74,7 +81,7 @@ class PersonResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Person createEntity(EntityManager em) {
-        Person person = new Person().description(DEFAULT_DESCRIPTION);
+        Person person = new Person().description(DEFAULT_DESCRIPTION).pseudo(DEFAULT_PSEUDO).name(DEFAULT_NAME);
         return person;
     }
 
@@ -85,7 +92,7 @@ class PersonResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static Person createUpdatedEntity(EntityManager em) {
-        Person person = new Person().description(UPDATED_DESCRIPTION);
+        Person person = new Person().description(UPDATED_DESCRIPTION).pseudo(UPDATED_PSEUDO).name(UPDATED_NAME);
         return person;
     }
 
@@ -122,6 +129,8 @@ class PersonResourceIT {
             });
         Person testPerson = personList.get(personList.size() - 1);
         assertThat(testPerson.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testPerson.getPseudo()).isEqualTo(DEFAULT_PSEUDO);
+        assertThat(testPerson.getName()).isEqualTo(DEFAULT_NAME);
     }
 
     @Test
@@ -158,7 +167,9 @@ class PersonResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].pseudo").value(hasItem(DEFAULT_PSEUDO)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 
     @Test
@@ -173,7 +184,9 @@ class PersonResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(person.getId().intValue()))
-            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION));
+            .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION))
+            .andExpect(jsonPath("$.pseudo").value(DEFAULT_PSEUDO))
+            .andExpect(jsonPath("$.name").value(DEFAULT_NAME));
     }
 
     @Test
@@ -261,6 +274,136 @@ class PersonResourceIT {
 
     @Test
     @Transactional
+    void getAllPeopleByPseudoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where pseudo equals to DEFAULT_PSEUDO
+        defaultPersonShouldBeFound("pseudo.equals=" + DEFAULT_PSEUDO);
+
+        // Get all the personList where pseudo equals to UPDATED_PSEUDO
+        defaultPersonShouldNotBeFound("pseudo.equals=" + UPDATED_PSEUDO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByPseudoIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where pseudo in DEFAULT_PSEUDO or UPDATED_PSEUDO
+        defaultPersonShouldBeFound("pseudo.in=" + DEFAULT_PSEUDO + "," + UPDATED_PSEUDO);
+
+        // Get all the personList where pseudo equals to UPDATED_PSEUDO
+        defaultPersonShouldNotBeFound("pseudo.in=" + UPDATED_PSEUDO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByPseudoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where pseudo is not null
+        defaultPersonShouldBeFound("pseudo.specified=true");
+
+        // Get all the personList where pseudo is null
+        defaultPersonShouldNotBeFound("pseudo.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByPseudoContainsSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where pseudo contains DEFAULT_PSEUDO
+        defaultPersonShouldBeFound("pseudo.contains=" + DEFAULT_PSEUDO);
+
+        // Get all the personList where pseudo contains UPDATED_PSEUDO
+        defaultPersonShouldNotBeFound("pseudo.contains=" + UPDATED_PSEUDO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByPseudoNotContainsSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where pseudo does not contain DEFAULT_PSEUDO
+        defaultPersonShouldNotBeFound("pseudo.doesNotContain=" + DEFAULT_PSEUDO);
+
+        // Get all the personList where pseudo does not contain UPDATED_PSEUDO
+        defaultPersonShouldBeFound("pseudo.doesNotContain=" + UPDATED_PSEUDO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where name equals to DEFAULT_NAME
+        defaultPersonShouldBeFound("name.equals=" + DEFAULT_NAME);
+
+        // Get all the personList where name equals to UPDATED_NAME
+        defaultPersonShouldNotBeFound("name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where name in DEFAULT_NAME or UPDATED_NAME
+        defaultPersonShouldBeFound("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME);
+
+        // Get all the personList where name equals to UPDATED_NAME
+        defaultPersonShouldNotBeFound("name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where name is not null
+        defaultPersonShouldBeFound("name.specified=true");
+
+        // Get all the personList where name is null
+        defaultPersonShouldNotBeFound("name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByNameContainsSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where name contains DEFAULT_NAME
+        defaultPersonShouldBeFound("name.contains=" + DEFAULT_NAME);
+
+        // Get all the personList where name contains UPDATED_NAME
+        defaultPersonShouldNotBeFound("name.contains=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPeopleByNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        // Get all the personList where name does not contain DEFAULT_NAME
+        defaultPersonShouldNotBeFound("name.doesNotContain=" + DEFAULT_NAME);
+
+        // Get all the personList where name does not contain UPDATED_NAME
+        defaultPersonShouldBeFound("name.doesNotContain=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
     void getAllPeopleByUserIsEqualToSomething() throws Exception {
         User user;
         if (TestUtil.findAll(em, User.class).isEmpty()) {
@@ -303,6 +446,28 @@ class PersonResourceIT {
         defaultPersonShouldNotBeFound("eventId.equals=" + (eventId + 1));
     }
 
+    @Test
+    @Transactional
+    void getAllPeopleByRelEventPersonIsEqualToSomething() throws Exception {
+        RelEventPerson relEventPerson;
+        if (TestUtil.findAll(em, RelEventPerson.class).isEmpty()) {
+            personRepository.saveAndFlush(person);
+            relEventPerson = RelEventPersonResourceIT.createEntity(em);
+        } else {
+            relEventPerson = TestUtil.findAll(em, RelEventPerson.class).get(0);
+        }
+        em.persist(relEventPerson);
+        em.flush();
+        person.addRelEventPerson(relEventPerson);
+        personRepository.saveAndFlush(person);
+        Long relEventPersonId = relEventPerson.getId();
+        // Get all the personList where relEventPerson equals to relEventPersonId
+        defaultPersonShouldBeFound("relEventPersonId.equals=" + relEventPersonId);
+
+        // Get all the personList where relEventPerson equals to (relEventPersonId + 1)
+        defaultPersonShouldNotBeFound("relEventPersonId.equals=" + (relEventPersonId + 1));
+    }
+
     /**
      * Executes the search, and checks that the default entity is returned.
      */
@@ -312,7 +477,9 @@ class PersonResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].pseudo").value(hasItem(DEFAULT_PSEUDO)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
 
         // Check, that the count call also returns 1
         restPersonMockMvc
@@ -362,7 +529,7 @@ class PersonResourceIT {
         Person updatedPerson = personRepository.findById(person.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedPerson are not directly saved in db
         em.detach(updatedPerson);
-        updatedPerson.description(UPDATED_DESCRIPTION);
+        updatedPerson.description(UPDATED_DESCRIPTION).pseudo(UPDATED_PSEUDO).name(UPDATED_NAME);
         PersonDTO personDTO = personMapper.toDto(updatedPerson);
 
         restPersonMockMvc
@@ -378,6 +545,8 @@ class PersonResourceIT {
         assertThat(personList).hasSize(databaseSizeBeforeUpdate);
         Person testPerson = personList.get(personList.size() - 1);
         assertThat(testPerson.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testPerson.getPseudo()).isEqualTo(UPDATED_PSEUDO);
+        assertThat(testPerson.getName()).isEqualTo(UPDATED_NAME);
         await()
             .atMost(5, TimeUnit.SECONDS)
             .untilAsserted(() -> {
@@ -386,6 +555,8 @@ class PersonResourceIT {
                 List<Person> personSearchList = IterableUtils.toList(personSearchRepository.findAll());
                 Person testPersonSearch = personSearchList.get(searchDatabaseSizeAfter - 1);
                 assertThat(testPersonSearch.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+                assertThat(testPersonSearch.getPseudo()).isEqualTo(UPDATED_PSEUDO);
+                assertThat(testPersonSearch.getName()).isEqualTo(UPDATED_NAME);
             });
     }
 
@@ -475,34 +646,7 @@ class PersonResourceIT {
         Person partialUpdatedPerson = new Person();
         partialUpdatedPerson.setId(person.getId());
 
-        restPersonMockMvc
-            .perform(
-                patch(ENTITY_API_URL_ID, partialUpdatedPerson.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedPerson))
-            )
-            .andExpect(status().isOk());
-
-        // Validate the Person in the database
-        List<Person> personList = personRepository.findAll();
-        assertThat(personList).hasSize(databaseSizeBeforeUpdate);
-        Person testPerson = personList.get(personList.size() - 1);
-        assertThat(testPerson.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
-    }
-
-    @Test
-    @Transactional
-    void fullUpdatePersonWithPatch() throws Exception {
-        // Initialize the database
-        personRepository.saveAndFlush(person);
-
-        int databaseSizeBeforeUpdate = personRepository.findAll().size();
-
-        // Update the person using partial update
-        Person partialUpdatedPerson = new Person();
-        partialUpdatedPerson.setId(person.getId());
-
-        partialUpdatedPerson.description(UPDATED_DESCRIPTION);
+        partialUpdatedPerson.description(UPDATED_DESCRIPTION).name(UPDATED_NAME);
 
         restPersonMockMvc
             .perform(
@@ -517,6 +661,39 @@ class PersonResourceIT {
         assertThat(personList).hasSize(databaseSizeBeforeUpdate);
         Person testPerson = personList.get(personList.size() - 1);
         assertThat(testPerson.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testPerson.getPseudo()).isEqualTo(DEFAULT_PSEUDO);
+        assertThat(testPerson.getName()).isEqualTo(UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void fullUpdatePersonWithPatch() throws Exception {
+        // Initialize the database
+        personRepository.saveAndFlush(person);
+
+        int databaseSizeBeforeUpdate = personRepository.findAll().size();
+
+        // Update the person using partial update
+        Person partialUpdatedPerson = new Person();
+        partialUpdatedPerson.setId(person.getId());
+
+        partialUpdatedPerson.description(UPDATED_DESCRIPTION).pseudo(UPDATED_PSEUDO).name(UPDATED_NAME);
+
+        restPersonMockMvc
+            .perform(
+                patch(ENTITY_API_URL_ID, partialUpdatedPerson.getId())
+                    .contentType("application/merge-patch+json")
+                    .content(TestUtil.convertObjectToJsonBytes(partialUpdatedPerson))
+            )
+            .andExpect(status().isOk());
+
+        // Validate the Person in the database
+        List<Person> personList = personRepository.findAll();
+        assertThat(personList).hasSize(databaseSizeBeforeUpdate);
+        Person testPerson = personList.get(personList.size() - 1);
+        assertThat(testPerson.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
+        assertThat(testPerson.getPseudo()).isEqualTo(UPDATED_PSEUDO);
+        assertThat(testPerson.getName()).isEqualTo(UPDATED_NAME);
     }
 
     @Test
@@ -632,6 +809,8 @@ class PersonResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(person.getId().intValue())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)));
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].pseudo").value(hasItem(DEFAULT_PSEUDO)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 }

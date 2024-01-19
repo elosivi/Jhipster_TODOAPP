@@ -1,0 +1,28 @@
+{
+  "todoApp": {
+    "relEventPerson": {
+      "home": {
+        "title": "RelEventPeople",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Rel Event Person",
+        "createOrEditLabel": "Créer ou éditer un Rel Event Person",
+        "search": "Recherche pour Rel Event Person",
+        "notFound": "Aucun Rel Event Person trouvé"
+      },
+      "created": "Un nouveau Rel Event Person a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Rel Event Person avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Rel Event Person avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Rel Event Person {{ id }} ?"
+      },
+      "detail": {
+        "title": "Rel Event Person"
+      },
+      "id": "ID",
+      "participation": "Participation",
+      "event": "Event",
+      "person": "Person",
+      "hierarchy": "Hierarchy"
+    }
+  }
+}

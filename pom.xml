@@ -73,6 +73,7 @@
         <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
         <spotless-maven-plugin.version>2.41.1</spotless-maven-plugin.version>
         <validation-api.version>3.0.2</validation-api.version>
+        <querydsl.version>4.4.0</querydsl.version>
     </properties>
 
     <dependencyManagement>
@@ -283,6 +284,22 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>${querydsl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.26</version>
         </dependency>
     </dependencies>
 
@@ -1164,6 +1181,25 @@
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.querydsl</groupId>
+                        <artifactId>querydsl-maven-plugin</artifactId>
+                        <version>${querydsl.version}</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>export</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <targetFolder>${project.basedir}/target/generated-sources/querydsl</targetFolder>
+                            <jdbcDriver>com.mysql.cj.jdbc.Driver</jdbcDriver>
+                            <jdbcUrl>jdbc:mysql://localhost:3306/your_database</jdbcUrl>
+                            <packageName>com.ebarbe.domain</packageName>
+                            <!-- Autres configurations -->
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

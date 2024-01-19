@@ -2,6 +2,7 @@ package com.ebarbe.domain;
 
 import static com.ebarbe.domain.EventTestSamples.*;
 import static com.ebarbe.domain.PersonTestSamples.*;
+import static com.ebarbe.domain.RelEventPersonTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.ebarbe.web.rest.TestUtil;

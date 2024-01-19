@@ -14,6 +14,7 @@ import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 
 /**
  * Spring Data Elasticsearch repository for the {@link Status} entity.
@@ -32,6 +33,7 @@ interface StatusSearchRepositoryInternal {
     void deleteFromIndexById(Long id);
 }
 
+@Component("customStatusSearchRepositoryInternalImpl")
 class StatusSearchRepositoryInternalImpl implements StatusSearchRepositoryInternal {
 
     private final ElasticsearchTemplate elasticsearchTemplate;

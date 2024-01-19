@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.ebarbe.IntegrationTest;
 import com.ebarbe.domain.Hierarchy;
+import com.ebarbe.domain.RelEventPerson;
 import com.ebarbe.repository.HierarchyRepository;
 import com.ebarbe.repository.search.HierarchySearchRepository;
 import com.ebarbe.service.dto.HierarchyDTO;
@@ -38,8 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class HierarchyResourceIT {
 
-    private static final String DEFAULT_DESCRIPTION = "Xamgd8";
-    private static final String UPDATED_DESCRIPTION = "Ip1";
+    private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
+    private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/hierarchies";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -276,6 +277,28 @@ class HierarchyResourceIT {
 
         // Get all the hierarchyList where description does not contain UPDATED_DESCRIPTION
         defaultHierarchyShouldBeFound("description.doesNotContain=" + UPDATED_DESCRIPTION);
+    }
+
+    @Test
+    @Transactional
+    void getAllHierarchiesByRelEventPersonIsEqualToSomething() throws Exception {
+        RelEventPerson relEventPerson;
+        if (TestUtil.findAll(em, RelEventPerson.class).isEmpty()) {
+            hierarchyRepository.saveAndFlush(hierarchy);
+            relEventPerson = RelEventPersonResourceIT.createEntity(em);
+        } else {
+            relEventPerson = TestUtil.findAll(em, RelEventPerson.class).get(0);
+        }
+        em.persist(relEventPerson);
+        em.flush();
+        hierarchy.addRelEventPerson(relEventPerson);
+        hierarchyRepository.saveAndFlush(hierarchy);
+        Long relEventPersonId = relEventPerson.getId();
+        // Get all the hierarchyList where relEventPerson equals to relEventPersonId
+        defaultHierarchyShouldBeFound("relEventPersonId.equals=" + relEventPersonId);
+
+        // Get all the hierarchyList where relEventPerson equals to (relEventPersonId + 1)
+        defaultHierarchyShouldNotBeFound("relEventPersonId.equals=" + (relEventPersonId + 1));
     }
 
     /**

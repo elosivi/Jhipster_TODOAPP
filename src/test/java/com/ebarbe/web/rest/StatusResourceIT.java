@@ -496,6 +496,8 @@ class StatusResourceIT {
         Status partialUpdatedStatus = new Status();
         partialUpdatedStatus.setId(status.getId());
 
+        partialUpdatedStatus.description(UPDATED_DESCRIPTION);
+
         restStatusMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, partialUpdatedStatus.getId())
@@ -508,7 +510,7 @@ class StatusResourceIT {
         List<Status> statusList = statusRepository.findAll();
         assertThat(statusList).hasSize(databaseSizeBeforeUpdate);
         Status testStatus = statusList.get(statusList.size() - 1);
-        assertThat(testStatus.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
+        assertThat(testStatus.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
     }
 
     @Test
