@@ -34,16 +34,9 @@ public class CategoryQueryService extends QueryService<Category> {
 
     private final CategoryMapper categoryMapper;
 
-    private final CategorySearchRepository categorySearchRepository;
-
-    public CategoryQueryService(
-        CategoryRepository categoryRepository,
-        CategoryMapper categoryMapper,
-        CategorySearchRepository categorySearchRepository
-    ) {
+    public CategoryQueryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper) {
         this.categoryRepository = categoryRepository;
         this.categoryMapper = categoryMapper;
-        this.categorySearchRepository = categorySearchRepository;
     }
 
     /**

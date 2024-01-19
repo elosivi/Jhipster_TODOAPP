@@ -13,10 +13,10 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Event} and its DTO {@link EventDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { PersonMapper.class, EventTypeMapper.class })
 public interface EventMapper extends EntityMapper<EventDTO, Event> {
-    @Mapping(target = "eventType", source = "eventType", qualifiedByName = "eventTypeId")
-    @Mapping(target = "people", source = "people", qualifiedByName = "personIdSet")
+    //@Mapping(target = "eventType", source = "eventType", qualifiedByName = "eventTypeId")
+    //@Mapping(target = "people", source = "people", qualifiedByName = "personIdSet")
     EventDTO toDto(Event s);
 
     @Mapping(target = "removePerson", ignore = true)

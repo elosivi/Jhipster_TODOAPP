@@ -1,7 +1,6 @@
 package com.ebarbe.web.rest;
 
 import com.ebarbe.config.Constants;
-import com.ebarbe.domain.Person;
 import com.ebarbe.domain.User;
 import com.ebarbe.repository.UserRepository;
 import com.ebarbe.security.AuthoritiesConstants;

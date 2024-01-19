@@ -20,4 +20,8 @@
             <column name="participation" type="VARCHAR(255)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet id="addColumnsToRelEventPerson-3" author="elodiebarbe">
+        <dropForeignKeyConstraint baseTableName="rel_event__person" constraintName="fk_rel_event_person_hierarchy"/>
+    </changeSet>
 </databaseChangeLog>

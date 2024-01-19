@@ -9,13 +9,15 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity {@link Person} and its DTO {@link PersonDTO}.
  */
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = { UserMapper.class })
 public interface PersonMapper extends EntityMapper<PersonDTO, Person> {
-    @Mapping(target = "user", source = "user", qualifiedByName = "userId")
+    //@Mapping(target = "user", source = "user", qualifiedByName = "userId")
     PersonDTO toDto(Person s);
 
     @Named("userId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
-    UserDTO toDtoUserId(User user);
+    default UserDTO toDtoUserId(User user) {
+        return user != null ? toDtoUserId(user) : null;
+    }
 }

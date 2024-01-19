@@ -3,7 +3,6 @@ package com.ebarbe.service;
 import com.ebarbe.domain.*; // for static metamodels
 import com.ebarbe.domain.MainTask;
 import com.ebarbe.repository.MainTaskRepository;
-import com.ebarbe.repository.search.MainTaskSearchRepository;
 import com.ebarbe.service.criteria.MainTaskCriteria;
 import com.ebarbe.service.dto.MainTaskDTO;
 import com.ebarbe.service.mapper.MainTaskMapper;
@@ -34,16 +33,9 @@ public class MainTaskQueryService extends QueryService<MainTask> {
 
     private final MainTaskMapper mainTaskMapper;
 
-    private final MainTaskSearchRepository mainTaskSearchRepository;
-
-    public MainTaskQueryService(
-        MainTaskRepository mainTaskRepository,
-        MainTaskMapper mainTaskMapper,
-        MainTaskSearchRepository mainTaskSearchRepository
-    ) {
+    public MainTaskQueryService(MainTaskRepository mainTaskRepository, MainTaskMapper mainTaskMapper) {
         this.mainTaskRepository = mainTaskRepository;
         this.mainTaskMapper = mainTaskMapper;
-        this.mainTaskSearchRepository = mainTaskSearchRepository;
     }
 
     /**

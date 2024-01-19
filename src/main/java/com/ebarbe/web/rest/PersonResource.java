@@ -242,36 +242,4 @@ public class PersonResource {
             throw ElasticsearchExceptionMapper.mapException(e);
         }
     }
-
-    /**
-     * link or unlink an existing user with an existing person
-     * @param userId
-     * @param personId
-     * @return
-     */
-    @PostMapping("/associate-user/{userId}/with-person/{personId}")
-    public ResponseEntity<Void> associateUserWithPerson(@PathVariable Long userId, @PathVariable Long personId) {
-        if (userId == null && personId == null) {
-            log.debug("REST request to associate User with Person: {} - {} : avorted ", userId, personId);
-            return ResponseEntity.ok().build();
-        }
-        log.debug("REST request to associate User with Person: {} - {}", userId, personId);
-        personService.associateUserWithPerson(userId, personId);
-        return ResponseEntity
-            .noContent()
-            .headers(HeaderUtil.createAlert(applicationName, "Association successful", userId.toString()))
-            .build();
-    }
-
-    /**
-     * load the person associated to the user id in param
-     * @param id
-     * @return
-     */
-    @GetMapping("/person")
-    public ResponseEntity<PersonDTO> getPersonByUserId(@RequestParam("userId") Long id) {
-        log.debug("REST request to get Person associated with the user: {}", id);
-        Optional<PersonDTO> personDTO = personService.findOneByUser(id);
-        return ResponseUtil.wrapOrNotFound(personDTO);
-    }
 }

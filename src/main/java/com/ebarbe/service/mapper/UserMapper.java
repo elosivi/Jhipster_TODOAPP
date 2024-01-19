@@ -25,7 +25,10 @@ public class UserMapper {
     }
 
     public UserDTO userToUserDTO(User user) {
-        return new UserDTO(user);
+        if (user != null) {
+            return new UserDTO(user);
+        }
+        return new UserDTO();
     }
 
     public List<AdminUserDTO> usersToAdminUserDTOs(List<User> users) {
