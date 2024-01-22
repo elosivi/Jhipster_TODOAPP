@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (relEventPerson) {
+      <div>
+        <h2 data-cy="relEventPersonDetailsHeading"><span jhiTranslate="todoApp.relEventPerson.detail.title">Rel Event Person</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ relEventPerson.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.relEventPerson.participation">Participation</span></dt>
+          <dd>
+            <span>{{ relEventPerson.participation }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.relEventPerson.event">Event</span></dt>
+          <dd>
+            @if (relEventPerson.event && relEventPerson.event.id) {
+              <span>
+                <a [routerLink]="['/event', relEventPerson.event.id, 'view']">{{ relEventPerson.event.label }}</a>
+              </span>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.relEventPerson.person">Person</span></dt>
+          <dd>
+            @if (relEventPerson.person) {
+              <span>
+                <a [routerLink]="['/person', relEventPerson.person.id, 'view']">{{ relEventPerson.person.pseudo }}</a>
+              </span>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.relEventPerson.hierarchy">Hierarchy</span></dt>
+          <dd>
+            @if (relEventPerson.hierarchy) {
+              <span>
+                <a [routerLink]="['/hierarchy', relEventPerson.hierarchy.id, 'view']">{{ relEventPerson.hierarchy.description }}</a>
+              </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/rel-event-person', relEventPerson.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (person) {
+      <div>
+        <h2 data-cy="personDetailsHeading"><span jhiTranslate="todoApp.person.detail.title">Person</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ person.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.person.description">Description</span></dt>
+          <dd>
+            <span>{{ person.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.person.pseudo">Pseudo</span></dt>
+          <dd>
+            <span>{{ person.pseudo }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.person.name">Name</span></dt>
+          <dd>
+            <span>{{ person.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.person.userTitle">User</span></dt>
+          <dd>
+            <span>{{ person.user?.id }} </span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/person', person.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

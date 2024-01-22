@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity RelEventPerson.
+    -->
+    <changeSet id="20240109141600-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="rel_event_person_id"
+                                 baseTableName="rel_rel_event_person__event"
+                                 constraintName="fk_rel_rel_event_person__event__rel_event_person_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="rel_event_person"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="event_id"
+                                 baseTableName="rel_rel_event_person__event"
+                                 constraintName="fk_rel_rel_event_person__event__event_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="event"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="rel_event_person_id"
+                                 baseTableName="rel_rel_event_person__person"
+                                 constraintName="fk_rel_rel_event_person__person__rel_event_person_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="rel_event_person"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="person_id"
+                                 baseTableName="rel_rel_event_person__person"
+                                 constraintName="fk_rel_rel_event_person__person__person_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="person"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="rel_event_person_id"
+                                 baseTableName="rel_rel_event_person__hierarchy"
+                                 constraintName="fk_rel_rel_event_person__hierarchy__rel_event_person_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="rel_event_person"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="hierarchy_id"
+                                 baseTableName="rel_rel_event_person__hierarchy"
+                                 constraintName="fk_rel_rel_event_person__hierarchy__hierarchy_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="hierarchy"
+                                 />
+    </changeSet>
+</databaseChangeLog>

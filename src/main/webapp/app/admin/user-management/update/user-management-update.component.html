@@ -110,6 +110,7 @@
         </label>
       </div>
 
+      <!--LANGUAGE-->
       @if (languages && languages.length > 0) {
         <div class="mb-3">
           <label jhiTranslate="userManagement.langKey">Langue</label>
@@ -121,6 +122,7 @@
         </div>
       }
 
+      <!--AUTHORITY -->
       <div class="mb-3">
         <label jhiTranslate="userManagement.profiles">Droits</label>
         <select class="form-control" multiple name="authority" formControlName="authorities">
@@ -129,12 +131,50 @@
           }
         </select>
       </div>
+
+      <!--PERSON ASSOCIATION -->
+
+      <!--ASSOCIATE WITH AN EXISTING PERSON-->
+      <div class="mb-3">
+        <label class="form-label" jhiTranslate="todoApp.person.home.label" for="field_person">Participant associé</label>
+        <select
+          class="form-control"
+          id="field_person"
+          data-cy="person"
+          name="person"
+          formControlName="person"
+          [compareWith]="comparePerson"
+        >
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let personOption of personsCollection"
+            [ngValue]="personOption"
+            [selected]="selectedPerson && selectedPerson.id === personOption.id"
+          >
+            {{ personOption.pseudo }} ({{ personOption.name }})
+          </option>
+        </select>
+      </div>
+
+      <!-- BOUTONS-->
       <button type="button" class="btn btn-secondary" (click)="previousState()">
         <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
       </button>
 
+      <!--2 differents label for the button depending on person select -->
       <button type="submit" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+        <div *ngIf="!isLinked"><fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span></div>
+        <div *ngIf="isLinked">
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.saveAndLink">Sauvegarder et Lier</span>
+        </div>
+        <!--informations about why the button is disabled-->
+        <div *ngIf="isSaving"><small>sauvegarde en cours</small></div>
+        <div *ngIf="editForm.invalid"><small>Le formulaire n'est pas valide</small></div>
+      </button>
+
+      <button type="button" [disabled]="editForm.invalid || isSaving" (click)="associateWithNewPerson()" class="btn btn-primary">
         <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        <fa-icon icon="plus"></fa-icon>&nbsp;<span jhiTranslate="entity.action.associate"> Lier à un nouveau participant</span>
       </button>
     </form>
   </div>

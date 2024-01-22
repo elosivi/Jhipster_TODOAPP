@@ -1,0 +1,47 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6" *ngFor="let relEventPerson of relEventPeople">
+      <div class="card">
+        <div class="card-header">
+          {{ relEventPerson.eventTypeLabel }}
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ relEventPerson.eventLabel }}</h5>
+          <hr />
+
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Description:</strong> {{ relEventPerson.eventDescription }}</p>
+              <p><strong>Theme:</strong> {{ relEventPerson.eventTheme }}</p>
+            </div>
+            <div class="col-md-6">
+              <p><strong>Place Details:</strong> {{ relEventPerson.eventPlaceDetails }}</p>
+              <p><strong>Date:</strong> {{ relEventPerson.eventDateStart }} - {{ relEventPerson.eventDateEnd }}</p>
+            </div>
+          </div>
+          <hr />
+
+          <p><strong>Note:</strong> {{ relEventPerson.eventNote }}</p>
+          <hr />
+
+          <div class="row">
+            <div class="col-md-6">
+              <p><strong>Place:</strong> {{ relEventPerson.eventPlace.toUpperCase() }}</p>
+              <p><strong>Address:</strong> {{ relEventPerson.eventAddress }}</p>
+            </div>
+            <div class="col-md-6">
+              <h6>Participants:</h6>
+              <ul>
+                <li *ngFor="let participant of relEventPerson.participants">
+                  {{ participant.person.pseudo }} - {{ participant.person.user.firstName }} {{ participant.person.user.lastName }} ({{
+                    participant.hierarchy.description
+                  }}) - {{ participant.participation }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

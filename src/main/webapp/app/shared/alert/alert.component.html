@@ -1,4 +1,5 @@
 <div class="alerts" role="alert">
+  <i class="faBell"></i>
   @for (alert of alerts; track $index) {
     <div [ngClass]="setClasses(alert)">
       @if (alert.message) {

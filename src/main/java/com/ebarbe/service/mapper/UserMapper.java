@@ -25,7 +25,10 @@ public class UserMapper {
     }
 
     public UserDTO userToUserDTO(User user) {
-        return new UserDTO(user);
+        if (user != null) {
+            return new UserDTO(user);
+        }
+        return new UserDTO();
     }
 
     public List<AdminUserDTO> usersToAdminUserDTOs(List<User> users) {
@@ -55,6 +58,22 @@ public class UserMapper {
             user.setLangKey(userDTO.getLangKey());
             Set<Authority> authorities = this.authoritiesFromStrings(userDTO.getAuthorities());
             user.setAuthorities(authorities);
+            return user;
+        }
+    }
+
+    public User userDTOToSimpleUser(UserDTO userDTO) {
+        if (userDTO == null) {
+            return null;
+        } else {
+            User user = new User();
+            user.setId(userDTO.getId());
+            user.setLogin(userDTO.getLogin());
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setImageUrl(userDTO.getImageUrl());
+            user.setActivated(userDTO.isActivated());
             return user;
         }
     }

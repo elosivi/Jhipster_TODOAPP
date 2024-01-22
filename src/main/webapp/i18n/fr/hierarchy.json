@@ -1,0 +1,26 @@
+{
+  "todoApp": {
+    "hierarchy": {
+      "home": {
+        "title": "Hierarchies",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Hierarchy",
+        "createOrEditLabel": "Créer ou éditer un Hierarchy",
+        "search": "Recherche pour Hierarchy",
+        "notFound": "Aucun Hierarchy trouvé"
+      },
+      "created": "Un nouveau Hierarchy a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Hierarchy avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Hierarchy avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Hierarchy {{ id }} ?"
+      },
+      "detail": {
+        "title": "Hierarchy"
+      },
+      "id": "ID",
+      "description": "Description",
+      "relEventPerson": "Rel Event Person"
+    }
+  }
+}

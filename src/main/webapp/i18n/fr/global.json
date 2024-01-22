@@ -6,8 +6,22 @@
       "home": "Accueil",
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
-        "main": "Entités",
-        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+        "main": "Créer/Modifier",
+        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
+        "event": "Evenements",
+        "mainTask": "Tâches",
+        "eventType": "Types d'évenement",
+        "subTask": "Sous-Tâches",
+        "status": "Statuts",
+        "person": "Participants",
+        "category": "Categories d'évenement",
+        "hierarchy": "Hierarchies",
+        "relEventPerson": "Participants aux évenements",
+        "titles": {
+          "events": "Evenements",
+          "tasks": "Tâches",
+          "persons": "Participants"
+        }
       },
       "account": {
         "main": "Compte",
@@ -80,7 +94,10 @@
       }
     },
     "field": {
-      "id": "ID"
+      "id": "ID",
+      "event": "Evènement",
+      "person": "Participant",
+      "hyerarchy": "Statut"
     },
     "ribbon": {
       "dev": "Développement"

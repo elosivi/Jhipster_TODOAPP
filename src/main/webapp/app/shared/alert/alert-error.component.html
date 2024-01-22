@@ -1,8 +1,9 @@
 <div class="alerts" role="alert">
   @for (alert of alerts; track $index) {
-    <div [ngClass]="setClasses(alert)">
+    <div [ngClass]="setClasses(alert)" class="alert-container">
       @if (alert.message) {
-        <ngb-alert [type]="alert.type" (closed)="close(alert)">
+        <ngb-alert [type]="alert.type" (closed)="close(alert)" class="alert-flex">
+          <fa-icon icon="bell"></fa-icon>
           <pre [innerHTML]="alert.message"></pre>
         </ngb-alert>
       }

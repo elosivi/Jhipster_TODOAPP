@@ -1,0 +1,23 @@
+{
+  "annotations": {
+    "changelogDate": "20231218144412"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "hierarchy",
+  "fields": [
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "50",
+      "fieldValidateRulesMinlength": "3"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Hierarchy",
+  "pagination": "pagination",
+  "relationships": [],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
+}

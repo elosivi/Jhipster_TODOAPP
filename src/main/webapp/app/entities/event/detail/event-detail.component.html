@@ -1,0 +1,83 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (event) {
+      <div>
+        <h2 data-cy="eventDetailsHeading"><span jhiTranslate="todoApp.event.detail.title">Event</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ event.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.label">Label</span></dt>
+          <dd>
+            <span>{{ event.label }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.description">Description</span></dt>
+          <dd>
+            <span>{{ event.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.theme">Theme</span></dt>
+          <dd>
+            <span>{{ event.theme }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.dateStart">Date Start</span></dt>
+          <dd>
+            <span>{{ event.dateStart | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.dateEnd">Date End</span></dt>
+          <dd>
+            <span>{{ event.dateEnd | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.place">Place</span></dt>
+          <dd>
+            <span>{{ event.place }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.placeDetails">Place Details</span></dt>
+          <dd>
+            <span>{{ event.placeDetails }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.adress">Adress</span></dt>
+          <dd>
+            <span>{{ event.adress }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.note">Note</span></dt>
+          <dd>
+            <span>{{ event.note }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.eventType">Event Type</span></dt>
+          <dd>
+            @if (event.eventType) {
+              <div>
+                <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.event.person">Person</span></dt>
+          <dd>
+            @for (person of event.people; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/event', event.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

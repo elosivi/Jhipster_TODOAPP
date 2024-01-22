@@ -1,0 +1,82 @@
+
+entity MainTask {
+description String minlength(3) maxlength(100)
+deadline LocalDate required
+creation LocalDate
+cost Double
+}
+
+entity SubTask {
+description String required minlength(3) maxlength(300)
+deadline LocalDate required
+creation LocalDate
+cost Double
+}
+
+entity Status{
+description String required minlength(3) maxlength(100)
+}
+
+entity Person {
+description String minlength(3) maxlength(300)
+    pseudo String minlength(3) maxlength(50)
+    name String minlength(3) maxlength(250)
+}
+
+entity Category {
+label String required minlength(3) maxlength(50)
+description String minlength(3) maxlength(300)
+}
+
+entity Hierarchy{
+description String required minlength(3) maxlength(50)
+}
+
+entity Event{
+label String required minlength(3) maxlength(50)
+description String minlength(3) maxlength(300)
+theme String minlength(3) maxlength(300)
+dateStart LocalDate required
+dateEnd LocalDate required
+place String required
+placeDetails String
+adress String
+note  String minlength(3) maxlength(300)
+}
+
+entity EventType{
+label String required minlength(3) maxlength(50)
+description String minlength(3) maxlength(300)
+duration Duration
+}
+
+entity RelEventPerson{
+    participation String
+}
+
+relationship ManyToOne {
+  SubTask to MainTask
+  MainTask to Category
+  MainTask{personOwner} to Person
+  SubTask{personDoer} to Person
+  MainTask to Status
+  SubTask to Status
+    Event to EventType
+}
+
+relationship OneToOne{
+   Person{user} to User with builtInEntity
+   Person to Hierarchy
+}
+
+relationship ManyToMany{
+    RelEventPerson to Person
+    RelEventPerson to Event
+    RelEventPerson to Hierarchy
+}
+
+filter *
+dto * with mapstruct
+paginate * with pagination
+service * with serviceClass
+search * with elasticsearch

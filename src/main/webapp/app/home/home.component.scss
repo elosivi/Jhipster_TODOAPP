@@ -1,23 +1,63 @@
+@use 'content/scss/global';
+
+/* SCSS RGB */
+$light-blue: rgba(155, 196, 203, 1);
+$blue: rgba(71, 141, 154, 1);
+$grey: rgba(60, 71, 75, 1);
+$red: rgba(188, 65, 43, 1);
+$sunset: rgba(253, 214, 146, 1);
+$white: rgba(246, 246, 246, 1);
+$beige: rgba(240, 234, 210, 1);
 /* ==========================================================================
 Main page styles
 ========================================================================== */
 
 .hipster {
   display: inline-block;
-  width: 347px;
-  height: 497px;
-  background: url('../../content/images/jhipster_family_member_1.svg') no-repeat center top;
+  width: 500px;
+  height: 200%;
+  background: url('../../content/images/home-0.png') no-repeat center top;
   background-size: contain;
+}
+
+.centerText {
+  text-align: center;
+}
+
+.count-link {
+  background-color: $white;
+  display: inline-block;
+  border-radius: 10px;
+  border: 4px double $light-blue;
+  padding: 20px;
+  width: 80%;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+.count-link:hover,
+.link-text:hover {
+  background-color: $blue;
+  color: $white;
+}
+
+.link-text {
+  text-decoration: none;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: $blue;
+  text-align: center;
+  font-size: 28px;
+  width: 60%;
 }
 
 /* wait autoprefixer update to allow simple generation of high pixel density media query */
 @media only screen and (-webkit-min-device-pixel-ratio: 2),
-  only screen and (-moz-min-device-pixel-ratio: 2),
   only screen and (-o-min-device-pixel-ratio: 2/1),
   only screen and (min-resolution: 192dpi),
   only screen and (min-resolution: 2dppx) {
   .hipster {
-    background: url('../../content/images/jhipster_family_member_1.svg') no-repeat center top;
+    background: url('../../content/images/home-0.png') no-repeat center top;
     background-size: contain;
   }
 }

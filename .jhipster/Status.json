@@ -1,0 +1,38 @@
+{
+  "annotations": {
+    "changelogDate": "20231218144112"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "entityTableName": "status",
+  "fields": [
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "minlength", "maxlength"],
+      "fieldValidateRulesMaxlength": "100",
+      "fieldValidateRulesMinlength": "3"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Status",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "mainTask",
+      "otherEntityRelationshipName": "status",
+      "relationshipName": "mainTask",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "subTask",
+      "otherEntityRelationshipName": "status",
+      "relationshipName": "subTask",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "elasticsearch",
+  "service": "serviceClass"
+}

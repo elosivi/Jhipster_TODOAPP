@@ -1,0 +1,31 @@
+{
+  "todoApp": {
+    "subTask": {
+      "home": {
+        "title": "Sub Tasks",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sub Task",
+        "createOrEditLabel": "Create or edit a Sub Task",
+        "search": "Search for Sub Task",
+        "notFound": "No Sub Tasks found"
+      },
+      "created": "A new Sub Task is created with identifier {{ param }}",
+      "updated": "A Sub Task is updated with identifier {{ param }}",
+      "deleted": "A Sub Task is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sub Task {{ id }}?"
+      },
+      "detail": {
+        "title": "Sub Task"
+      },
+      "id": "ID",
+      "description": "Description",
+      "deadline": "Deadline",
+      "creation": "Creation",
+      "cost": "Cost",
+      "mainTask": "Main Task",
+      "personDoer": "Person Doer",
+      "status": "Status"
+    }
+  }
+}

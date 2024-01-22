@@ -1,0 +1,26 @@
+{
+  "todoApp": {
+    "hierarchy": {
+      "home": {
+        "title": "Hierarchies",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Hierarchy",
+        "createOrEditLabel": "Create or edit a Hierarchy",
+        "search": "Search for Hierarchy",
+        "notFound": "No Hierarchies found"
+      },
+      "created": "A new Hierarchy is created with identifier {{ param }}",
+      "updated": "A Hierarchy is updated with identifier {{ param }}",
+      "deleted": "A Hierarchy is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Hierarchy {{ id }}?"
+      },
+      "detail": {
+        "title": "Hierarchy"
+      },
+      "id": "ID",
+      "description": "Description",
+      "relEventPerson": "Rel Event Person"
+    }
+  }
+}

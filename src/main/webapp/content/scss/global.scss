@@ -1,18 +1,49 @@
-@import 'bootstrap-variables';
 @import 'bootstrap/scss/functions';
 @import 'bootswatch/dist/sketchy/variables';
 @import 'bootstrap/scss/variables';
+
+/* SCSS RGB */
+$light-blue: rgba(155, 196, 203, 1);
+$blue: rgba(71, 141, 154, 1);
+$grey: rgba(60, 71, 75, 1);
+$grey-light: rgba(145, 145, 145, 1);
+$red: rgba(188, 65, 43, 1);
+$sunset: rgba(253, 214, 146, 1);
+$white: rgba(246, 246, 246, 1);
+$beige: rgba(240, 234, 210, 1);
+
+/* SCSS Gradient */
+$gradient-top: linear-gradient(0deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-right: linear-gradient(90deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-bottom: linear-gradient(180deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-left: linear-gradient(270deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-top-right: linear-gradient(45deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-bottom-right: linear-gradient(135deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-top-left: linear-gradient(225deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-bottom-left: linear-gradient(315deg, #9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
+$gradient-radial: radial-gradient(#9bc4cbff, #478d9aff, #3c474bff, #bc412bff, #fdd692ff);
 
 /* ==============================================================
 Bootstrap tweaks
 ===============================================================*/
 
-body,
-h1,
-h2,
+h1 {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: $white;
+  font-size: 40px;
+}
+h2 {
+  font-weight: 400;
+  text-transform: capitalize;
+  color: $beige;
+  font-size: 25px;
+}
 h3,
 h4 {
   font-weight: 300;
+  color: $white;
+  font-size: 20px;
 }
 
 a:hover {
@@ -41,9 +72,10 @@ Generic styles
 /* other generic styles */
 
 .jh-card {
-  padding: 1.5%;
+  padding: 5%;
   margin-top: 20px;
   border: none;
+  background-color: inherit;
 }
 
 .error {
@@ -78,7 +110,17 @@ Generic styles
 }
 
 .footer {
-  border-top: 1px solid rgba(0, 0, 0, 0.125);
+  border-top: 1px solid $grey-light;
+  opacity: 0.5;
+  margin-top: 50px;
+  padding-top: 30px;
+}
+
+.separation {
+  border-top: 1px solid $grey-light;
+  opacity: 0.5;
+  margin-top: 50px;
+  padding-top: 30px;
 }
 
 .hand,
@@ -150,7 +192,7 @@ entity detail page css
   .row-md.jh-entity-details > {
     dt {
       float: left;
-      overflow: hidden;
+      overflow: auto;
       clear: left;
       text-align: right;
       text-overflow: ellipsis;
@@ -177,7 +219,7 @@ ui bootstrap tweaks
 
 .thread-dump-modal-lock {
   max-width: 450px;
-  overflow: hidden;
+  overflow: auto;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -208,3 +250,251 @@ angular-cli removes postcss-rtl processed inline css, processed rules must be ad
   }
 }
 /* jhipster-needle-scss-add-main JHipster will add new css style */
+
+/* ==========================================================================
+     ********  project own scss   *******
+========================================================================== */
+
+/* ==========================================================================
+LAYOUT
+========================================================================== */
+
+body {
+  background-color: $grey;
+}
+
+.ribbon {
+  display: none;
+}
+
+.container-info {
+  //margin:20px;
+  padding: 20px;
+  font-size: 90%;
+  opacity: 0.8;
+  letter-spacing: 2px;
+}
+
+.element-center {
+  text-align: center;
+  margin: auto;
+}
+
+.separator {
+  margin-top: 50px;
+  border-top: 1px solid $white;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ==========================================================================
+TEXT
+========================================================================== */
+
+p,
+label,
+body {
+  color: $white;
+  font-size: 14px;
+  font-weight: normal;
+}
+
+small {
+  color: $beige;
+  font-size: 12px;
+  font-weight: lighter;
+}
+
+span {
+  color: $white;
+  font-size: 16px;
+}
+span.mediumtext {
+  color: $white;
+  font-size: 14px;
+  font-weight: normal;
+}
+span.smallText {
+  color: $beige;
+  font-size: 12px;
+  font-weight: normal;
+}
+a,
+a.link {
+  color: $light-blue;
+}
+
+.row-md.jh-entity-details dd {
+  color: $light-blue;
+  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+//pages number
+jhi-item-count {
+  color: $white;
+}
+
+#home-logged-message {
+  font-size: 1.1rem;
+  color: $blue;
+}
+/* ==========================================================================
+MESSAGES & ALERTS
+========================================================================== */
+.alerts {
+  background-color: inherit;
+  border: none;
+
+  ngb-alert,
+  pre {
+    color: $red;
+    font-weight: bold;
+    font-size: 1.2rem;
+    background-color: $beige;
+  }
+
+  ngb-alert {
+    background-color: inherit;
+    max-width: 50%;
+  }
+  ngb-alert.alert.alert-success.show.fade.alert-dismissible {
+    background-color: white;
+    border-color: $beige;
+  }
+
+  fa-icon {
+    color: $red;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding-right: 5px;
+  }
+
+  .alert-container {
+    display: flex;
+    align-items: center;
+    border-color: $red, 50%;
+  }
+
+  .alert-flex {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.alert-warning {
+  background-color: inherit;
+  border: none;
+
+  span {
+    color: $blue;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  fa-icon {
+    color: $blue;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding-right: 5px;
+  }
+}
+
+//Popup
+.modal-header h4 {
+  color: $grey;
+  font-size: 1.5rem;
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-footer {
+  border-top: none;
+}
+
+p#jhi-delete-hierarchy-heading {
+  color: $blue;
+  font-size: 1.2rem;
+  padding-bottom: 0px;
+}
+
+/* ==========================================================================
+FORMS
+========================================================================== */
+
+input {
+  font-size: 22px;
+}
+
+[type='checkbox']::before {
+  border-color: $white;
+}
+[type='checkbox']:checked::after {
+  color: $white;
+}
+
+.readOnlyInput,
+.form-control:disabled {
+  background-color: $grey-light;
+}
+
+form.EditForm input,
+form.EditForm textarea,
+form.EditForm select {
+  max-width: 400px;
+}
+
+/* ==========================================================================
+TABLE
+========================================================================== */
+
+//table header
+tr div.d-flex span,
+blue-font,
+span.blue-font {
+  color: $blue;
+}
+
+th.borderLeftColumn,
+td.borderLeftColumn {
+  border-left: $grey 0.5px solid;
+}
+
+th.borderRightColumn,
+td.borderRightColumn {
+  border-right: $grey 0.5px solid;
+}
+
+th span {
+  color: $grey;
+}
+/* ==========================================================================
+     BUTTONS
+========================================================================== */
+
+button {
+  font-size: 30px;
+}
+
+button.validationButton {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: $blue;
+  text-align: center;
+  background-color: $white;
+  border-radius: 10px;
+  border: 1px solid $light-blue;
+  padding: 5px 15px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button.validationButton:hover {
+  background-color: $blue;
+  color: $white;
+}

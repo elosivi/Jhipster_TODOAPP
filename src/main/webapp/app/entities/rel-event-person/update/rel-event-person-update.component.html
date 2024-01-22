@@ -1,0 +1,103 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-rel-event-person-heading"
+        data-cy="RelEventPersonCreateUpdateHeading"
+        jhiTranslate="todoApp.relEventPerson.home.createOrEditLabel"
+      >
+        Créer ou éditer un Rel Event Person
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.relEventPerson.participation" for="field_participation">Participation</label>
+          <input
+            type="text"
+            class="form-control"
+            name="participation"
+            id="field_participation"
+            data-cy="participation"
+            formControlName="participation"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label jhiTranslate="todoApp.relEventPerson.event" for="field_event">Event</label>
+          <select
+            class="form-control"
+            id="field_event"
+            data-cy="event"
+            multiple
+            name="event"
+            formControlName="event"
+            [compareWith]="compareEvent"
+          >
+            @for (eventOption of eventsSharedCollection; track $index) {
+              <option [ngValue]="eventOption">{{ eventOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label jhiTranslate="todoApp.relEventPerson.person" for="field_person">Person</label>
+          <select
+            class="form-control"
+            id="field_person"
+            data-cy="person"
+            multiple
+            name="person"
+            formControlName="person"
+            [compareWith]="comparePerson"
+          >
+            @for (personOption of peopleSharedCollection; track $index) {
+              <option [ngValue]="personOption">{{ personOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label jhiTranslate="todoApp.relEventPerson.hierarchy" for="field_hierarchy">Hierarchy</label>
+          <select
+            class="form-control"
+            id="field_hierarchy"
+            data-cy="hierarchy"
+            multiple
+            name="hierarchy"
+            formControlName="hierarchy"
+            [compareWith]="compareHierarchy"
+          >
+            @for (hierarchyOption of hierarchiesSharedCollection; track $index) {
+              <option [ngValue]="hierarchyOption">{{ hierarchyOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

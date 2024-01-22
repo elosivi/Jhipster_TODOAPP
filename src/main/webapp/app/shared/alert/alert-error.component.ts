@@ -8,12 +8,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { Alert, AlertService } from 'app/core/util/alert.service';
 import { EventManager, EventWithContent } from 'app/core/util/event-manager.service';
 import { AlertError } from './alert-error.model';
+import { FaIconComponent } from '@fortawesome/angular-fontawesome';
 
 @Component({
   standalone: true,
   selector: 'jhi-alert-error',
   templateUrl: './alert-error.component.html',
-  imports: [CommonModule, NgbModule],
+  imports: [CommonModule, NgbModule, FaIconComponent],
 })
 export class AlertErrorComponent implements OnDestroy {
   alerts: Alert[] = [];

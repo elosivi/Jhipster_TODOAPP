@@ -1,0 +1,70 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (mainTask) {
+      <div>
+        <h2 data-cy="mainTaskDetailsHeading"><span jhiTranslate="todoApp.mainTask.detail.title">Main Task</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ mainTask.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.description">Description</span></dt>
+          <dd>
+            <span>{{ mainTask.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.deadline">Deadline</span></dt>
+          <dd>
+            <span>{{ mainTask.deadline | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.creation">Creation</span></dt>
+          <dd>
+            <span>{{ mainTask.creation | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.cost">Cost</span></dt>
+          <dd>
+            <span>{{ mainTask.cost }}</span>
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.category">Category</span></dt>
+          <dd>
+            @if (mainTask.category) {
+              <div>
+                <a [routerLink]="['/category', mainTask.category.id, 'view']">{{ mainTask.category.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.personOwner">Person Owner</span></dt>
+          <dd>
+            @if (mainTask.personOwner) {
+              <div>
+                <a [routerLink]="['/person', mainTask.personOwner.id, 'view']">{{ mainTask.personOwner.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="todoApp.mainTask.status">Status</span></dt>
+          <dd>
+            @if (mainTask.status) {
+              <div>
+                <a [routerLink]="['/status', mainTask.status.id, 'view']">{{ mainTask.status.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/main-task', mainTask.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

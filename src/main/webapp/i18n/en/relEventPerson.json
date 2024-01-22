@@ -1,0 +1,28 @@
+{
+  "todoApp": {
+    "relEventPerson": {
+      "home": {
+        "title": "Rel Event People",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Rel Event Person",
+        "createOrEditLabel": "Create or edit a Rel Event Person",
+        "search": "Search for Rel Event Person",
+        "notFound": "No Rel Event People found"
+      },
+      "created": "A new Rel Event Person is created with identifier {{ param }}",
+      "updated": "A Rel Event Person is updated with identifier {{ param }}",
+      "deleted": "A Rel Event Person is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Rel Event Person {{ id }}?"
+      },
+      "detail": {
+        "title": "Rel Event Person"
+      },
+      "id": "ID",
+      "participation": "Participation",
+      "event": "Event",
+      "person": "Person",
+      "hierarchy": "Hierarchy"
+    }
+  }
+}

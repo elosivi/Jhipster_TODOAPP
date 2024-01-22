@@ -1,0 +1,36 @@
+{
+  "todoApp": {
+    "event": {
+      "home": {
+        "title": "Events",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Event",
+        "createOrEditLabel": "Créer ou éditer un Event",
+        "search": "Recherche pour Event",
+        "notFound": "Aucun Event trouvé"
+      },
+      "created": "Un nouveau Event a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Event avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Event avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Event {{ id }} ?"
+      },
+      "detail": {
+        "title": "Event"
+      },
+      "id": "ID",
+      "label": "Label",
+      "description": "Description",
+      "theme": "Theme",
+      "dateStart": "Date Start",
+      "dateEnd": "Date End",
+      "place": "Place",
+      "placeDetails": "Place Details",
+      "adress": "Adress",
+      "note": "Note",
+      "eventType": "Event Type",
+      "person": "Person",
+      "relEventPerson": "Rel Event Person"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "homeApp": {
+    "title": "READY TO FUN ?!",
+    "subtitle": "organize your own event! ",
+    "logged": {
+      "message": "You turn \"{{username}}\"."
+    },
+    "question": "If you have any question :",
+    "link": {
+      "homepage": "",
+      "stackoverflow": "",
+      "bugtracker": "",
+      "chat": "",
+      "follow": "",
+      "connexion": "connexion"
+    },
+    "like": "",
+    "github": "GitHub"
+  }
+}

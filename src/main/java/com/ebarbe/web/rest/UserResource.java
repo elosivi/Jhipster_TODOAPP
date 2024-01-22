@@ -5,8 +5,10 @@ import com.ebarbe.domain.User;
 import com.ebarbe.repository.UserRepository;
 import com.ebarbe.security.AuthoritiesConstants;
 import com.ebarbe.service.MailService;
+import com.ebarbe.service.PersonService;
 import com.ebarbe.service.UserService;
 import com.ebarbe.service.dto.AdminUserDTO;
+import com.ebarbe.service.dto.PersonDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.EmailAlreadyUsedException;
 import com.ebarbe.web.rest.errors.LoginAlreadyUsedException;
@@ -87,10 +89,13 @@ public class UserResource {
 
     private final MailService mailService;
 
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
+    private final PersonService personService;
+
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, PersonService personService) {
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
+        this.personService = personService;
     }
 
     /**
@@ -201,6 +206,14 @@ public class UserResource {
     @PreAuthorize("hasAuthority(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteUser(@PathVariable("login") @Pattern(regexp = Constants.LOGIN_REGEX) String login) {
         log.debug("REST request to delete User: {}", login);
+        // if a person is linked, remove the link
+        User user = userService.getUserByLogin(login);
+        Optional<PersonDTO> person = personService.findOneByUser(user.getId());
+        if (person.isPresent()) {
+            PersonDTO personDTO = person.get();
+            personService.associateUserWithPerson(null, personDTO.getId());
+        }
+        // remove the user
         userService.deleteUser(login);
         return ResponseEntity.noContent().headers(HeaderUtil.createAlert(applicationName, "userManagement.deleted", login)).build();
     }
