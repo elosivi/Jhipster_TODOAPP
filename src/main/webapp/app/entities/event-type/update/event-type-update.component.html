@@ -65,7 +65,15 @@
 
         <div class="mb-3">
           <label class="form-label" jhiTranslate="todoApp.eventType.duration" for="field_duration">Duration</label>
-          <input type="number" class="form-control" name="duration" id="field_duration" data-cy="duration" formControlName="duration" />
+          <input
+            type="number"
+            class="form-control"
+            name="duration"
+            id="field_duration"
+            data-cy="duration"
+            [value]="convertSecondsInDays() | number: '1.0-1'"
+            formControlName="duration"
+          />
         </div>
       </div>
 

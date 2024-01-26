@@ -4,7 +4,7 @@ export interface IEventType {
   id: number;
   label?: string | null;
   description?: string | null;
-  duration?: string | null;
+  duration?: number | null;
   events?: Pick<IEvent, 'id'>[] | null;
 }
 
