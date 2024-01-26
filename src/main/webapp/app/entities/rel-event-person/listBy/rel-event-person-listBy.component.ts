@@ -20,6 +20,9 @@ import { AccountService } from 'app/core/auth/account.service';
 import { IUser } from 'app/admin/user-management/user-management.model';
 import { IPerson } from 'app/entities/person/person.model';
 import { EntityResponseType, PersonService } from 'app/entities/person/service/person.service';
+import { UserService } from '../../user/service/user.service';
+import { Account } from '../../../core/auth/account.model';
+import { catchError, map } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -41,13 +44,16 @@ import { EntityResponseType, PersonService } from 'app/entities/person/service/p
 export class RelEventPersonComponent implements OnInit {
   private static readonly NOT_SORTABLE_FIELDS_AFTER_SEARCH = ['participation'];
 
+  account: Account | null = null;
   userConnected: IUser | null = null;
   personConnected: IPerson | null = null;
-  private readonly destroy$ = new Subject<void>();
   userConnectedHasAPersonLinked: boolean | undefined;
 
   relEventPeople?: IRelEventPerson[];
   isLoading = false;
+
+  private readonly destroy$ = new Subject<void>();
+  private readonly destroyUser$ = new Subject<void>();
 
   predicate = 'id';
   ascending = true;
@@ -60,6 +66,7 @@ export class RelEventPersonComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
+    private userService: UserService,
     protected relEventPersonService: RelEventPersonService,
     protected personService: PersonService,
     protected activatedRoute: ActivatedRoute,
@@ -67,32 +74,61 @@ export class RelEventPersonComponent implements OnInit {
     protected modalService: NgbModal,
   ) {}
 
-  getUserId(): void {
-    this.accountService
-      .getUserConnected()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(user => (this.userConnected = user));
+  loadAccountService() {
+    if (this.account == null) {
+      this.accountService.getAuthenticationState().subscribe(account => {
+        // `account` contient le compte actuellement connecté (ou null si non connecté)
+        this.account = account;
+        console.log('Compte connecté :', account);
+        this.loadPersonLinkedToTheConnectedUser();
+      });
+    }
+  }
+
+  getUserId(): Observable<IUser | null | undefined> {
+    if (this.account != null && this.account.login !== '') {
+      return this.userService.findByUserByLogin(this.account.login).pipe(
+        takeUntil(this.destroy$),
+        map((user: any) => {
+          if (user && typeof user === 'object') {
+            this.userConnected = user.body as IUser;
+            return this.userConnected;
+          } else {
+            return null;
+          }
+        }),
+        catchError(() => {
+          console.log("Impossible de charger le participant lié à l'utilisateur connecté");
+          return of(null);
+        }),
+      );
+    }
+    return of(null);
   }
 
   /**
    * To return only the events that concern the connected user we need to know to which "person" the user is linked.
    */
   loadPersonLinkedToTheConnectedUser(): void {
-    if (this.userConnected != null && this.userConnected?.id != null) {
-      this.personService
-        .findByUserAssociated(this.userConnected.id)
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(
-          (person: EntityResponseType) => {
-            this.personConnected = person.body;
-            this.userConnectedHasAPersonLinked = true;
-          },
-          () => {
-            console.log("impossible de charger le participant lié à l'utilisateur connecté");
-            this.userConnectedHasAPersonLinked = false;
-          },
-        );
-    }
+    this.getUserId()
+      .pipe(takeUntil(this.destroyUser$))
+      .subscribe((user: IUser | null | undefined) => {
+        if (user != null && user.id != null) {
+          this.personService
+            .findByUserAssociated(user.id)
+            .pipe(takeUntil(this.destroyUser$))
+            .subscribe(
+              (person: EntityResponseType) => {
+                this.personConnected = person.body;
+                this.userConnectedHasAPersonLinked = true;
+              },
+              () => {
+                console.log("Impossible de charger le participant lié à l'utilisateur connecté");
+                this.userConnectedHasAPersonLinked = false;
+              },
+            );
+        }
+      });
   }
 
   trackId = (_index: number, item: IRelEventPerson): number => this.relEventPersonService.getRelEventPersonIdentifier(item);
@@ -108,15 +144,18 @@ export class RelEventPersonComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getUserId();
-    this.loadPersonLinkedToTheConnectedUser();
-    if (this.personConnected) {
-      this.userConnectedHasAPersonLinked = true;
-      this.load();
-    } else {
-      this.userConnectedHasAPersonLinked = false;
+    if (this.account == null) {
+      this.loadAccountService();
     }
-
+    if (this.account != null) {
+      this.loadPersonLinkedToTheConnectedUser();
+      if (this.personConnected) {
+        this.userConnectedHasAPersonLinked = true;
+        this.load();
+      } else {
+        this.userConnectedHasAPersonLinked = false;
+      }
+    }
     this.filters.filterChanges.subscribe(filterOptions => this.handleNavigation(1, this.predicate, this.ascending, filterOptions));
   }
 

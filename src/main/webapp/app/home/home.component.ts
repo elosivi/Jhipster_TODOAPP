@@ -10,13 +10,14 @@ import { IUser } from 'app/admin/user-management/user-management.model';
 import { IPerson } from 'app/entities/person/person.model';
 import { EntityResponseType, PersonService } from 'app/entities/person/service/person.service';
 import { UserService } from 'app/entities/user/service/user.service';
+import { RelEventPersonComponent } from '../entities/rel-event-person/listBy/rel-event-person-listBy.component';
 
 @Component({
   standalone: true,
   selector: 'jhi-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  imports: [SharedModule, RouterModule],
+  imports: [SharedModule, RouterModule, RelEventPersonComponent],
 })
 export default class HomeComponent implements OnInit, OnDestroy {
   account: Account | null = null;
