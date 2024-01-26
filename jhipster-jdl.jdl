@@ -54,6 +54,9 @@ entity RelEventPerson{
     participation String
 }
 
+entity RelTaskEventPerson{
+}
+
 relationship ManyToOne {
   SubTask to MainTask
   MainTask to Category
@@ -73,6 +76,10 @@ relationship ManyToMany{
     RelEventPerson to Person
     RelEventPerson to Event
     RelEventPerson to Hierarchy
+    RelTaskEventPerson to RelEventPerson
+    RelTaskEventPerson to MainTask
+    RelTaskEventPerson to SubTask
+    RelTaskEventPerson ti Status
 }
 
 filter *
