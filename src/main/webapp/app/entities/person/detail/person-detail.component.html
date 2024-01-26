@@ -2,34 +2,34 @@
   <div class="col-8">
     @if (person) {
       <div>
-        <h2 data-cy="personDetailsHeading"><span jhiTranslate="todoApp.person.detail.title">Person</span></h2>
+        <h2 data-cy="personDetailsHeading"><span class="entityTitle" jhiTranslate="todoApp.person.detail.title">Person</span></h2>
 
-        <hr />
+        <hr class="blue" />
 
         <jhi-alert-error></jhi-alert-error>
 
         <jhi-alert></jhi-alert>
 
         <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dt><span class="lightBlue higher spaced addColon addRightSpace" jhiTranslate="global.field.id">ID</span></dt>
           <dd>
             <span>{{ person.id }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.person.description">Description</span></dt>
+          <dt><span class="lightBlue higher spaced addColon addRightSpace" jhiTranslate="todoApp.person.description">Description</span></dt>
           <dd>
             <span>{{ person.description }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.person.pseudo">Pseudo</span></dt>
+          <dt><span class="lightBlue higher spaced addColon addRightSpace" jhiTranslate="todoApp.person.pseudo">Pseudo</span></dt>
           <dd>
             <span>{{ person.pseudo }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.person.name">Name</span></dt>
+          <dt><span class="lightBlue higher spaced addColon addRightSpace" jhiTranslate="todoApp.person.name">Name</span></dt>
           <dd>
             <span>{{ person.name }}</span>
           </dd>
-          <dt><span jhiTranslate="todoApp.person.userTitle">User</span></dt>
+          <dt><span class="lightBlue higher spaced addColon addRightSpace" jhiTranslate="todoApp.person.userTitle">User :</span></dt>
           <dd>
-            <span>{{ person.user?.id }} </span>
+            <span>{{ person.user?.firstName }} {{ person.user?.lastName }} ({{ person.user?.login }}) </span>
           </dd>
         </dl>
 

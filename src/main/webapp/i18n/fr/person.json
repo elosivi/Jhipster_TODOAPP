@@ -22,7 +22,10 @@
       "description": "Description",
       "pseudo": "Pseudo",
       "name": "Nom",
-      "user": "Utilisateur",
+      "user": "Utilisateur associé",
+      "username": "Utilisateur associé",
+      "userEmail": "Email de l'utilisateur associé",
+      "userTitle": "Utilisateur associé",
       "event": "Evenement",
       "relEventPerson": "Participation aux évenements"
     }
