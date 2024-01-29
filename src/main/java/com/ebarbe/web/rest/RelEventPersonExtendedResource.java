@@ -131,6 +131,7 @@ public class RelEventPersonExtendedResource extends RelEventPersonResource {
     }
 
     /**
+     * {@code GET  /rel-event-people/management/byEvent/eventId} : get all the relEventPeople by event.
      * GET ALL CONCERNED BY THE EVENT IN PARAM
      * @param eventId
      * @param pageable
@@ -148,6 +149,13 @@ public class RelEventPersonExtendedResource extends RelEventPersonResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    /**
+     * {@code GET  /rel-event-people/management/byPerson/personId} : get all the relEventPeople by person.
+     * load all events and details concerned by the person Id sended
+     * @param personId
+     * @param pageable
+     * @return
+     */
     @GetMapping("/byPerson/{personId}")
     public ResponseEntity<List<RelEventPersonDTO>> getAllRelEventPeopleByPerson(
         @PathVariable("personId") Long personId,

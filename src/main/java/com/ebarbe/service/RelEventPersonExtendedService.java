@@ -91,7 +91,7 @@ public class RelEventPersonExtendedService extends RelEventPersonService {
      * Get all the relEventPeople with data about relations (person, user, event, hierarchy).
      * concerned by the person in param
      * @param pageable
-     * @param person
+     * @param personId
      * @return
      */
     @Transactional(readOnly = true)

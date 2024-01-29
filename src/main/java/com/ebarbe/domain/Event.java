@@ -267,7 +267,7 @@ public class Event implements Serializable {
         this.relEventPeople = relEventPeople;
     }
 
-    public Event relEventPeople(Set<RelEventPerson> relEventPeople) {
+    public Event relEventPerson(Set<RelEventPerson> relEventPeople) {
         this.setRelEventPeople(relEventPeople);
         return this;
     }
