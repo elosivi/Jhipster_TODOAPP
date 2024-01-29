@@ -357,6 +357,9 @@ jhi-item-count {
   color: $red;
 }
 
+.grey {
+  color: $grey;
+}
 .higher {
   font-size: 1.2rem;
 }
@@ -375,6 +378,11 @@ jhi-item-count {
 
 .entityTitle {
   font-size: 3rem;
+}
+
+span.userName {
+  color: rgba(155, 196, 203, 1);
+  font-size: 2rem;
 }
 
 /* ==========================================================================
@@ -534,4 +542,63 @@ button.validationButton {
 button.validationButton:hover {
   background-color: $blue;
   color: $white;
+}
+/* ==========================================================================
+CARDS BODY
+========================================================================== */
+.card .card-header {
+  background-color: $blue;
+  color: $white;
+}
+.card .card-body {
+  background-color: $light-blue;
+}
+.card .space-title {
+  background-color: $white;
+  padding: 10px 20px;
+  color: $grey;
+  font-size: 1.3rem;
+}
+
+.card strong {
+  //text-decoration-line: underline;
+  //text-decoration-style: wavy;
+  //text-decoration-color: $white;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.card p {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card .card-note p {
+  color: $grey;
+  decoration: none;
+  @media (min-width: 750px) {
+    min-height: 100px;
+  }
+}
+
+.card .card-list {
+  color: white;
+}
+.card .participation {
+  color: $grey;
+  font-style: italic;
+}
+
+.card .vertical-line {
+  position: relative;
+  @media (min-width: 750px) {
+    .card .vertical-line::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-left: 1px solid $white;
+    }
+  }
 }

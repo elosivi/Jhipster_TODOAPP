@@ -13,6 +13,7 @@ export interface IRelEventPerson {
   user?: IUser | null;
   eventType?: IEventType | null;
   hierarchy?: IHierarchy | null;
+  relEventPersonLinkedByEvent?: IRelEventPerson[] | null;
 }
 
 export type NewRelEventPerson = Omit<IRelEventPerson, 'id'> & { id: null };

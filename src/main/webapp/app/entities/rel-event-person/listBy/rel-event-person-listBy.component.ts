@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
+import { combineLatest, filter, forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
@@ -49,7 +49,7 @@ export class RelEventPersonComponent implements OnInit {
   personConnected: IPerson | null = null;
   userConnectedHasAPersonLinked: boolean | undefined;
 
-  relEventPeople?: IRelEventPerson[];
+  relEventPersonList?: IRelEventPerson[];
   isLoading = false;
 
   private readonly destroy$ = new Subject<void>();
@@ -66,124 +66,128 @@ export class RelEventPersonComponent implements OnInit {
 
   constructor(
     private accountService: AccountService,
-    private userService: UserService,
     protected relEventPersonService: RelEventPersonService,
     protected personService: PersonService,
     protected activatedRoute: ActivatedRoute,
     public router: Router,
     protected modalService: NgbModal,
+    private cdr: ChangeDetectorRef,
   ) {}
 
+  ngOnInit(): void {
+    // call from home page => return events participation for the person connected
+    this.loadRelEventPersonForHomePage();
+    this.filters.filterChanges.subscribe(filterOptions => this.handleNavigation(1, this.predicate, this.ascending, filterOptions));
+  }
+
+  /*************************************************
+   LOAD LIST BY PERSON
+  /*************************************************/
   loadAccountService() {
     if (this.account == null) {
       this.accountService.getAuthenticationState().subscribe(account => {
-        // `account` contient le compte actuellement connecté (ou null si non connecté)
         this.account = account;
-        console.log('Compte connecté :', account);
-        this.loadPersonLinkedToTheConnectedUser();
       });
     }
-  }
-
-  getUserId(): Observable<IUser | null | undefined> {
-    if (this.account != null && this.account.login !== '') {
-      return this.userService.findByUserByLogin(this.account.login).pipe(
-        takeUntil(this.destroy$),
-        map((user: any) => {
-          if (user && typeof user === 'object') {
-            this.userConnected = user.body as IUser;
-            return this.userConnected;
-          } else {
-            return null;
-          }
-        }),
-        catchError(() => {
-          console.log("Impossible de charger le participant lié à l'utilisateur connecté");
-          return of(null);
-        }),
-      );
-    }
-    return of(null);
   }
 
   /**
    * To return only the events that concern the connected user we need to know to which "person" the user is linked.
    */
   loadPersonLinkedToTheConnectedUser(): void {
-    this.getUserId()
-      .pipe(takeUntil(this.destroyUser$))
-      .subscribe((user: IUser | null | undefined) => {
-        if (user != null && user.id != null) {
-          this.personService
-            .findByUserAssociated(user.id)
-            .pipe(takeUntil(this.destroyUser$))
-            .subscribe(
-              (person: EntityResponseType) => {
-                this.personConnected = person.body;
-                this.userConnectedHasAPersonLinked = true;
-              },
-              () => {
-                console.log("Impossible de charger le participant lié à l'utilisateur connecté");
-                this.userConnectedHasAPersonLinked = false;
-              },
-            );
-        }
-      });
-  }
-
-  trackId = (_index: number, item: IRelEventPerson): number => this.relEventPersonService.getRelEventPersonIdentifier(item);
-
-  search(query: string): void {
-    if (query && RelEventPersonComponent.NOT_SORTABLE_FIELDS_AFTER_SEARCH.includes(this.predicate)) {
-      this.predicate = 'id';
-      this.ascending = true;
+    if (this.account?.id != null) {
+      this.personService
+        .findByUserAssociated(this.account.id)
+        .pipe(takeUntil(this.destroyUser$))
+        .subscribe(
+          (person: EntityResponseType) => {
+            this.personConnected = person.body;
+            this.userConnectedHasAPersonLinked = true;
+            this.cdr.detectChanges();
+            this.load();
+          },
+          error => {
+            console.log("Impossible de charger le participant lié à l'utilisateur connecté =>", error);
+            this.userConnectedHasAPersonLinked = false;
+          },
+        );
     }
-    this.page = 1;
-    this.currentSearch = query;
-    this.navigateToWithComponentValues();
   }
-
-  ngOnInit(): void {
+  /**
+   * load data about user/person connected for home page wich return only events concerned by the account logged
+   */
+  loadRelEventPersonForHomePage() {
     if (this.account == null) {
       this.loadAccountService();
     }
-    if (this.account != null) {
-      this.loadPersonLinkedToTheConnectedUser();
-      if (this.personConnected) {
-        this.userConnectedHasAPersonLinked = true;
-        this.load();
-      } else {
-        this.userConnectedHasAPersonLinked = false;
-      }
+    this.loadPersonLinkedToTheConnectedUser();
+    if (this.personConnected) {
+      this.userConnectedHasAPersonLinked = true;
+    } else {
+      this.userConnectedHasAPersonLinked = false;
     }
-    this.filters.filterChanges.subscribe(filterOptions => this.handleNavigation(1, this.predicate, this.ascending, filterOptions));
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  /*************************************************
+   LOAD OTHERS RELEVENTPERSON BY EVENT
+   /*************************************************/
 
-  delete(relEventPerson: IRelEventPerson): void {
-    const modalRef = this.modalService.open(RelEventPersonDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
-    modalRef.componentInstance.relEventPerson = relEventPerson;
-    // unsubscribe not needed because closed completes on modal close
-    modalRef.closed
-      .pipe(
-        filter(reason => reason === ITEM_DELETED_EVENT),
-        switchMap(() => this.loadFromBackendWithRouteInformations()),
-      )
-      .subscribe({
-        next: (res: EntityArrayResponseType) => {
-          this.onResponseSuccess(res);
-        },
+  /**
+   * For all event in relEventPersonList, load the other relEventPerson concerned bythe same event.
+   * In order to have the person's participation
+   */
+  loadAllRelEventPersonForAllEvent() {
+    if (this.relEventPersonList != null && this.relEventPersonList.length > 0) {
+      this.relEventPersonList.forEach(relEventPerson => {
+        this.loadRelEventPersonListByEvent(relEventPerson?.event?.id, relEventPerson.id);
+        console.log('relEventPersonListNEW => ', this.relEventPersonList);
       });
+    }
   }
 
+  /**
+   * To display the others person's participation and hierarchy we need to load all releventperson for each event
+   * @param EventId
+   */
+  loadRelEventPersonListByEvent(EventId: number | undefined, relEventPersonId: number | undefined): void {
+    // load the other releventperson for the event in param
+    if (EventId != null) {
+      this.relEventPersonService.findByEventWithRelationData(EventId).subscribe(
+        response => {
+          const relEventPersonListbyEvent = response.body;
+          console.log(EventId, ' / IREPByEvent => ', relEventPersonListbyEvent);
+
+          const indexToUpdate = this.relEventPersonList?.findIndex(relEventPerson => relEventPerson.id === relEventPersonId);
+
+          if (indexToUpdate != null && indexToUpdate !== -1 && this.relEventPersonList != null) {
+            // Mettre à jour relEventPersonLinkedByEvent avec les données chargées
+            this.relEventPersonList[indexToUpdate].relEventPersonLinkedByEvent = relEventPersonListbyEvent;
+            console.log(relEventPersonId, ' / this.relEventPersonList[indexToUpdate] => ', this.relEventPersonList[indexToUpdate]);
+          } else {
+            console.error(`RelEventPerson avec l'ID ${relEventPersonId} non trouvé dans this.relEventPersonList.`);
+          }
+        },
+        error => {
+          console.error("Erreur lors du chargement des relEventPerson pour l'événement", error);
+        },
+      );
+    }
+  }
+
+  /*************************************************
+   LOAD LIST OF EVENTS BY PERSON / FOR HOME PAGE
+   /*************************************************/
+
+  /**
+   * Load the rel event person concerned by the person connected
+   */
   load(): void {
     this.loadFromBackendWithRouteInformations().subscribe({
       next: (res: EntityArrayResponseType) => {
         this.onResponseSuccess(res);
+        // console.log("relEventPersonList => ", JSON.stringify(this.relEventPersonList, null, 2));
+        // load other releventperson by event to have all the person's participation
+        this.loadAllRelEventPersonForAllEvent();
       },
     });
   }
@@ -198,17 +202,30 @@ export class RelEventPersonComponent implements OnInit {
 
   protected loadFromBackendWithRouteInformations(): Observable<EntityArrayResponseType> {
     return combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data]).pipe(
-      tap(([params, data]) => this.fillComponentAttributeFromRoute(params, data)),
-      switchMap(() => this.queryBackend(this.page, this.predicate, this.ascending, this.filters.filterOptions, this.currentSearch)),
+      tap(([params, data]) => {
+        this.fillComponentAttributeFromRoute(params, data);
+      }),
+      switchMap(() => {
+        return this.queryBackend(this.page, this.predicate, this.ascending, this.filters.filterOptions, this.currentSearch);
+      }),
     );
   }
 
   protected fillComponentAttributeFromRoute(params: ParamMap, data: Data): void {
     const page = params.get(PAGE_HEADER);
     this.page = +(page ?? 1);
-    const sort = (params.get(SORT) ?? data[DEFAULT_SORT_DATA]).split(',');
-    this.predicate = sort[0];
-    this.ascending = sort[1] === ASC;
+
+    const sortParam = params.get(SORT) ?? data[DEFAULT_SORT_DATA];
+    const sort = sortParam ? sortParam.split(',') : [];
+
+    if (sort.length >= 2) {
+      this.predicate = sort[0];
+      this.ascending = sort[1] === ASC;
+    } else {
+      // if no sort or invalid sort      this.predicate = '';
+      this.ascending = true;
+    }
+
     this.filters.initializeFromParams(params);
     if (params.has('search') && params.get('search') !== '') {
       this.currentSearch = params.get('search') as string;
@@ -221,7 +238,7 @@ export class RelEventPersonComponent implements OnInit {
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.relEventPeople = dataFromBody;
+    this.relEventPersonList = dataFromBody;
   }
 
   protected fillComponentAttributesFromResponseBody(data: IRelEventPerson[] | null): IRelEventPerson[] {

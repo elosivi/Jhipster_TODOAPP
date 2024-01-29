@@ -54,11 +54,9 @@
 <!------------------------------ A C C U E I L   /   e v e n t s    l i s t   ---------------------------->
 <div *ngIf="userConnectedHasAPersonLinked">
   <h2 class="display-4">
-    hello tu es un user reconnu par l'app, <br />
-    qui plus est tu as aussi un compte participant! <br />Bravo! <br />Tu peux participer et organiser des évenements, mais pour l'instant
-    ... <br />
+    <span class="userName"><fa-icon icon="user"></fa-icon> {{ personConnected?.pseudo }} :</span>
+    Evenements auxquels tu es inscrits <br />
     cette partie est en construction !
   </h2>
-  <p>balade toi dans le menu pendant ce temps !</p>
   <jhi-rel-event-person-listBy></jhi-rel-event-person-listBy>
 </div>

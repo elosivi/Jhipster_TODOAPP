@@ -1,6 +1,9 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-12" *ngIf="!relEventPeople || relEventPeople.length === 0">
+    <!--------------------------
+    NO EVENT
+    -------------------------------->
+    <div class="col-md-12" *ngIf="!relEventPersonList || relEventPersonList.length === 0">
       <p>Aucun événement disponible.</p>
       <!--créer un évenement-->
       <button
@@ -23,42 +26,69 @@
         <fa-icon icon="plus"></fa-icon>
         <span class="hidden-sm-down" jhiTranslate="todoApp.relEventPerson.home.createLabel">Participer à un évenement</span>
       </button>
-    </div>
-    <div class="col-md-6" *ngFor="let relEventPerson of relEventPeople">
-      <div class="card">
-        <div class="card-header">
-          {{ relEventPerson.event?.eventType?.label }}
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">{{ relEventPerson.event?.label }}</h5>
-          <hr />
 
+      <!--------------------------
+  EVENTS LIST
+   -------------------------------->
+    </div>
+    <div class="col-md-6" *ngFor="let relEventPerson of relEventPersonList">
+      <div class="card">
+        <!-- EVENT TYPE -->
+        <div class="card-header">
+          {{
+            relEventPerson.event?.eventType?.label ? relEventPerson.event?.eventType?.label : 'Evènement indépendant ( ou définir un type)'
+          }}
+        </div>
+        <!-- EVENT TITLE -->
+        <div class="space-title">
+          <h5 class="card-title">{{ relEventPerson.event?.label }}</h5>
+        </div>
+
+        <div class="card-body">
+          <!--DESCRIPTION / THEME / LIEU ET DATES -->
           <div class="row">
-            <div class="col-md-6">
-              <p><strong>Description:</strong> {{ relEventPerson.event?.description }}</p>
-              <p><strong>Theme:</strong> {{ relEventPerson.event?.theme }}</p>
-            </div>
-            <div class="col-md-6">
-              <p><strong>Place Details:</strong> {{ relEventPerson.event?.placeDetails }}</p>
-              <p><strong>Date:</strong> {{ relEventPerson.event?.dateStart }} - {{ relEventPerson.event?.dateEnd }}</p>
-            </div>
+            <!--<div class="col-md-6">-->
+            <p><strong>Description:</strong> {{ relEventPerson.event?.description }}</p>
+            <p><strong>Theme:</strong> {{ relEventPerson.event?.theme }}</p>
+            <!-- </div>
+            <div class="vertical-line col-md-6">-->
+            <p><strong>Place Details:</strong> {{ relEventPerson.event?.placeDetails }}</p>
+            <p><strong>Date:</strong> {{ relEventPerson.event?.dateStart }} - {{ relEventPerson.event?.dateEnd }}</p>
+            <!--  </div>-->
           </div>
           <hr />
 
-          <p><strong>Note:</strong> {{ relEventPerson.event?.note }}</p>
+          <!--NOTE -->
+          <div class="card-note">
+            <h6>Note:</h6>
+            <p>{{ relEventPerson.event?.note }}</p>
+          </div>
           <hr />
 
+          <!--LIEU-->
           <div class="row">
-            <div class="col-md-6">
-              <p><strong>Place:</strong> {{ relEventPerson.event?.place?.toUpperCase() }}</p>
-              <p><strong>Address:</strong> {{ relEventPerson.event?.adress }}</p>
-            </div>
-            <div class="col-md-6">
-              <h6>Participants:</h6>
+            <h6>Lieu</h6>
+            <p>{{ relEventPerson.event?.place?.toUpperCase() }} ( - {{ relEventPerson.event?.adress }} -)</p>
+          </div>
+          <hr />
+
+          <!--PARTICIPATION DU USER-->
+          <div class="row">
+            <h6>Ma participation:</h6>
+            <p>{{ relEventPerson.participation }}</p>
+          </div>
+          <hr />
+
+          <!-- PARTICIPANTS -->
+          <div class="row">
+            <h6>Participants / Invités</h6>
+            <div class="card-list">
               <ul>
-                <li *ngFor="let participant of relEventPerson.people">
-                  {{ participant.pseudo }} - {{ participant.user?.firstName }} {{ participant.user?.lastName }} (hyerarchie) -
-                  {{ relEventPerson.participation }}
+                <li *ngFor="let relEventpersonByEvent of relEventPerson?.relEventPersonLinkedByEvent">
+                  <strong>{{ relEventpersonByEvent.person?.pseudo }} </strong> ( {{ relEventpersonByEvent.person?.user?.firstName }}
+                  {{ relEventpersonByEvent.person?.user?.lastName }}) ( {{ relEventpersonByEvent.hierarchy?.description }} )
+                  <span class="grey"> | </span>
+                  <span class="participation">{{ relEventpersonByEvent.participation }}</span>
                 </li>
               </ul>
             </div>
