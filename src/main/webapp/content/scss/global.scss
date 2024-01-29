@@ -385,6 +385,25 @@ span.userName {
   font-size: 2rem;
 }
 
+.mode-test-info {
+  margin-top: 20px;
+  background-color: $light-blue;
+  color: $grey;
+  padding: 10px;
+  border-radius: 10px;
+}
+.mode-test-info p {
+  margin-bottom: 5px;
+}
+.mode-test-info span {
+  color: $grey;
+  border-bottom: 1px solid $grey;
+}
+
+.mode-test-info-title {
+  margin-bottom: 15px;
+}
+
 /* ==========================================================================
 MESSAGES & ALERTS
 ========================================================================== */
