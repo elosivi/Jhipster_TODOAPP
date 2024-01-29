@@ -2,21 +2,21 @@
   "todoApp": {
     "event": {
       "home": {
-        "title": "Events",
+        "title": "Evènements",
         "refreshListLabel": "Actualiser la liste",
-        "createLabel": "Créer un nouveau Event",
-        "createOrEditLabel": "Créer ou éditer un Event",
-        "search": "Recherche pour Event",
-        "notFound": "Aucun Event trouvé"
+        "createLabel": "Créer un nouvel évènement",
+        "createOrEditLabel": "Créer ou éditer un évènement",
+        "search": "Recherche pour évènement",
+        "notFound": "Aucun évènement trouvé"
       },
-      "created": "Un nouveau Event a été créé avec l'identifiant {{ param }}",
-      "updated": "Le Event avec l'identifiant {{ param }} a été mis à jour",
-      "deleted": "Le Event avec l'identifiant {{ param }} a été supprimé",
+      "created": "Un nouvel évènement a été créé avec l'identifiant {{ param }}",
+      "updated": "L' évènement avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "L' évènement avec l'identifiant {{ param }} a été supprimé",
       "delete": {
-        "question": "Êtes-vous certain de vouloir supprimer le Event {{ id }} ?"
+        "question": "Êtes-vous certain de vouloir supprimer l' évènement {{ id }} ?"
       },
       "detail": {
-        "title": "Event"
+        "title": "Evènement"
       },
       "id": "ID",
       "label": "Label",
@@ -28,9 +28,9 @@
       "placeDetails": "Place Details",
       "adress": "Adress",
       "note": "Note",
-      "eventType": "Event Type",
-      "person": "Person",
-      "relEventPerson": "Rel Event Person"
+      "eventType": "Type d'évènement",
+      "person": "Participant",
+      "relEventPerson": "participation à un évènement"
     }
   }
 }
