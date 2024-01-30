@@ -41,7 +41,9 @@
         </div>
         <!-- EVENT TITLE -->
         <div class="space-title">
-          <h5 class="card-title">{{ relEventPerson.event?.label }}</h5>
+          <h5 class="card-title">
+            <a class="noACss" [routerLink]="['/event', relEventPerson.event?.id, 'view']">{{ relEventPerson.event?.label }}</a>
+          </h5>
         </div>
 
         <div class="card-body">
@@ -85,13 +87,24 @@
             <div class="card-list">
               <ul>
                 <li *ngFor="let relEventpersonByEvent of relEventPerson?.relEventPersonLinkedByEvent">
-                  <strong>{{ relEventpersonByEvent.person?.pseudo }} </strong> ( {{ relEventpersonByEvent.person?.user?.firstName }}
-                  {{ relEventpersonByEvent.person?.user?.lastName }}) ( {{ relEventpersonByEvent.hierarchy?.description }} )
+                  <a class="noACss" [routerLink]="['/person', relEventpersonByEvent.person?.id, 'view']">
+                    <strong>{{ relEventpersonByEvent.person?.pseudo }}</strong>
+                  </a>
+                  ( {{ relEventpersonByEvent.person?.user?.firstName }} {{ relEventpersonByEvent.person?.user?.lastName }}) (
+                  {{ relEventpersonByEvent.hierarchy?.description }} )
                   <span class="grey"> | </span>
                   <span class="participation">{{ relEventpersonByEvent.participation }}</span>
                 </li>
               </ul>
             </div>
+          </div>
+
+          <!--BOUTONS-->
+          <div>
+            <a [routerLink]="['/rel-event-person', relEventPerson.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+              <fa-icon icon="pencil-alt"></fa-icon>
+              <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+            </a>
           </div>
         </div>
       </div>

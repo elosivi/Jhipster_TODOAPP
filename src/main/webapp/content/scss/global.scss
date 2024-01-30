@@ -325,6 +325,11 @@ a.link {
   color: $light-blue;
 }
 
+a.noACss {
+  color: inherit;
+  text-decoration: none;
+}
+
 .row-md.jh-entity-details dd {
   color: $light-blue;
   font-weight: 600;

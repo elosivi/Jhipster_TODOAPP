@@ -55,7 +55,7 @@
           <dd>
             @if (event.eventType) {
               <div>
-                <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.id }}</a>
+                <a [routerLink]="['/event-type', event.eventType.id, 'view']">{{ event.eventType.label }}</a>
               </div>
             }
           </dd>
@@ -63,7 +63,7 @@
           <dd>
             @for (person of event.people; track $index; let last = $last) {
               <span>
-                <a [routerLink]="['/person', person.id, 'view']">{{ person.id }}</a
+                <a [routerLink]="['/person', person.id, 'view']">{{ person.pseudo }}</a
                 >{{ last ? '' : ', ' }}
               </span>
             }
