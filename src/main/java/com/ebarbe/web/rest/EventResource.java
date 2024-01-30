@@ -183,7 +183,7 @@ public class EventResource {
     @GetMapping("/{id}")
     public ResponseEntity<EventDTO> getEvent(@PathVariable("id") Long id) {
         log.debug("REST request to get Event : {}", id);
-        Optional<EventDTO> eventDTO = eventService.findOne(id);
+        Optional<EventDTO> eventDTO = eventService.findOneWithRelation(id);
         return ResponseUtil.wrapOrNotFound(eventDTO);
     }
 

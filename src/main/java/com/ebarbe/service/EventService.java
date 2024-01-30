@@ -5,10 +5,12 @@ import com.ebarbe.repository.EventRepository;
 import com.ebarbe.repository.search.EventSearchRepository;
 import com.ebarbe.service.dto.EventDTO;
 import com.ebarbe.service.mapper.EventMapper;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,6 +121,19 @@ public class EventService {
     public Optional<EventDTO> findOne(Long id) {
         log.debug("Request to get Event : {}", id);
         return eventRepository.findOneWithEagerRelationships(id).map(eventMapper::toDto);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<EventDTO> findOneWithRelation(Long id) {
+        log.debug("Request to get Event : {}", id);
+        return Optional.ofNullable(eventRepository.findOneWithRelationships(id)).map(eventMapper::toDto);
+    }
+
+    private Page<Event> paginateResults(List<Event> resultList, Pageable pageable, long totalElements) {
+        int start = (int) pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > totalElements ? (int) totalElements : (start + pageable.getPageSize());
+
+        return new PageImpl<>(resultList.subList(start, end), pageable, totalElements);
     }
 
     /**

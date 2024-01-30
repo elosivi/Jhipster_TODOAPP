@@ -15,7 +15,9 @@ import org.springframework.stereotype.Repository;
  * For more information refer to https://github.com/jhipster/generator-jhipster/issues/17990.
  */
 @Repository
-public interface EventRepository extends EventRepositoryWithBagRelationships, JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
+public interface EventRepository
+    extends EventExtendedRepository, EventRepositoryWithBagRelationships, JpaRepository<Event, Long>, JpaSpecificationExecutor<Event> {
+    @Query("SELECT e FROM Event e LEFT JOIN FETCH e.eventType where e.id =: id")
     default Optional<Event> findOneWithEagerRelationships(Long id) {
         return this.fetchBagRelationships(this.findById(id));
     }
