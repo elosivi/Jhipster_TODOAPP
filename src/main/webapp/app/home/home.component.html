@@ -11,7 +11,7 @@
       <span class="hipster img-fluid rounded"></span>
     </div>
 
-    <!--  colonne principale/ modifier le texte selon la langue cf repo i18n-->
+    <!--  colonne principale-->
     <div class="col-md-5 centerText">
       <h1 class="display-4" jhiTranslate="homeapp.title">TODO LIST</h1>
       <h2 class="display-4" jhiTranslate="homeapp.subtitle">TODO LIST</h2>
@@ -32,6 +32,7 @@
 
         <!--aucun utilisateur connecté-->
         <div class="" *ngSwitchCase="false">
+          <!--<p><small>(Cliquer ici pour tester l'application en mode admin ou user)</small></p>-->
           <p class="count-link link-text connexion-link">
             <a class="" (click)="login()" jhiTranslate="homeapp.link.connexion">Se connecter</a>
           </p>
@@ -53,5 +54,10 @@
 <!-- -------------------------------------------------------------------------------------------------- -->
 <!------------------------------ A C C U E I L   /   e v e n t s    l i s t   ---------------------------->
 <div *ngIf="userConnectedHasAPersonLinked">
-  <h1 class="display-4">hello</h1>
+  <h2 class="display-4">
+    <span class="userName"><fa-icon icon="user"></fa-icon> {{ personConnected?.pseudo }} :</span>
+    Evenements auxquels tu es inscrits <br />
+    cette partie est en construction !
+  </h2>
+  <jhi-rel-event-person-listBy></jhi-rel-event-person-listBy>
 </div>

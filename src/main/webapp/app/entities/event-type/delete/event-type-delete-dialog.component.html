@@ -8,8 +8,13 @@
 
     <div class="modal-body">
       <jhi-alert-error></jhi-alert-error>
-      <p id="jhi-delete-eventType-heading" jhiTranslate="todoApp.eventType.delete.question" [translateValues]="{ id: eventType.id }">
-        Êtes-vous certain de vouloir supprimer le Event Type {{ eventType.id }} ?
+      <p
+        id="jhi-delete-eventType-heading"
+        class="red"
+        jhiTranslate="todoApp.eventType.delete.question"
+        [translateValues]="{ label: eventType.label }"
+      >
+        Êtes-vous certain de vouloir supprimer le Event Type {{ eventType.label }} ?
       </p>
     </div>
 

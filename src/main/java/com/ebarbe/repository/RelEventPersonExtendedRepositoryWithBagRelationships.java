@@ -51,8 +51,8 @@ public interface RelEventPersonExtendedRepositoryWithBagRelationships {
         "SELECT rep FROM RelEventPerson rep " +
         "JOIN FETCH rep.event e " +
         "JOIN FETCH rep.person p " +
-        "JOIN FETCH p.user u " +
-        "JOIN FETCH rep.hierarchy h " +
+        "LEFT JOIN p.user u " +
+        "LEFT JOIN rep.hierarchy h " +
         "WHERE rep.event.id = :eventId"
     )
     List<RelEventPerson> findAllREPCompleteByEventId(@Param("eventId") Long eventId);
@@ -67,8 +67,8 @@ public interface RelEventPersonExtendedRepositoryWithBagRelationships {
         "SELECT rep FROM RelEventPerson rep " +
         "JOIN FETCH rep.event e " +
         "JOIN FETCH rep.person p " +
-        "JOIN FETCH p.user u " +
-        "JOIN FETCH rep.hierarchy h " +
+        "LEFT JOIN p.user u " +
+        "LEFT JOIN rep.hierarchy h " +
         "WHERE rep.person.id = :personId"
     )
     List<RelEventPerson> findAllREPCompleteByPersonId(@Param("personId") Long personId);

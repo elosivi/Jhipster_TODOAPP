@@ -15,7 +15,10 @@ import java.util.Objects;
 public class RelEventPerson implements Serializable {
 
     @Id
-    public Long id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
+    @SequenceGenerator(name = "sequenceGenerator")
+    @Column(name = "id")
+    private Long id;
 
     @Column(name = "participation")
     @org.springframework.data.elasticsearch.annotations.Field(type = org.springframework.data.elasticsearch.annotations.FieldType.Text)

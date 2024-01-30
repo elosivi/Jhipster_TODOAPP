@@ -12,7 +12,7 @@
                                  baseTableName="rel_rel_event_person__event"
                                  constraintName="fk_rel_rel_event_person__event__rel_event_person_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="rel_event_person"
+                                 referencedTableName="rel_event__person"
                                  />
 
         <addForeignKeyConstraint baseColumnNames="event_id"
@@ -26,7 +26,7 @@
                                  baseTableName="rel_rel_event_person__person"
                                  constraintName="fk_rel_rel_event_person__person__rel_event_person_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="rel_event_person"
+                                 referencedTableName="rel_event__person"
                                  />
 
         <addForeignKeyConstraint baseColumnNames="person_id"
@@ -40,7 +40,7 @@
                                  baseTableName="rel_rel_event_person__hierarchy"
                                  constraintName="fk_rel_rel_event_person__hierarchy__rel_event_person_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="rel_event_person"
+                                 referencedTableName="rel_event__person"
                                  />
 
         <addForeignKeyConstraint baseColumnNames="hierarchy_id"

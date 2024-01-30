@@ -340,6 +340,70 @@ jhi-item-count {
   font-size: 1.1rem;
   color: $blue;
 }
+
+.lightBlue {
+  color: $light-blue;
+}
+
+.blue {
+  color: $blue;
+}
+
+.white {
+  color: $white;
+}
+
+.red {
+  color: $red;
+}
+
+.grey {
+  color: $grey;
+}
+.higher {
+  font-size: 1.2rem;
+}
+
+.spaced {
+  letter-spacing: 1.5px;
+}
+
+.addColon::after {
+  content: ' : ';
+}
+
+.addRightSpace {
+  margin-right: 10px;
+}
+
+.entityTitle {
+  font-size: 3rem;
+}
+
+span.userName {
+  color: rgba(155, 196, 203, 1);
+  font-size: 2rem;
+}
+
+.mode-test-info {
+  margin-top: 20px;
+  background-color: $light-blue;
+  color: $grey;
+  padding: 10px;
+  border-radius: 10px;
+}
+.mode-test-info p {
+  margin-bottom: 5px;
+}
+.mode-test-info span {
+  color: $grey;
+  border-bottom: 1px solid $grey;
+}
+
+.mode-test-info-title {
+  margin-bottom: 15px;
+}
+
 /* ==========================================================================
 MESSAGES & ALERTS
 ========================================================================== */
@@ -497,4 +561,63 @@ button.validationButton {
 button.validationButton:hover {
   background-color: $blue;
   color: $white;
+}
+/* ==========================================================================
+CARDS BODY
+========================================================================== */
+.card .card-header {
+  background-color: $blue;
+  color: $white;
+}
+.card .card-body {
+  background-color: $light-blue;
+}
+.card .space-title {
+  background-color: $white;
+  padding: 10px 20px;
+  color: $grey;
+  font-size: 1.3rem;
+}
+
+.card strong {
+  //text-decoration-line: underline;
+  //text-decoration-style: wavy;
+  //text-decoration-color: $white;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.card p {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.card .card-note p {
+  color: $grey;
+  decoration: none;
+  @media (min-width: 750px) {
+    min-height: 100px;
+  }
+}
+
+.card .card-list {
+  color: white;
+}
+.card .participation {
+  color: $grey;
+  font-style: italic;
+}
+
+.card .vertical-line {
+  position: relative;
+  @media (min-width: 750px) {
+    .card .vertical-line::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      border-left: 1px solid $white;
+    }
+  }
 }

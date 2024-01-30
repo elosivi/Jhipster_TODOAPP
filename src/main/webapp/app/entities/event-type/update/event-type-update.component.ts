@@ -23,6 +23,7 @@ export class EventTypeUpdateComponent implements OnInit {
 
   editForm: EventTypeFormGroup = this.eventTypeFormService.createEventTypeFormGroup();
 
+  durationInSeconds: number | undefined;
   constructor(
     protected eventTypeService: EventTypeService,
     protected eventTypeFormService: EventTypeFormService,
@@ -33,6 +34,7 @@ export class EventTypeUpdateComponent implements OnInit {
     this.activatedRoute.data.subscribe(({ eventType }) => {
       this.eventType = eventType;
       if (eventType) {
+        this.durationInSeconds = eventType.duration;
         this.updateForm(eventType);
       }
     });
@@ -44,12 +46,27 @@ export class EventTypeUpdateComponent implements OnInit {
 
   save(): void {
     this.isSaving = true;
+    this.convertDaysInSeconds();
     const eventType = this.eventTypeFormService.getEventType(this.editForm);
     if (eventType.id !== null) {
       this.subscribeToSaveResponse(this.eventTypeService.update(eventType));
     } else {
       this.subscribeToSaveResponse(this.eventTypeService.create(eventType));
     }
+  }
+  convertDaysInSeconds(): void {
+    const nbDays = this.editForm.controls['duration'].value;
+
+    if (nbDays !== null && nbDays !== undefined) {
+      const nbSeconds = nbDays * (60 * 60 * 24);
+      // Vous pouvez afficher ou utiliser dureeEnSecondes comme nécessaire
+      console.log('Durée en secondes :', nbSeconds);
+      this.editForm.controls['duration'].setValue(nbSeconds);
+    }
+  }
+
+  convertSecondsInDays() {
+    return this.durationInSeconds !== undefined ? this.durationInSeconds / (60 * 60 * 24) : undefined;
   }
 
   protected subscribeToSaveResponse(result: Observable<HttpResponse<IEventType>>): void {
