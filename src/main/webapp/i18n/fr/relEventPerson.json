@@ -2,27 +2,30 @@
   "todoApp": {
     "relEventPerson": {
       "home": {
-        "title": "RelEventPeople",
+        "title": "Participation à un évènement",
         "refreshListLabel": "Actualiser la liste",
-        "createLabel": "Créer un nouveau Rel Event Person",
-        "createOrEditLabel": "Créer ou éditer un Rel Event Person",
-        "search": "Recherche pour Rel Event Person",
-        "notFound": "Aucun Rel Event Person trouvé"
+        "createLabel": "Créer une nouvelle participation",
+        "createOrEditLabel": "Créer ou éditer une nouvelle participation",
+        "search": "Recherche une participation à un évènement",
+        "notFound": "Aucune participation à un évènement trouvée"
       },
-      "created": "Un nouveau Rel Event Person a été créé avec l'identifiant {{ param }}",
-      "updated": "Le Rel Event Person avec l'identifiant {{ param }} a été mis à jour",
-      "deleted": "Le Rel Event Person avec l'identifiant {{ param }} a été supprimé",
+      "created": "Une participation à un évènement a été créé avec l'identifiant {{ param }}",
+      "updated": "Une participation à un évènement avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Une participation à un évènement avec l'identifiant {{ param }} a été supprimé",
       "delete": {
-        "question": "Êtes-vous certain de vouloir supprimer le Rel Event Person {{ id }} ?"
+        "question": "Êtes-vous certain de vouloir supprimer la participation à un évènement n°{{ id }} ?"
       },
       "detail": {
-        "title": "Rel Event Person"
+        "title": "Participation à un évènement"
       },
       "id": "ID",
       "participation": "Participation",
-      "event": "Event",
-      "person": "Person",
-      "hierarchy": "Hierarchy"
+      "event": "Evènement",
+      "addEvent": "Ajouter un évènement",
+      "person": "Participant",
+      "addPerson": "Ajouter un participant",
+      "saveAndAdd": "Sauvegarder et ajouter un autre participant",
+      "hierarchy": "Hierarchie dans l'organisation et la participation"
     }
   }
 }

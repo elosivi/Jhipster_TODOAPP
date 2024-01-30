@@ -5,6 +5,11 @@
     -------------------------------->
     <div class="col-md-12" *ngIf="!relEventPersonList || relEventPersonList.length === 0">
       <p>Aucun événement disponible.</p>
+    </div>
+    <!--------------------------
+    BOUTON
+    -------------------------------->
+    <div>
       <!--créer un évenement-->
       <button
         id="jh-create-entity"
@@ -26,23 +31,28 @@
         <fa-icon icon="plus"></fa-icon>
         <span class="hidden-sm-down" jhiTranslate="todoApp.relEventPerson.home.createLabel">Participer à un évenement</span>
       </button>
+    </div>
 
-      <!--------------------------
+    <!--------------------------
   EVENTS LIST
    -------------------------------->
-    </div>
+
     <div class="col-md-6" *ngFor="let relEventPerson of relEventPersonList">
       <div class="card">
         <!-- EVENT TYPE -->
-        <div class="card-header">
+        <div class="card-header relative">
           {{
             relEventPerson.event?.eventType?.label ? relEventPerson.event?.eventType?.label : 'Evènement indépendant ( ou définir un type)'
           }}
+
+          <span class="rightAlign">
+            | <span class="marginLeft">{{ relEventPerson.id }}</span>
+          </span>
         </div>
         <!-- EVENT TITLE -->
         <div class="space-title">
-          <h5 class="card-title">
-            <a class="noACss" [routerLink]="['/event', relEventPerson.event?.id, 'view']">{{ relEventPerson.event?.label }}</a>
+          <h5 class="card-title higherX2">
+            <a class="noACss" [routerLink]="['/event', relEventPerson.event?.id, 'edit']">{{ relEventPerson.event?.label }}</a>
           </h5>
         </div>
 
@@ -54,8 +64,10 @@
             <p><strong>Theme:</strong> {{ relEventPerson.event?.theme }}</p>
             <!-- </div>
             <div class="vertical-line col-md-6">-->
-            <p><strong>Place Details:</strong> {{ relEventPerson.event?.placeDetails }}</p>
-            <p><strong>Date:</strong> {{ relEventPerson.event?.dateStart }} - {{ relEventPerson.event?.dateEnd }}</p>
+            <p><strong>Lieu:</strong> {{ relEventPerson.event?.placeDetails }}</p>
+            <p>
+              <strong>Date(s):</strong> du {{ relEventPerson.event?.dateStart | formatMediumDate }} au {{ relEventPerson.event?.dateEnd }}
+            </p>
             <!--  </div>-->
           </div>
           <hr />

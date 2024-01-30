@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
+import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -21,7 +22,7 @@ import { RelEventPersonFormService, RelEventPersonFormGroup } from './rel-event-
   standalone: true,
   selector: 'jhi-rel-event-person-update',
   templateUrl: './rel-event-person-update.component.html',
-  imports: [SharedModule, FormsModule, ReactiveFormsModule],
+  imports: [SharedModule, FormsModule, ReactiveFormsModule, FormatMediumDatePipe],
 })
 export class RelEventPersonUpdateComponent implements OnInit {
   isSaving = false;
@@ -30,8 +31,10 @@ export class RelEventPersonUpdateComponent implements OnInit {
   eventsSharedCollection: IEvent[] = [];
   peopleSharedCollection: IPerson[] = [];
   hierarchiesSharedCollection: IHierarchy[] = [];
-
+  repSelected: IRelEventPerson[] = []; // list of participations in the selected event
   editForm: RelEventPersonFormGroup = this.relEventPersonFormService.createRelEventPersonFormGroup();
+
+  successMessage: string | null = null;
 
   constructor(
     protected relEventPersonService: RelEventPersonService,
@@ -40,6 +43,7 @@ export class RelEventPersonUpdateComponent implements OnInit {
     protected personService: PersonService,
     protected hierarchyService: HierarchyService,
     protected activatedRoute: ActivatedRoute,
+    private router: Router,
   ) {}
 
   compareEvent = (o1: IEvent | null, o2: IEvent | null): boolean => this.eventService.compareEvent(o1, o2);
@@ -63,25 +67,32 @@ export class RelEventPersonUpdateComponent implements OnInit {
     window.history.back();
   }
 
-  save(): void {
+  save(addOne: number | null): void {
     this.isSaving = true;
     const relEventPerson = this.relEventPersonFormService.getRelEventPerson(this.editForm);
     if (relEventPerson.id !== null) {
-      this.subscribeToSaveResponse(this.relEventPersonService.update(relEventPerson));
+      this.subscribeToSaveResponse(this.relEventPersonService.update(relEventPerson), addOne);
     } else {
-      this.subscribeToSaveResponse(this.relEventPersonService.create(relEventPerson));
+      this.subscribeToSaveResponse(this.relEventPersonService.create(relEventPerson), addOne);
     }
   }
 
-  protected subscribeToSaveResponse(result: Observable<HttpResponse<IRelEventPerson>>): void {
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IRelEventPerson>>, addOne: number | null): void {
     result.pipe(finalize(() => this.onSaveFinalize())).subscribe({
-      next: () => this.onSaveSuccess(),
+      next: () => this.onSaveSuccess(addOne),
       error: () => this.onSaveError(),
     });
   }
 
-  protected onSaveSuccess(): void {
-    this.previousState();
+  protected onSaveSuccess(addOne: number | null): void {
+    if (addOne == null) {
+      this.previousState();
+    } else {
+      this.editForm.reset();
+      this.router.navigate(['/rel-event-person/new']);
+      this.successMessage = `La participation de ${this.repSelected[0]?.person?.pseudo} à l'événement ${this.repSelected[0]?.event?.label} a bien été enregistrée`;
+      this.repSelected = [];
+    }
   }
 
   protected onSaveError(): void {
@@ -132,5 +143,26 @@ export class RelEventPersonUpdateComponent implements OnInit {
         ),
       )
       .subscribe((hierarchies: IHierarchy[]) => (this.hierarchiesSharedCollection = hierarchies));
+  }
+
+  onEventChange() {
+    const eventId = this.editForm.get('event')?.value?.id;
+    if (eventId) {
+      this.relEventPersonService.findByEventWithRelationData(eventId).subscribe(
+        response => {
+          this.repSelected = response.body || [];
+        },
+        error => {
+          console.error("Erreur lors du chargement des données associées à l'événement: ", eventId, 'erreur: ', error);
+        },
+      );
+    }
+    if (eventId === undefined) {
+      this.repSelected = [];
+    }
+  }
+
+  saveAndAddAnother() {
+    this.save(1);
   }
 }

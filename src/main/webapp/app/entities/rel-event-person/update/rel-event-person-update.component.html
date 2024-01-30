@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save(null)" [formGroup]="editForm">
       <h2
         id="jhi-rel-event-person-heading"
         data-cy="RelEventPersonCreateUpdateHeading"
@@ -8,6 +8,10 @@
       >
         Créer ou éditer un Rel Event Person
       </h2>
+
+      <div *ngIf="successMessage" class="alert alert-success" role="alert">
+        {{ successMessage }}
+      </div>
 
       <div>
         <jhi-alert-error></jhi-alert-error>
@@ -20,47 +24,70 @@
         }
 
         <div class="mb-3">
-          <label class="form-label" jhiTranslate="todoApp.relEventPerson.participation" for="field_participation">Participation</label>
-          <input
-            type="text"
-            class="form-control"
-            name="participation"
-            id="field_participation"
-            data-cy="participation"
-            formControlName="participation"
-          />
-        </div>
-
-        <div class="mb-3">
-          <label jhiTranslate="todoApp.relEventPerson.event" for="field_event">Event</label>
+          <label jhiTranslate="todoApp.relEventPerson.addEvent" for="field_event">Choisir un évenement</label>
           <select
             class="form-control"
             id="field_event"
             data-cy="event"
-            multiple
             name="event"
             formControlName="event"
             [compareWith]="compareEvent"
+            (change)="onEventChange()"
           >
+            <option [ngValue]="null">Aucun événement sélectionné</option>
             @for (eventOption of eventsSharedCollection; track $index) {
-              <option [ngValue]="eventOption">{{ eventOption.id }}</option>
+              <option [ngValue]="eventOption">
+                {{ eventOption.label }} ( {{ eventOption.place }} | {{ eventOption.dateStart | formatMediumDate }} /
+                {{ eventOption.dateEnd | formatMediumDate }} )
+              </option>
             }
           </select>
         </div>
 
+        <!-- Affichage d'un résumé de l'événement -->
+        <div *ngIf="repSelected && repSelected.length > 0">
+          <div class="card">
+            <!--titre evenements-->
+            <div class="space-title">
+              <h5 class="card-title">{{ repSelected[0]?.event?.label }}</h5>
+            </div>
+            <div class="card-body smaller">
+              <p class="inheritSize">{{ repSelected[0]?.event?.description }}</p>
+              <hr />
+              <p class="inheritSize"><strong class="inheritSize">Lieu:</strong> {{ repSelected[0]?.event?.place }}</p>
+              <p class="inheritSize">
+                <strong class="inheritSize">Date(s):</strong> {{ repSelected[0]?.event?.dateStart }} - {{ repSelected[0]?.event?.dateEnd }}
+              </p>
+              <hr />
+
+              <!-- Boucle sur les participants -->
+              <h5>Invités:</h5>
+              <div *ngFor="let rep of repSelected">
+                <div class="participant-details">
+                  <p class="inheritSize textNoMargin">
+                    <span class="spaced"> {{ rep?.person?.pseudo }}</span> ( {{ rep?.hierarchy?.description }} )
+                    <span class="grey inheritSize"> | </span>
+                    <span class="participation inheritSize">{{ rep?.participation }}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end of event summary -->
+
         <div class="mb-3">
-          <label jhiTranslate="todoApp.relEventPerson.person" for="field_person">Person</label>
+          <label jhiTranslate="todoApp.relEventPerson.addPerson" for="field_person">Ajouter un Participant</label>
           <select
             class="form-control"
             id="field_person"
             data-cy="person"
-            multiple
             name="person"
             formControlName="person"
             [compareWith]="comparePerson"
           >
             @for (personOption of peopleSharedCollection; track $index) {
-              <option [ngValue]="personOption">{{ personOption.id }}</option>
+              <option [ngValue]="personOption">{{ personOption.pseudo }}</option>
             }
           </select>
         </div>
@@ -71,22 +98,36 @@
             class="form-control"
             id="field_hierarchy"
             data-cy="hierarchy"
-            multiple
             name="hierarchy"
             formControlName="hierarchy"
             [compareWith]="compareHierarchy"
           >
             @for (hierarchyOption of hierarchiesSharedCollection; track $index) {
-              <option [ngValue]="hierarchyOption">{{ hierarchyOption.id }}</option>
+              <option [ngValue]="hierarchyOption">{{ hierarchyOption.description }}</option>
             }
           </select>
         </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="todoApp.relEventPerson.participation" for="field_participation">Participation</label>
+          <input
+            type="text"
+            class="form-control"
+            name="participation"
+            id="field_participation"
+            data-cy="participation"
+            formControlName="participation"
+          />
+        </div>
       </div>
 
+      <!--BOUTON ANNULER -->
       <div>
         <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
           <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
         </button>
+
+        <!--BOUTON SAUVEGARDER -->
 
         <button
           type="submit"
@@ -96,6 +137,21 @@
           class="btn btn-primary"
         >
           <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+
+        <!--bouton sauvegarder et ajouter une autre participation -->
+
+        <button
+          type="button"
+          id="save-and-add-another"
+          data-cy="saveAndAddAnotherButton"
+          class="btn btn-primary"
+          (click)="saveAndAddAnother()"
+          [disabled]="editForm.invalid || isSaving"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="todoApp.relEventPerson.saveAndAdd"
+            >Sauvegarder et Ajouter une autre participation</span
+          >
         </button>
       </div>
     </form>

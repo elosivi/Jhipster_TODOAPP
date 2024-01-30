@@ -288,6 +288,11 @@ body {
   margin-right: auto;
 }
 
+.card {
+  margin-bottom: 25px;
+  margin-top: 25px;
+}
+
 /* ==========================================================================
 TEXT
 ========================================================================== */
@@ -369,8 +374,20 @@ jhi-item-count {
   font-size: 1.2rem;
 }
 
+.higherX2 {
+  font-size: 2rem;
+}
+
+.inheritSize {
+  font-size: 1rem !important;
+}
+
 .spaced {
   letter-spacing: 1.5px;
+}
+
+.bolder {
+  font-weight: bold;
 }
 
 .addColon::after {
@@ -409,6 +426,23 @@ span.userName {
   margin-bottom: 15px;
 }
 
+.relative {
+  position: relative;
+}
+.rightAlign {
+  position: absolute;
+  top: 3px;
+  right: 10px;
+  margin-right: 10px;
+  margin-top: 3px;
+}
+.marginLeft {
+  margin-left: 10px;
+}
+
+.textNoMargin {
+  margin-bottom: 0;
+}
 /* ==========================================================================
 MESSAGES & ALERTS
 ========================================================================== */
