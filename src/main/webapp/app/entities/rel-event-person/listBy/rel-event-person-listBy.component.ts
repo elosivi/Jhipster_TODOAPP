@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, forkJoin, Observable, of, Subject, switchMap, takeUntil, tap } from 'rxjs';
@@ -15,14 +15,11 @@ import { FilterComponent, FilterOptions, IFilterOptions, IFilterOption } from 'a
 import { IRelEventPerson } from '../rel-event-person.model';
 
 import { EntityArrayResponseType, RelEventPersonService } from '../service/rel-event-person.service';
-import { RelEventPersonDeleteDialogComponent } from '../delete/rel-event-person-delete-dialog.component';
 import { AccountService } from 'app/core/auth/account.service';
 import { IUser } from 'app/admin/user-management/user-management.model';
 import { IPerson } from 'app/entities/person/person.model';
 import { EntityResponseType, PersonService } from 'app/entities/person/service/person.service';
-import { UserService } from '../../user/service/user.service';
 import { Account } from '../../../core/auth/account.model';
-import { catchError, map } from 'rxjs/operators';
 
 @Component({
   standalone: true,
@@ -64,6 +61,8 @@ export class RelEventPersonComponent implements OnInit {
   totalItems = 0;
   page = 1;
 
+  @Input() personConnectedFromHome!: IPerson | null;
+
   constructor(
     private accountService: AccountService,
     protected relEventPersonService: RelEventPersonService,
@@ -76,6 +75,9 @@ export class RelEventPersonComponent implements OnInit {
 
   ngOnInit(): void {
     // call from home page => return events participation for the person connected
+    if (this.personConnectedFromHome) {
+      this.personConnected = this.personConnectedFromHome;
+    }
     this.loadRelEventPersonForHomePage();
     this.filters.filterChanges.subscribe(filterOptions => this.handleNavigation(1, this.predicate, this.ascending, filterOptions));
   }
@@ -133,7 +135,7 @@ export class RelEventPersonComponent implements OnInit {
    /*************************************************/
 
   /**
-   * For all event in relEventPersonList, load the other relEventPerson concerned bythe same event.
+   * For all event in relEventPersonList, load the other relEventPerson concerned by the same event.
    * In order to have the person's participation
    */
   loadAllRelEventPersonForAllEvent() {

@@ -4,7 +4,7 @@ import { UserRouteAccessService } from 'app/core/auth/user-route-access.service'
 import { ASC } from 'app/config/navigation.constants';
 import { RelEventPersonComponent } from './list/rel-event-person.component';
 import { RelEventPersonDetailComponent } from './detail/rel-event-person-detail.component';
-import { RelEventPersonUpdateComponent } from './update/rel-event-person-update.component';
+import { RelEventPersonUpdateComponent } from './create/rel-event-person-update.component';
 import RelEventPersonResolve from './route/rel-event-person-routing-resolve.service';
 
 const relEventPersonRoute: Routes = [

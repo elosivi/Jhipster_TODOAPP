@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Data, ParamMap, Router, RouterLink, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
-
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -22,7 +21,7 @@ import { RelEventPersonFormService, RelEventPersonFormGroup } from './rel-event-
   standalone: true,
   selector: 'jhi-rel-event-person-update',
   templateUrl: './rel-event-person-update.component.html',
-  imports: [SharedModule, FormsModule, ReactiveFormsModule, FormatMediumDatePipe],
+  imports: [SharedModule, FormsModule, ReactiveFormsModule, FormatMediumDatePipe, RouterLink],
 })
 export class RelEventPersonUpdateComponent implements OnInit {
   isSaving = false;

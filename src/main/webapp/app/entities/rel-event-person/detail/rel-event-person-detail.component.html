@@ -10,41 +10,89 @@
 
         <jhi-alert></jhi-alert>
 
-        <dl class="row-md jh-entity-details">
-          <dt><span jhiTranslate="global.field.id">ID</span></dt>
-          <dd>
-            <span>{{ relEventPerson.id }}</span>
-          </dd>
-          <dt><span jhiTranslate="todoApp.relEventPerson.participation">Participation</span></dt>
-          <dd>
-            <span>{{ relEventPerson.participation }}</span>
-          </dd>
-          <dt><span jhiTranslate="todoApp.relEventPerson.event">Event</span></dt>
-          <dd>
-            @if (relEventPerson.event && relEventPerson.event.id) {
-              <span>
-                <a [routerLink]="['/event', relEventPerson.event.id, 'view']">{{ relEventPerson.event.label }}</a>
-              </span>
-            }
-          </dd>
-          <dt><span jhiTranslate="todoApp.relEventPerson.person">Person</span></dt>
-          <dd>
-            @if (relEventPerson.person) {
-              <span>
-                <a [routerLink]="['/person', relEventPerson.person.id, 'view']">{{ relEventPerson.person.pseudo }}</a>
-              </span>
-            }
-          </dd>
-          <dt><span jhiTranslate="todoApp.relEventPerson.hierarchy">Hierarchy</span></dt>
-          <dd>
-            @if (relEventPerson.hierarchy) {
-              <span>
-                <a [routerLink]="['/hierarchy', relEventPerson.hierarchy.id, 'view']">{{ relEventPerson.hierarchy.description }}</a>
-              </span>
-            }
-          </dd>
-        </dl>
+        <div>
+          <!-- EVENT TYPE -->
+          <div class="card-header relative">
+            <strong>Type d'évènement:</strong>
+            {{
+              relEventPerson.event?.eventType?.label
+                ? relEventPerson.event?.eventType?.label
+                : 'Evènement indépendant ( ou définir un type)'
+            }}
 
+            <span class="rightAlign">
+              | <span class="marginLeft">{{ relEventPerson.id }}</span>
+            </span>
+          </div>
+
+          <!-- EVENT TITLE -->
+          <div>
+            <div class="space-title">
+              <h5 class="card-title higherX2">
+                <a class="noACss" [routerLink]="['/event', relEventPerson.event?.id, 'edit']">{{ relEventPerson.event?.label }}</a>
+              </h5>
+            </div>
+
+            <div class="card-body">
+              <!--DESCRIPTION / THEME / LIEU ET DATES -->
+              <div class="row">
+                <!--<div class="col-md-6">-->
+                <p><strong>Description:</strong> {{ relEventPerson.event?.description }}</p>
+                <p><strong>Theme:</strong> {{ relEventPerson.event?.theme }}</p>
+                <!-- </div>
+              <div class="vertical-line col-md-6">-->
+                <p><strong>Lieu:</strong> {{ relEventPerson.event?.placeDetails }}</p>
+                <p>
+                  <strong>Date(s):</strong> du {{ relEventPerson.event?.dateStart | formatMediumDate }} au
+                  {{ relEventPerson.event?.dateEnd }}
+                </p>
+                <!--  </div>-->
+              </div>
+              <hr />
+
+              <!--NOTE -->
+              <div class="card-note">
+                <h6>Note:</h6>
+                <p>{{ relEventPerson.event?.note }}</p>
+              </div>
+              <hr />
+
+              <!--LIEU-->
+              <div class="row">
+                <h6>Lieu</h6>
+                <p>{{ relEventPerson.event?.place?.toUpperCase() }} ( - {{ relEventPerson.event?.adress }} -)</p>
+              </div>
+              <hr />
+
+              <!--PARTICIPATION DU USER-->
+              <div class="row">
+                <h6>Ma participation:</h6>
+                <!--<p>{{ relEventPerson.participation }}</p>-->
+              </div>
+              <hr />
+
+              <!-- PARTICIPANTS -->
+              <div class="row">
+                <h6>Participants / Invités</h6>
+                <div class="card-list">
+                  <ul>
+                    <li *ngFor="let relEventpersonByEvent of relEventPerson?.relEventPersonLinkedByEvent">
+                      <a class="noACss" [routerLink]="['/person', relEventpersonByEvent.person?.id, 'view']">
+                        <strong>{{ relEventpersonByEvent.person?.pseudo }}</strong>
+                      </a>
+                      ( {{ relEventpersonByEvent.person?.user?.firstName }} {{ relEventpersonByEvent.person?.user?.lastName }}) (
+                      {{ relEventpersonByEvent.hierarchy?.description }} )
+                      <span class="grey"> | </span>
+                      <span class="participation">{{ relEventpersonByEvent.participation }}</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space"></div>
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
         </button>

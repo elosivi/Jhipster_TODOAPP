@@ -42,7 +42,7 @@ export class RelEventPersonService {
   }
 
   find(id: number): Observable<EntityResponseType> {
-    return this.http.get<IRelEventPerson>(`${this.resourceUrl}/${id}`, { observe: 'response' });
+    return this.http.get<IRelEventPerson>(`${this.resourceUrl}/management/${id}`, { observe: 'response' });
   }
 
   /** load all couple event/person in database with data about event, person, user, hierarchy and participation */
