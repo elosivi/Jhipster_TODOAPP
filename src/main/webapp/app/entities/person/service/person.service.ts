@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable, asapScheduler, scheduled } from 'rxjs';
+import { Observable, asapScheduler, scheduled, takeUntil, take } from 'rxjs';
 
 import { catchError } from 'rxjs/operators';
 
@@ -9,6 +9,8 @@ import { ApplicationConfigService } from 'app/core/config/application-config.ser
 import { createRequestOption } from 'app/core/request/request-util';
 import { SearchWithPagination } from 'app/core/request/request.model';
 import { IPerson, NewPerson } from '../person.model';
+import { Account } from '../../../core/auth/account.model';
+import { AccountService } from '../../../core/auth/account.service';
 
 export type PartialUpdatePerson = Partial<IPerson> & Pick<IPerson, 'id'>;
 
@@ -20,8 +22,10 @@ export class PersonService {
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/people');
   protected resourceSearchUrl = this.applicationConfigService.getEndpointFor('api/people/_search');
   protected resourcePersonsWithUsersUrl = this.applicationConfigService.getEndpointFor('api/people/persons-with-users');
+  protected accountConnected: Account | null = null;
 
   constructor(
+    private accountService: AccountService,
     protected http: HttpClient,
     protected applicationConfigService: ApplicationConfigService,
   ) {}
@@ -115,5 +119,19 @@ export class PersonService {
    */
   findByUserAssociated(userId: number): Observable<EntityResponseType> {
     return this.http.get<IPerson>(`${this.resourceUrl}/management/byUser/${userId}`, { observe: 'response' });
+  }
+
+  loadPersonConnected(): IPerson | undefined | null {
+    let personConnected: IPerson;
+    this.accountService
+      .getAuthenticationState()
+      .pipe(take(1))
+      .subscribe(account => {
+        if (account) {
+          return this.findByUserAssociated(account.id);
+        }
+        return null;
+      });
+    return null;
   }
 }
