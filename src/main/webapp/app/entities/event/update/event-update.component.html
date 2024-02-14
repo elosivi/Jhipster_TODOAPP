@@ -210,6 +210,19 @@
               <option [ngValue]="personOption">{{ personOption.pseudo }}</option>
             }
           </select>
+
+          <div class="">
+            <label>Besoin de créer un participant? </label>
+            <button
+              id="jh-create-entity"
+              data-cy="entityCreateButton"
+              class="btn btn-primary jh-create-entity create-person"
+              [routerLink]="['/person/new']"
+            >
+              <fa-icon icon="plus"></fa-icon>
+              <!--<span class="hidden-sm-down" jhiTranslate="todoApp.person.home.createLabel">Créer un nouveau Participant</span>-->
+            </button>
+          </div>
         </div>
       </div>
 

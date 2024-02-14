@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
@@ -19,7 +19,7 @@ import { EventFormService, EventFormGroup } from './event-form.service';
   standalone: true,
   selector: 'jhi-event-update',
   templateUrl: './event-update.component.html',
-  imports: [SharedModule, FormsModule, ReactiveFormsModule],
+  imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterLink],
 })
 export class EventUpdateComponent implements OnInit {
   isSaving = false;
