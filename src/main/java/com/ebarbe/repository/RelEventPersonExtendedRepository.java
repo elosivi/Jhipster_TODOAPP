@@ -31,20 +31,17 @@ public interface RelEventPersonExtendedRepository {
         @Param("newHierarchyId") Long newHierarchyId,
         @Param("newParticipation") String newParticipation
     );
-    /*@Modifying
-   @Query(
-        "UPDATE rel_event__person " +
-            "SET hierarchy_id = :newHierarchyId, " +
-            "participation = :newParticipation " +
-            "WHERE event_id = :eventId AND person_id = :personId"
+    /*  @Modifying
+    @Query("INSERT INTO RelEventPerson (event, person, hierarchy, participation) " +
+            "VALUES (:eventId, :personId, :hierarchyId, :participation)"
     )
-    void updateRelEventPersonParticipationOrHierarchy(
+    void createRelEventPerson(
         @Param("eventId") Long eventId,
         @Param("personId") Long personId,
-        @Param("newHierarchyId") Long newHierarchyId,
-        @Param("newParticipation") String newParticipation
-    );*/
-
+        @Param("hierarchyId") Long hierarchyId,
+        @Param("participation") String participation
+    );
+*/
     /**
      * remove a relEventPerson concerned by event and person in param
      * @param eventId

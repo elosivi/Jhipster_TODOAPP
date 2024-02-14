@@ -1,7 +1,10 @@
 package com.ebarbe.service;
 
 import com.ebarbe.domain.Event;
+import com.ebarbe.domain.Person;
+import com.ebarbe.domain.RelEventPerson;
 import com.ebarbe.repository.EventRepository;
+import com.ebarbe.repository.RelEventPersonRepository;
 import com.ebarbe.repository.search.EventSearchRepository;
 import com.ebarbe.service.dto.EventDTO;
 import com.ebarbe.service.mapper.EventMapper;
@@ -30,10 +33,18 @@ public class EventService {
 
     private final EventSearchRepository eventSearchRepository;
 
-    public EventService(EventRepository eventRepository, EventMapper eventMapper, EventSearchRepository eventSearchRepository) {
+    private final RelEventPersonRepository relEventPersonRepository;
+
+    public EventService(
+        RelEventPersonRepository relEventPersonRepository,
+        EventRepository eventRepository,
+        EventMapper eventMapper,
+        EventSearchRepository eventSearchRepository
+    ) {
         this.eventRepository = eventRepository;
         this.eventMapper = eventMapper;
         this.eventSearchRepository = eventSearchRepository;
+        this.relEventPersonRepository = relEventPersonRepository;
     }
 
     /**
@@ -46,6 +57,15 @@ public class EventService {
         log.debug("Request to save Event : {}", eventDTO);
         Event event = eventMapper.toEntity(eventDTO);
         event = eventRepository.save(event);
+
+        if (event.getPeople().size() > 0) {
+            for (Person person : event.getPeople()) {
+                RelEventPerson newParticipation = new RelEventPerson();
+                newParticipation.setEvent(event);
+                newParticipation.setPerson(person);
+                relEventPersonRepository.save(newParticipation);
+            }
+        }
         EventDTO result = eventMapper.toDto(event);
         eventSearchRepository.index(event);
         return result;

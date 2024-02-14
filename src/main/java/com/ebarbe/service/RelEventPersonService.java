@@ -127,7 +127,7 @@ public class RelEventPersonService {
     @Transactional(readOnly = true)
     public Optional<RelEventPersonDTO> findOne(Long id) {
         log.debug("Request to get RelEventPerson : {}", id);
-        return relEventPersonRepository.findOneWithEagerRelationships(id).map(relEventPersonMapper::toDto);
+        return relEventPersonRepository.findREPCompleteById(id).map(relEventPersonMapper::toDto);
     }
 
     /**

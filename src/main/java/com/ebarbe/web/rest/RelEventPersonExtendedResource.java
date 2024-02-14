@@ -5,12 +5,14 @@ import com.ebarbe.service.RelEventPersonExtendedService;
 import com.ebarbe.service.RelEventPersonQueryService;
 import com.ebarbe.service.RelEventPersonService;
 import com.ebarbe.service.criteria.RelEventPersonCriteria;
+import com.ebarbe.service.dto.PersonDTO;
 import com.ebarbe.service.dto.RelEventPersonDTO;
 import com.ebarbe.web.rest.errors.BadRequestAlertException;
 import com.ebarbe.web.rest.errors.ElasticsearchExceptionMapper;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
+import tech.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing {@link com.ebarbe.domain.RelEventPerson}.
@@ -166,6 +169,16 @@ public class RelEventPersonExtendedResource extends RelEventPersonResource {
         Page<RelEventPersonDTO> page = relEventPersonExtendedService.findAllREPCompleteByPersonId(pageable, personId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RelEventPersonDTO> getOneRelEventPeopleById(
+        @PathVariable("id") Long id,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get RelEventPeople by id: {}", id);
+        Optional<RelEventPersonDTO> RelEventPersonDTO = relEventPersonService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(RelEventPersonDTO);
     }
 
     /*************************************************************************** */

@@ -43,8 +43,14 @@ public class Person implements Serializable {
     @JoinColumn(unique = true)
     private User user;
 
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "person")
-    @org.springframework.data.annotation.Transient
+    // @ManyToMany(fetch = FetchType.LAZY, mappedBy = "person")
+    // @org.springframework.data.annotation.Transient
+    @Transient // no relation for update ou creation
+    @JoinTable(
+        name = "rel_event__person",
+        joinColumns = @JoinColumn(name = "person_id"),
+        inverseJoinColumns = @JoinColumn(name = "event_id")
+    )
     @JsonIgnoreProperties(value = { "eventType", "person", "relEventPeople" }, allowSetters = true)
     private Set<Event> events = new HashSet<>();
 

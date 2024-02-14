@@ -27,8 +27,8 @@ public interface RelEventPersonExtendedRepositoryWithBagRelationships {
         "SELECT rep FROM RelEventPerson rep " +
         "JOIN FETCH rep.event e " +
         "JOIN FETCH rep.person p " +
-        "JOIN FETCH p.user u " +
-        "JOIN FETCH rep.hierarchy h "
+        "LEFT JOIN p.user u " +
+        "LEFT JOIN rep.hierarchy h "
     )
     List<RelEventPerson> findAllREPComplete();
 
@@ -47,6 +47,11 @@ public interface RelEventPersonExtendedRepositoryWithBagRelationships {
             "WHERE rep.event_id = :eventId"
     )*/
 
+    /**
+     * FIND ALL THE PERSON'S PARTICIPATION FOR AN EVENT
+     * @param eventId
+     * @return
+     */
     @Query(
         "SELECT rep FROM RelEventPerson rep " +
         "JOIN FETCH rep.event e " +
@@ -101,9 +106,25 @@ public interface RelEventPersonExtendedRepositoryWithBagRelationships {
         "SELECT rep FROM RelEventPerson rep " +
         "JOIN FETCH rep.event e " +
         "JOIN FETCH rep.person p " +
-        "JOIN FETCH p.user u " +
-        "JOIN FETCH rep.hierarchy h " +
+        "LEFT JOIN p.user u " +
+        "LEFT JOIN rep.hierarchy h " +
         "WHERE rep.event.id = :eventId AND rep.person.id = :personId"
     )
     Optional<RelEventPerson> findREPCompleteByEventIdAndPersonId(@Param("eventId") Long eventId, @Param("personId") Long personId);
+
+    /**
+     * get ONE (EVENT, PERSON+USER AND HIERARCHY )  data for each relEventPerson concerning by the event + the person in param
+     *
+     * @param id
+     * @return a list of RelEventPerson, included all data about entities linked
+     */
+    @Query(
+        "SELECT rep FROM RelEventPerson rep " +
+        "JOIN FETCH rep.event e " +
+        "JOIN FETCH rep.person p " +
+        "LEFT JOIN p.user u " +
+        "LEFT JOIN rep.hierarchy h " +
+        "WHERE rep.id = :id"
+    )
+    Optional<RelEventPerson> findREPCompleteById(@Param("id") Long id);
 }

@@ -23,7 +23,6 @@ public interface RelEventPersonRepository
         JpaRepository<RelEventPerson, Long>,
         JpaSpecificationExecutor<RelEventPerson> {
     /**
-     * /!\ relEventperson doesn't have id -> obsolete method -> cf findByEventAndPersonId() / findByEventId() / findByPersonId()
      * @param id
      * @return
      */

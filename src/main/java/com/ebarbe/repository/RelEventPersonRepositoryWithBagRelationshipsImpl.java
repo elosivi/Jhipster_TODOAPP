@@ -61,7 +61,6 @@ public class RelEventPersonRepositoryWithBagRelationshipsImpl implements RelEven
     }
 
     /**
-     * /!\ Can't be used beacause there is no Id in relEventPerson table => cf findByEventAndPersonId() / findByEventId() / findByPersonId()
      * get event data for each relEventPerson in param
      * uses the RelEventPerson ID to maintain the initial order when sorting the results. Here's where it happens
      * @param relEventPeople
@@ -82,7 +81,6 @@ public class RelEventPersonRepositoryWithBagRelationshipsImpl implements RelEven
     }
 
     /**
-     * /!\ Can't be used beacause there is no Id in relEventPerson table => cf findByEventAndPersonId() / findByEventId() / findByPersonId()
      * get person data for relEventPerson in param
      * @param result may be a person object
      * @return
@@ -98,7 +96,6 @@ public class RelEventPersonRepositoryWithBagRelationshipsImpl implements RelEven
     }
 
     /**
-     * /!\ Can't be used beacause there is no Id in relEventPerson table => cf findByEventAndPersonId() / findByEventId() / findByPersonId()
      * get person data for each relEventPerson in param
      * uses the RelEventPerson ID to maintain the initial order when sorting the results. Here's where it happens:
      * @param relEventPeople
@@ -119,7 +116,6 @@ public class RelEventPersonRepositoryWithBagRelationshipsImpl implements RelEven
     }
 
     /**
-     * /!\ Can't be used beacause there is no Id in relEventPerson table => cf findByEventAndPersonId() / findByEventId() / findByPersonId()
      * get hierarchy data for the relEventPerson in param
      * @param result may be a hierarchy object
      * @return the RelEventPerson with hierarchy data
@@ -135,7 +131,6 @@ public class RelEventPersonRepositoryWithBagRelationshipsImpl implements RelEven
     }
 
     /**
-     * /!\ Can't be used beacause there is no Id in relEventPerson table => cf findByEventAndPersonId() / findByEventId() / findByPersonId()
      * get hierarchy data for each relEventPerson
      * uses the RelEventPerson ID to maintain the initial order when sorting the results. Here's where it happens:
      * @param relEventPeople

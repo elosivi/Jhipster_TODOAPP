@@ -38,6 +38,11 @@ public class RelEventPersonExtendedService extends RelEventPersonService {
 
     private final RelEventPersonExtendedRepositoryWithBagRelationships repExtRepositoryWBR;
 
+    @Override
+    public Optional<RelEventPersonDTO> findOne(Long id) {
+        return super.findOne(id);
+    }
+
     public RelEventPersonExtendedService(
         RelEventPersonRepository relEventPersonRepository,
         RelEventPersonMapper relEventPersonMapper,
@@ -63,9 +68,7 @@ public class RelEventPersonExtendedService extends RelEventPersonService {
     @Transactional(readOnly = true)
     public Page<RelEventPersonDTO> findAllREPComplete(Pageable pageable) {
         log.debug("Request to get all RelEventPeople");
-        List<RelEventPerson> resultList = repRepository.findAll();
-        resultList = repRepository.fetchBagRelationships(resultList);
-
+        List<RelEventPerson> resultList = repExtRepositoryWBR.findAllREPComplete();
         long totalElements = resultList.size();
 
         return paginateResults(resultList, pageable, totalElements).map(relEventPersonMapper::toDto);

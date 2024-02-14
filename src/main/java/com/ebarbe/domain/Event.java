@@ -71,7 +71,8 @@ public class Event implements Serializable {
     @JsonIgnoreProperties(value = { "event" }, allowSetters = true)
     private EventType eventType;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    //@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL) //cascade to update manually the table releventperson
+    @Transient // no relation for update ou creation
     @JoinTable(
         name = "rel_event__person",
         joinColumns = @JoinColumn(name = "event_id"),
@@ -83,6 +84,7 @@ public class Event implements Serializable {
     @OneToMany(mappedBy = "event")
     @org.springframework.data.annotation.Transient
     @JsonIgnoreProperties(value = { "event", "person", "hierarchy" }, allowSetters = true)
+    @Transient
     private Set<RelEventPerson> relEventPeople = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
