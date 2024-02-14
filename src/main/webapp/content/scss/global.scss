@@ -293,6 +293,9 @@ body {
   margin-top: 25px;
 }
 
+.space {
+  height: 20px;
+}
 /* ==========================================================================
 TEXT
 ========================================================================== */
@@ -429,6 +432,10 @@ span.userName {
 .relative {
   position: relative;
 }
+.relativeInput {
+  position: relative;
+  padding-bottom: 20px;
+}
 .rightAlign {
   position: absolute;
   top: 3px;
@@ -436,6 +443,15 @@ span.userName {
   margin-right: 10px;
   margin-top: 3px;
 }
+
+.rightAlignUnderInput {
+  position: absolute;
+  top: 60px;
+  right: 10px;
+  margin-right: 10px;
+  margin-top: 3px;
+}
+
 .marginLeft {
   margin-left: 10px;
 }
@@ -460,7 +476,7 @@ MESSAGES & ALERTS
 
   ngb-alert {
     background-color: inherit;
-    max-width: 50%;
+    //max-width: 50%;
   }
   ngb-alert.alert.alert-success.show.fade.alert-dismissible {
     background-color: white;
@@ -548,6 +564,31 @@ form.EditForm input,
 form.EditForm textarea,
 form.EditForm select {
   max-width: 400px;
+}
+
+//checkbox - REGISTER COMPONENT
+
+.register-component [type='checkbox']::before {
+  left: -25px;
+  color: $light-blue;
+}
+
+.register-component [type='checkbox']:checked::after {
+  content: 'x';
+  left: -23px;
+  top: -4px;
+  font-size: 2rem;
+  //opacity: 70%;
+  color: $light-blue;
+}
+
+.register-component label.form-check-label {
+  margin-right: 40px;
+  color: $light-blue;
+}
+
+.register-component div#strength {
+  margin-top: -20px;
 }
 
 /* ==========================================================================

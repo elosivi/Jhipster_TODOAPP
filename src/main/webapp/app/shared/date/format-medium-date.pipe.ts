@@ -8,6 +8,8 @@ import dayjs from 'dayjs/esm';
 })
 export default class FormatMediumDatePipe implements PipeTransform {
   transform(day: dayjs.Dayjs | null | undefined): string {
+    console.log('***' + day);
+    console.log('***' + typeof day);
     return day ? day.format('D MMM YYYY') : '';
   }
 }

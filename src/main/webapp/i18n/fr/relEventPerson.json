@@ -16,11 +16,12 @@
         "question": "Êtes-vous certain de vouloir supprimer la participation à un évènement n°{{ id }} ?"
       },
       "detail": {
-        "title": "Participation à un évènement"
+        "title": "Participation l'évènement ..."
       },
       "id": "ID",
       "participation": "Participation",
       "event": "Evènement",
+      "chooseEvent": "Choisir un évènement",
       "addEvent": "Ajouter un évènement",
       "person": "Participant",
       "addPerson": "Ajouter un participant",
