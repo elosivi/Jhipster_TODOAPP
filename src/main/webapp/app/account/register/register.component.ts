@@ -24,6 +24,8 @@ export default class RegisterComponent implements AfterViewInit {
   errorEmailExists = false;
   errorUserExists = false;
   success = false;
+  showPassword = false;
+  showConfirmPassword = false;
 
   registerForm = new FormGroup({
     login: new FormControl('', {
@@ -84,6 +86,15 @@ export default class RegisterComponent implements AfterViewInit {
       this.errorEmailExists = true;
     } else {
       this.error = true;
+    }
+  }
+
+  togglePasswordVisibility(input: string) {
+    if (input == 'password') {
+      this.showPassword = !this.showPassword;
+    }
+    if (input == 'confirmPassword') {
+      this.showConfirmPassword = !this.showConfirmPassword;
     }
   }
 }

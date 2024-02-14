@@ -1,4 +1,4 @@
-<div>
+<div class="register-component">
   <div class="d-flex justify-content-center">
     <div class="col-md-8">
       <h1 jhiTranslate="register.title" data-cy="registerTitle">Création de compte utilisateur</h1>
@@ -125,7 +125,7 @@
           <div class="mb-3">
             <label class="form-label" for="password" jhiTranslate="global.form.newpassword.label">Nouveau mot de passe</label>
             <input
-              type="password"
+              type="{{ showPassword ? 'text' : 'password' }}"
               class="form-control"
               id="password"
               name="password"
@@ -133,7 +133,17 @@
               formControlName="password"
               data-cy="firstPassword"
             />
-
+            <div class="input-group-append">
+              <div class="form-check text-end">
+                <label class="form-check-label" for="showPassword">Afficher le mot de passe</label>
+                <input
+                  type="checkbox"
+                  class="form-check-input float-end"
+                  id="showPassword"
+                  (change)="togglePasswordVisibility('password')"
+                />
+              </div>
+            </div>
             @if (registerForm.get('password')!.invalid && (registerForm.get('password')!.dirty || registerForm.get('password')!.touched)) {
               <div>
                 @if (registerForm.get('password')?.errors?.required) {
@@ -164,7 +174,7 @@
               >Confirmation du nouveau mot de passe</label
             >
             <input
-              type="password"
+              type="{{ showConfirmPassword ? 'text' : 'password' }}"
               class="form-control"
               id="confirmPassword"
               name="confirmPassword"
@@ -172,7 +182,15 @@
               formControlName="confirmPassword"
               data-cy="secondPassword"
             />
-
+            <div class="form-check text-end">
+              <label class="form-check-label" for="showConfirmPassword">Afficher le mot de passe</label>
+              <input
+                type="checkbox"
+                class="form-check-input float-end"
+                id="showConfirmPassword"
+                (change)="togglePasswordVisibility('confirmPassword')"
+              />
+            </div>
             @if (
               registerForm.get('confirmPassword')!.invalid &&
               (registerForm.get('confirmPassword')!.dirty || registerForm.get('confirmPassword')!.touched)
